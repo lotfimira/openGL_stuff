@@ -1,0 +1,8 @@
+*.sdf
+*.suo
+Grid_QT_GUI_VS2012/Debug/
+Grid_QT_GUI_VS2012/GeneratedFiles/
+*.filters
+*.user
+Grid_QT_GUI_VS2012/x64/
+x64/Debug/
