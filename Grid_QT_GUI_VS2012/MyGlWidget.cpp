@@ -1,6 +1,9 @@
 #include "MyGlWidget.h"
 
-MyGlWidget::MyGlWidget()
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+MyGlWidget::MyGlWidget(QWidget *parent) : QGLWidget(parent)
 {
 }
 
@@ -10,6 +13,10 @@ MyGlWidget::~MyGlWidget()
 
 void MyGlWidget::initializeGL()
 {
+    // WHY IS THIS NOT WORKING ?
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LEQUAL);
+
     _camera.LookAt(glm::vec3(0, 0, -3), // eye
                    glm::vec3(0, 0, 0),  // center
                    glm::vec3(0, 1, 0)); // up
@@ -17,12 +24,17 @@ void MyGlWidget::initializeGL()
 
 void MyGlWidget::resizeGL(int w, int h)
 {
-    _camera.Perspective(45.0f,  // fov
+    glViewport(0, 0, (GLint)w, (GLint)h);
+
+    _camera.Perspective(M_PI / 4.0f,  // fov
                         (float)w / (float)h, // aspect ratio
                         0.1f,   // near
                         10.0f); // far
 
-    //_camera.Frustum(-2, +2, -2, +2, 0.1f, 10.0f);
+    // WHY IS THIS NOT WORKING ?
+    /*
+    const int b = 5;
+    _camera.Frustum(-b, +b, -b, +b, 0.1f, 10.0f);*/
 }
 
 void MyGlWidget::paintGL()
@@ -38,10 +50,12 @@ void MyGlWidget::paintGL()
     glColor4f(0, 0, 1, 1);
 
     // quad facing the camera
+    int s = 1;
+    int z = 1;
     glBegin(GL_QUADS);
-    glVertex3f(-1, -1, 0);
-    glVertex3f(1, -1, 0);
-    glVertex3f(1, 1, 0);
-    glVertex3f(-1, 1, 0);
+    glVertex3f(-s, -s, z);
+    glVertex3f(s, -s, z);
+    glVertex3f(s, s, z);
+    glVertex3f(-s, s, z);
     glEnd();
 }

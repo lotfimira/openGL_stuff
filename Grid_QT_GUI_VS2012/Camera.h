@@ -22,7 +22,7 @@ public:
     ~Camera() {};
 
     void LookAt(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up);
-    void Perspective(float fovy, float aspect_ratio, float near, float far);
+    void Perspective(float fovy_rad, float aspect_ratio, float near, float far);
     void Frustum(float left, float right, float bottom, float top, float near, float far);
     void GlLoadMatrices();
 };

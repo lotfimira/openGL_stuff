@@ -10,7 +10,7 @@ Grid_QT_GUI_VS2012::Grid_QT_GUI_VS2012(QWidget *parent)
     ui.setupUi(this);
 
     QWidget * c = centralWidget();
-    c->layout()->addWidget(new MyGlWidget());
+    c->layout()->addWidget(new MyGlWidget(this));
 }
 
 Grid_QT_GUI_VS2012::~Grid_QT_GUI_VS2012()

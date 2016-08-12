@@ -9,7 +9,7 @@ private:
     Camera _camera;
 
 public:
-    MyGlWidget();
+    MyGlWidget(QWidget *parent);
     virtual ~MyGlWidget();
 
 protected:

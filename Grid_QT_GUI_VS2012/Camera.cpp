@@ -17,9 +17,9 @@ void Camera::LookAt(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up)
     _up = up;
 }
 
-void Camera::Perspective(float fovy, float aspect_ratio, float near, float far)
+void Camera::Perspective(float fovy_rad, float aspect_ratio, float near, float far)
 {
-    _proj_mat = glm::perspective(fovy, aspect_ratio, near, far);
+    _proj_mat = glm::perspective(fovy_rad, aspect_ratio, near, far);
 }
 
 void Camera::Frustum(float left, float right, float bottom, float top, float near, float far)
