@@ -13,9 +13,11 @@ MyGlWidget::~MyGlWidget()
 
 void MyGlWidget::initializeGL()
 {
-    // WHY IS THIS NOT WORKING ?
-    //glEnable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LEQUAL);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearDepth(1.0f);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
 
     _camera.LookAt(glm::vec3(0, 0, -3), // eye
                    glm::vec3(0, 0, 0),  // center
@@ -30,16 +32,11 @@ void MyGlWidget::resizeGL(int w, int h)
                         (float)w / (float)h, // aspect ratio
                         0.1f,   // near
                         10.0f); // far
-
-    // WHY IS THIS NOT WORKING ?
-    /*
-    const int b = 5;
-    _camera.Frustum(-b, +b, -b, +b, 0.1f, 10.0f);*/
 }
 
 void MyGlWidget::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     _camera.GlLoadMatrices();
 
