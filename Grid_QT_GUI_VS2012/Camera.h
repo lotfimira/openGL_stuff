@@ -29,7 +29,12 @@ public:
 
 class OrbitCamera : public Camera
 {
+Q_OBJECT
+
 public:
-    void h_rotate(float rad);
-    void v_rotate(float rad);
+    void RotateH(float rad);
+    void RotateV(float rad);
+
+public slots:
+    void Rotate(int h_rotation, int v_rotation);
 };
