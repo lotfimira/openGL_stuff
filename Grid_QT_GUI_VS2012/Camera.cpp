@@ -1,12 +1,13 @@
 #include "Camera.h"
-//#include "Camera.moc"
 #include <GL/glew.h>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #define GLM_FORCE_RADIANS 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
-
-#define UP glm::vec3(0,0,1)
 
 void Camera::LookAt(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up)
 {
@@ -39,10 +40,12 @@ void Camera::GlLoadMatrices()
 void OrbitCamera::RotateH(float rad)
 {
     glm::vec3 cam_reverse_vector = _pos - _look_at;
-    cam_reverse_vector = glm::rotate(cam_reverse_vector, rad, UP);
+    cam_reverse_vector = glm::rotate(cam_reverse_vector, rad, _up);
     _pos = _look_at + cam_reverse_vector;
 
     _view_mat = glm::lookAt(_pos, _look_at, _up);
+
+    emit changed();
 }
 
 void OrbitCamera::RotateV(float rad)
@@ -53,10 +56,14 @@ void OrbitCamera::RotateV(float rad)
     _pos = _look_at + cam_reverse_vector;
 
     _view_mat = glm::lookAt(_pos, _look_at, _up);
+
+    emit changed();
 }
 
 void OrbitCamera::Rotate(int h_rotation, int v_rotation)
 {
-    RotateH(h_rotation);
-    RotateV(v_rotation);
+    float h_rad = ((float)h_rotation) * 2.0f * M_PI / 360.0f;
+
+    RotateH(h_rad);
+    //RotateV(v_rotation);
 }

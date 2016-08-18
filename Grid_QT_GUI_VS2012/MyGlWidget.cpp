@@ -5,8 +5,11 @@
 
 MyGlWidget::MyGlWidget(QWidget *parent) : QGLWidget(parent)
 {
-    QObject::connect(&_input,  SIGNAL(drag(int, int)), 
-                     &_camera, SLOT(addRotation(int, int)));
+    QObject::connect(&_input,  SIGNAL(Drag(int, int)), 
+                     &_camera, SLOT(Rotate(int, int)));
+
+    QObject::connect(&_camera, SIGNAL(changed()),
+                     this,     SLOT(onCameraChanged()));
 }
 
 MyGlWidget::~MyGlWidget()
@@ -50,7 +53,7 @@ void MyGlWidget::paintGL()
 
     // quad facing the camera
     int s = 1;
-    int z = 1;
+    int z = 0;
     glBegin(GL_QUADS);
     glVertex3f(-s, -s, z);
     glVertex3f(s, -s, z);
@@ -72,4 +75,9 @@ void MyGlWidget::mouseReleaseEvent(QMouseEvent * event)
 void MyGlWidget::mouseMoveEvent(QMouseEvent * event)
 {
     _input.mouseMoveEvent(event);
+}
+
+void MyGlWidget::onCameraChanged()
+{
+    updateGL();
 }

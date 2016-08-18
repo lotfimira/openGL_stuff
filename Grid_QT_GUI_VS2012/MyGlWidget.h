@@ -2,11 +2,14 @@
 
 #include <QGLWidget>
 #include <QMouseEvent>
+#include <QTimer>
 #include "Camera.h"
 #include "Input.h"
 
 class MyGlWidget : public QGLWidget
 {
+Q_OBJECT
+
 private:
     OrbitCamera _camera;
     Input _input;
@@ -22,4 +25,7 @@ protected:
     void mousePressEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
+
+protected slots:
+    void onCameraChanged();
 };

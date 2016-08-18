@@ -25,6 +25,9 @@ public:
     void Perspective(float fovy_rad, float aspect_ratio, float near, float far);
     void Frustum(float left, float right, float bottom, float top, float near, float far);
     void GlLoadMatrices();
+
+signals:
+    void changed();
 };
 
 class OrbitCamera : public Camera

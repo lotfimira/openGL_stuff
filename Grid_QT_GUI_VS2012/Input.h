@@ -12,7 +12,7 @@ private:
     QPoint last_cursor_pos;
 
 signals:
-    void drag(int h_drag, int v_drag);
+    void Drag(int h_drag, int v_drag);
 
 public:
     Input();
