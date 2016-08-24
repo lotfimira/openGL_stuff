@@ -37,34 +37,38 @@ void Camera::GlLoadMatrices()
     glLoadMatrixf(glm::value_ptr(_view_mat));
 }
 
-void OrbitCamera::RotateH(float rad)
-{
-    glm::vec3 cam_reverse_vector = _pos - _look_at;
-    cam_reverse_vector = glm::rotate(cam_reverse_vector, rad, _up);
-    _pos = _look_at + cam_reverse_vector;
-
-    _view_mat = glm::lookAt(_pos, _look_at, _up);
-
-    emit changed();
-}
-
-void OrbitCamera::RotateV(float rad)
-{
-    glm::vec3 cam_reverse_vector = _pos - _look_at;
-    glm::vec3 rotation_axis = glm::cross(cam_reverse_vector, _up);
-    cam_reverse_vector = glm::rotate(cam_reverse_vector, rad, rotation_axis);
-    _pos = _look_at + cam_reverse_vector;
-
-    _view_mat = glm::lookAt(_pos, _look_at, _up);
-
-    emit changed();
-}
-
-void OrbitCamera::Rotate(int h_rotation, int v_rotation)
+void OrbitCamera::rotate(int h_rotation, int v_rotation)
 {
     float h_rad = ((float)h_rotation) * 2.0f * M_PI / 360.0f;
     float v_rad = ((float)v_rotation) * 2.0f * M_PI / 360.0f;
 
-    //RotateH(h_rad);
-    RotateV(v_rad);
+    rotate(h_rad, v_rad);
+}
+
+void OrbitCamera::rotate(float h_rad, float v_rad)
+{
+    // add rotation
+    _angle_h += h_rad;
+    _angle_h = fmod(_angle_h, 2 * M_PI); // normalize angle [0 , 2 PI]
+
+    _angle_v += v_rad;
+    _angle_v = fmod(_angle_v, 2 * M_PI);
+
+    glm::vec3 cam_vector = _center;
+    cam_vector.z -= _radius;
+
+    // vertical rotation
+    cam_vector = glm::rotate(cam_vector,
+                             _angle_v,
+                             glm::vec3(1.0f, 0.0f, 0.0f));
+
+    // horizontal rotation
+    const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
+    cam_vector = glm::rotate(cam_vector,
+                             _angle_h,
+                             UP);
+
+    LookAt(_center + cam_vector, _center, UP);
+
+    emit changed();
 }

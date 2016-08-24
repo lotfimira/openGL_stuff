@@ -34,10 +34,18 @@ class OrbitCamera : public Camera
 {
 Q_OBJECT
 
+protected:
+    glm::vec3 _center;
+    float _radius;
+    float _angle_h; // angles in radians
+    float _angle_v;
+
 public:
-    void RotateH(float rad);
-    void RotateV(float rad);
+    OrbitCamera(): _radius(0), _angle_h(0), _angle_v(0){}
+    void setCenter(const glm::vec3 center){_center = center;}
+    void setRadius(float radius){_radius = radius;}
+    void rotate(float h_rotation, float v_rotation);
 
 public slots:
-    void Rotate(int h_rotation, int v_rotation);
+    void rotate(int h_rotation, int v_rotation);
 };

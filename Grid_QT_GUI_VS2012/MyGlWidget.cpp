@@ -6,7 +6,7 @@
 MyGlWidget::MyGlWidget(QWidget *parent) : QGLWidget(parent)
 {
     QObject::connect(&_input,  SIGNAL(Drag(int, int)), 
-                     &_camera, SLOT(Rotate(int, int)));
+                     &_camera, SLOT(rotate(int, int)));
 
     QObject::connect(&_camera, SIGNAL(changed()),
                      this,     SLOT(onCameraChanged()));
@@ -24,9 +24,8 @@ void MyGlWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    _camera.LookAt(glm::vec3(0, 0, -3), // eye
-                   glm::vec3(0, 0, 0),  // center
-                   glm::vec3(0, 1, 0)); // up
+    _camera.setCenter(glm::vec3(0, 0, 0));
+    _camera.setRadius(3.0f);
 }
 
 void MyGlWidget::resizeGL(int w, int h)
