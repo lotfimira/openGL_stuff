@@ -51,7 +51,7 @@ void OrbitCamera::RotateH(float rad)
 void OrbitCamera::RotateV(float rad)
 {
     glm::vec3 cam_reverse_vector = _pos - _look_at;
-    glm::vec3 rotation_axis = glm::vec3( -cam_reverse_vector.y, cam_reverse_vector.x, 0);
+    glm::vec3 rotation_axis = glm::cross(cam_reverse_vector, _up);
     cam_reverse_vector = glm::rotate(cam_reverse_vector, rad, rotation_axis);
     _pos = _look_at + cam_reverse_vector;
 
@@ -63,7 +63,8 @@ void OrbitCamera::RotateV(float rad)
 void OrbitCamera::Rotate(int h_rotation, int v_rotation)
 {
     float h_rad = ((float)h_rotation) * 2.0f * M_PI / 360.0f;
+    float v_rad = ((float)v_rotation) * 2.0f * M_PI / 360.0f;
 
-    RotateH(h_rad);
-    //RotateV(v_rotation);
+    //RotateH(h_rad);
+    RotateV(v_rad);
 }
