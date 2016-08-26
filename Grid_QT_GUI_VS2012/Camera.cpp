@@ -45,6 +45,13 @@ void OrbitCamera::rotate(int h_rotation, int v_rotation)
     rotate(h_rad, v_rad);
 }
 
+void printVector(const QString & name, const glm::vec3 & v)
+{
+    printf("%s [%.1f %.1f %.1f]\n", name.toStdString().c_str(),
+        v.x, v.y, v.z);
+}
+
+//-----------------------------------------------------------------------------
 void OrbitCamera::rotate(float h_rad, float v_rad)
 {
     // add rotation
@@ -54,21 +61,25 @@ void OrbitCamera::rotate(float h_rad, float v_rad)
     _angle_v += v_rad;
     _angle_v = fmod(_angle_v, 2 * M_PI);
 
+    // cam vector from center to eye pos
     glm::vec3 cam_vector = _center;
     cam_vector.z -= _radius;
 
+    // up vector
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
     // vertical rotation
-    cam_vector = glm::rotate(cam_vector,
-                             _angle_v,
-                             glm::vec3(1.0f, 0.0f, 0.0f));
+    const glm::vec3 X_AXIS = glm::vec3(1.0f, 0.0f, 0.0f);
+    cam_vector = glm::rotate(cam_vector, _angle_v, X_AXIS);
+    up = glm::rotate(up, _angle_v, X_AXIS);
 
     // horizontal rotation
-    const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
-    cam_vector = glm::rotate(cam_vector,
-                             _angle_h,
-                             UP);
+    const glm::vec3 Y_AXIS = glm::vec3(0.0f, 1.0f, 0.0f);
+    cam_vector = glm::rotate(cam_vector, _angle_h, Y_AXIS);
+    up = glm::rotate(up, _angle_h, Y_AXIS);
 
-    LookAt(_center + cam_vector, _center, UP);
+    glm::vec3 eye = _center + cam_vector;
+    LookAt(eye, _center, up);
 
     emit changed();
 }
