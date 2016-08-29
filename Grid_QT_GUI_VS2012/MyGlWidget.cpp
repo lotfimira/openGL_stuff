@@ -59,6 +59,8 @@ void MyGlWidget::paintGL()
     glVertex3f(s, s, z);
     glVertex3f(-s, s, z);
     glEnd();
+
+    _camera.printOrbitCamera();
 }
 
 void MyGlWidget::mousePressEvent(QMouseEvent * event)

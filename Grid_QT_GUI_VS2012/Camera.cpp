@@ -51,6 +51,19 @@ void printVector(const QString & name, const glm::vec3 & v)
         v.x, v.y, v.z);
 }
 
+void OrbitCamera::printOrbitCamera()
+{
+    printf("Orbit Camera\n");
+    printVector("center", _center);
+    printVector("look at", _look_at);
+    printVector("pos", _pos);
+    printVector("up", _up);
+    printf("radius %f\n", _radius);
+    printf("angle h %.1f\n", _angle_h);
+    printf("angle v %.1f\n", _angle_v);
+    printf("\n");
+}
+
 //-----------------------------------------------------------------------------
 void OrbitCamera::rotate(float h_rad, float v_rad)
 {
