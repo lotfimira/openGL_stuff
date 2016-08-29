@@ -64,15 +64,24 @@ void OrbitCamera::printOrbitCamera()
     printf("\n");
 }
 
+// normalize angle [0 , 2 PI]
+void normalizeAngle(float & angle)
+{
+    angle = fmod(angle, 2 * M_PI);
+
+    if(angle < 0)
+        angle += 2 * M_PI;
+}
+
 //-----------------------------------------------------------------------------
 void OrbitCamera::rotate(float h_rad, float v_rad)
 {
     // add rotation
-    _angle_h += h_rad;
-    _angle_h = fmod(_angle_h, 2 * M_PI); // normalize angle [0 , 2 PI]
+    _angle_h -= h_rad;
+    normalizeAngle(_angle_h);
 
     _angle_v += v_rad;
-    _angle_v = fmod(_angle_v, 2 * M_PI);
+    normalizeAngle(_angle_v);
 
     // cam vector from center to eye pos
     glm::vec3 cam_vector = _center;
