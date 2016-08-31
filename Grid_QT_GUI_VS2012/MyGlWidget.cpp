@@ -11,6 +11,9 @@ MyGlWidget::MyGlWidget(QWidget *parent) : QGLWidget(parent)
     QObject::connect(&_input,  SIGNAL(midDrag(int, int)), 
                      &_camera, SLOT(translate(int, int)));
 
+    QObject::connect(&_input,  SIGNAL(wheel(int)), 
+                     &_camera, SLOT(zoom(int)));
+
     QObject::connect(&_camera, SIGNAL(changed()),
                      this,     SLOT(onCameraChanged()));
 }
@@ -38,7 +41,7 @@ void MyGlWidget::resizeGL(int w, int h)
     _camera.Perspective(M_PI / 4.0f,  // fov
                         (float)w / (float)h, // aspect ratio
                         0.1f,   // near
-                        10.0f); // far
+                        1000.0f); // far
 }
 
 void MyGlWidget::paintGL()
@@ -79,6 +82,11 @@ void MyGlWidget::mouseReleaseEvent(QMouseEvent * event)
 void MyGlWidget::mouseMoveEvent(QMouseEvent * event)
 {
     _input.mouseMoveEvent(event);
+}
+
+void MyGlWidget::wheelEvent(QWheelEvent * event)
+{
+    _input.mouseWheelEvent(event);
 }
 
 void MyGlWidget::onCameraChanged()

@@ -74,4 +74,5 @@ public:
 public slots:
     void rotate(int x, int y);
     void translate(int x, int y);
+    void zoom(int delta);
 };

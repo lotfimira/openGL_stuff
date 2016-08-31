@@ -122,3 +122,13 @@ void OrbitCamera::rotate(float h_rad, float v_rad)
 
     emit changed();
 }
+
+//-----------------------------------------------------------------------------
+void OrbitCamera::zoom(int delta)
+{
+    float step = (((float)delta) / 8.0f) / 15.0f;
+    step = -step;
+
+    float radius = _radius + (_radius * 10.0f / 100.0f) * step;
+    setRadius(radius);
+}

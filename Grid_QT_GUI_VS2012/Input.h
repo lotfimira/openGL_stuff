@@ -14,6 +14,7 @@ private:
 signals:
     void leftDrag(int h_drag, int v_drag);
     void midDrag(int h_drag, int v_drag);
+    void wheel(int delta);
 
 public:
     Input();
@@ -23,4 +24,5 @@ public slots:
     void mousePressEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
+    void mouseWheelEvent(QWheelEvent * event);
 };

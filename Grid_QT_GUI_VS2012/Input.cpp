@@ -38,3 +38,9 @@ void Input::mouseMoveEvent(QMouseEvent * event)
 
     last_cursor_pos = event->pos();
 }
+
+void Input::mouseWheelEvent(QWheelEvent * event)
+{
+    int delta = event->delta();
+    emit wheel(delta);
+}
