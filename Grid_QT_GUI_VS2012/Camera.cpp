@@ -37,12 +37,29 @@ void Camera::GlLoadMatrices()
     glLoadMatrixf(glm::value_ptr(_view_mat));
 }
 
-void OrbitCamera::rotate(int h_rotation, int v_rotation)
+void OrbitCamera::rotate(int x, int y)
 {
-    float h_rad = ((float)h_rotation) * 2.0f * M_PI / 360.0f;
-    float v_rad = ((float)v_rotation) * 2.0f * M_PI / 360.0f;
+    float h_rad = ((float)x) * 2.0f * M_PI / 360.0f;
+    float v_rad = ((float)y) * 2.0f * M_PI / 360.0f;
 
     rotate(h_rad, v_rad);
+}
+
+//-----------------------------------------------------------------------------
+void OrbitCamera::translate(int x, int y)
+{
+    GLint vport[4];
+    glGetIntegerv(GL_VIEWPORT, vport);
+
+    glm::ivec4 viewport = glm::ivec4(vport[0], vport[1], vport[2], vport[3]);
+    glm::vec3 center_screen = glm::project(_center, _view_mat, _proj_mat, viewport);
+
+    center_screen.x -= x;
+    center_screen.y += y;
+
+    glm::vec3 center_world = glm::unProject(center_screen, _view_mat, _proj_mat, viewport);
+
+    setCenter(center_world);
 }
 
 void printVector(const QString & name, const glm::vec3 & v)

@@ -52,6 +52,8 @@ public:
         _center = center;
 
         LookAt(new_pos, _center, _up);
+
+        emit changed();
     }
 
     void setRadius(float radius)
@@ -61,6 +63,8 @@ public:
         _radius = radius;
 
         LookAt(new_pos, _center, _up);
+
+        emit changed();
     }
 
     void rotate(float h_rotation, float v_rotation);
@@ -68,5 +72,6 @@ public:
     void printOrbitCamera();
 
 public slots:
-    void rotate(int h_rotation, int v_rotation);
+    void rotate(int x, int y);
+    void translate(int x, int y);
 };

@@ -24,14 +24,17 @@ void Input::mouseReleaseEvent(QMouseEvent * event)
 
 void Input::mouseMoveEvent(QMouseEvent * event)
 {
-    if(event->buttons() & Qt::LeftButton)
-    {
-        QPoint pos = event->pos();
-        int h_drag = pos.x() - last_cursor_pos.x();
-        int v_drag = pos.y() - last_cursor_pos.y();
+    QPoint pos = event->pos();
+    int h_drag = pos.x() - last_cursor_pos.x();
+    int v_drag = pos.y() - last_cursor_pos.y();
 
-        emit Drag(h_drag, v_drag);
-    }
+    Qt::MouseButtons btns = event->buttons();
+
+    if(btns & Qt::LeftButton)
+        emit leftDrag(h_drag, v_drag);
+
+    if(btns & Qt::MiddleButton)
+        emit midDrag(h_drag, v_drag);
 
     last_cursor_pos = event->pos();
 }

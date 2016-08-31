@@ -12,7 +12,8 @@ private:
     QPoint last_cursor_pos;
 
 signals:
-    void Drag(int h_drag, int v_drag);
+    void leftDrag(int h_drag, int v_drag);
+    void midDrag(int h_drag, int v_drag);
 
 public:
     Input();

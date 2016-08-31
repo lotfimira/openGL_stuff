@@ -5,8 +5,11 @@
 
 MyGlWidget::MyGlWidget(QWidget *parent) : QGLWidget(parent)
 {
-    QObject::connect(&_input,  SIGNAL(Drag(int, int)), 
+    QObject::connect(&_input,  SIGNAL(leftDrag(int, int)), 
                      &_camera, SLOT(rotate(int, int)));
+
+    QObject::connect(&_input,  SIGNAL(midDrag(int, int)), 
+                     &_camera, SLOT(translate(int, int)));
 
     QObject::connect(&_camera, SIGNAL(changed()),
                      this,     SLOT(onCameraChanged()));
