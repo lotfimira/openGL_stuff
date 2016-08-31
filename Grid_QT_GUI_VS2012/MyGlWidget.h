@@ -26,6 +26,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void wheelEvent(QWheelEvent * event);
+    void keyPressEvent(QKeyEvent * event);
+    void centerOnScene();
 
 protected slots:
     void onCameraChanged();

@@ -16,6 +16,8 @@ MyGlWidget::MyGlWidget(QWidget *parent) : QGLWidget(parent)
 
     QObject::connect(&_camera, SIGNAL(changed()),
                      this,     SLOT(onCameraChanged()));
+
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 MyGlWidget::~MyGlWidget()
@@ -89,7 +91,24 @@ void MyGlWidget::wheelEvent(QWheelEvent * event)
     _input.mouseWheelEvent(event);
 }
 
+void MyGlWidget::keyPressEvent(QKeyEvent * event)
+{
+    if(event->key() == Qt::Key_Z)
+    {
+        centerOnScene();
+    }
+    else
+    {
+        QGLWidget::keyPressEvent(event);
+    }
+}
+
 void MyGlWidget::onCameraChanged()
 {
     updateGL();
+}
+
+void MyGlWidget::centerOnScene()
+{
+    _camera.setCenter(glm::vec3(0,0,0));
 }
