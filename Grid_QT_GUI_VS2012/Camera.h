@@ -59,7 +59,7 @@ public:
     void setRadius(float radius)
     {
         glm::vec3 cam_unit_vector = glm::normalize(_pos - _center);
-        glm::vec3 new_pos = cam_unit_vector * radius;
+        glm::vec3 new_pos = _center + cam_unit_vector * radius;
         _radius = radius;
 
         LookAt(new_pos, _center, _up);
