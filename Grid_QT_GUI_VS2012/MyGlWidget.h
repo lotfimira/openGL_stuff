@@ -5,6 +5,7 @@
 #include <QTimer>
 #include "Camera.h"
 #include "Input.h"
+#include "MeshList.h"
 
 class MyGlWidget : public QGLWidget
 {
@@ -13,6 +14,7 @@ Q_OBJECT
 private:
     OrbitCamera _camera;
     Input _input;
+    MeshList _mesh_list;
 
 public:
     MyGlWidget(QWidget *parent);
