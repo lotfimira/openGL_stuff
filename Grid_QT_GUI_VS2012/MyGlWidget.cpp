@@ -52,7 +52,7 @@ void MyGlWidget::paintGL()
 
     _camera.GlLoadMatrices();
 
-    _mesh_list.draw();
+    MeshList::instance()->draw();
 
     _camera.printOrbitCamera();
 }

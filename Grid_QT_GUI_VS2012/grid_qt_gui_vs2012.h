@@ -14,6 +14,9 @@ public:
 
 private:
     Ui::Grid_QT_GUI_VS2012Class ui;
+
+    void prepareScene();
+    void cleanupScene();
 };
 
 #endif // GRID_QT_GUI_VS2012_H

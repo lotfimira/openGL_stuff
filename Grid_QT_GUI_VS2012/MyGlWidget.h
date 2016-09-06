@@ -1,11 +1,12 @@
 #pragma once
 
-#include <QGLWidget>
-#include <QMouseEvent>
-#include <QTimer>
 #include "Camera.h"
 #include "Input.h"
 #include "MeshList.h"
+
+#include <QGLWidget>
+#include <QMouseEvent>
+#include <QTimer>
 
 class MyGlWidget : public QGLWidget
 {
@@ -14,7 +15,6 @@ Q_OBJECT
 private:
     OrbitCamera _camera;
     Input _input;
-    MeshList _mesh_list;
 
 public:
     MyGlWidget(QWidget *parent);

@@ -1,6 +1,16 @@
 #include "MeshList.h"
 #include <GL/glew.h>
 
+MeshList * MeshList::_instance = 0;
+
+MeshList * MeshList::instance()
+{
+    if(!_instance)
+        _instance = new MeshList();
+
+    return _instance;
+}
+
 void drawBlueQuad()
 {
     // no lighting
@@ -20,26 +30,15 @@ void drawBlueQuad()
     glEnd();
 }
 
-void drawGroundPlane()
-{
-    // no lighting
-    glDisable(GL_LIGHTING);
-
-    // white
-    glColor4f(1, 1, 1, 1);
-
-    // quad facing the camera
-    int s = 100;
-    int y = 0;
-    glBegin(GL_QUADS);
-    glVertex3f(s, y, s);
-    glVertex3f(s, y, -s);
-    glVertex3f(-s, y, -s);
-    glVertex3f(-s, y, s);
-    glEnd();
-}
-
 void MeshList::draw()
 {
-    drawGroundPlane();
+    for(Mesh * mesh : _meshes)
+    {
+        mesh->draw();
+    }
+}
+
+void MeshList::addMesh(Mesh * mesh)
+{
+    _meshes.push_back(mesh);
 }

@@ -182,8 +182,10 @@
     <ClCompile Include="grid_qt_gui_vs2012.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshList.cpp" />
     <ClCompile Include="MyGlWidget.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="grid_qt_gui_vs2012.h">
@@ -226,7 +228,9 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshList.h" />
+    <ClInclude Include="Texture.h" />
     <CustomBuild Include="Camera.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing Camera.h...</Message>
