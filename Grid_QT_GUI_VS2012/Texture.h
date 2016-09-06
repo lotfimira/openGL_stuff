@@ -7,13 +7,17 @@
 class Texture2D
 {
 private:
-    QString filename;
-    GLuint id;
-    int width;
-    int height;
+    QString _filename;
+    GLuint _id;
+    int _width;
+    int _height;
+
+    GLint _filter;
 
 public:
-    Texture2D(const QString & filename);
+    Texture2D();
     virtual ~Texture2D();
-    void reset();
+
+    void clean();
+    void load(const QString & filename);
 };

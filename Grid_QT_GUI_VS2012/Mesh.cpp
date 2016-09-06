@@ -28,6 +28,16 @@ Texture Mesh::loadTexture(const QString & filename)
     return texture;
 }*/
 
+GroundPlaneAnisotropic::GroundPlaneAnisotropic()
+{
+    _texture2D.load("E:\\mei.png");
+}
+
+GroundPlaneAnisotropic::~GroundPlaneAnisotropic()
+{
+
+}
+
 
 void GroundPlaneAnisotropic::draw()
 {

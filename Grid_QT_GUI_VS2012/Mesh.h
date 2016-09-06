@@ -13,7 +13,10 @@ class GroundPlaneAnisotropic : public Mesh
 {
 private:
     //AnisoMaterial _material;
+    Texture2D _texture2D;
 
 public:
+    GroundPlaneAnisotropic();
+    ~GroundPlaneAnisotropic();
     void draw();
 };
