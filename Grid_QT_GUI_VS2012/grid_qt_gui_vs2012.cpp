@@ -9,10 +9,10 @@ Grid_QT_GUI_VS2012::Grid_QT_GUI_VS2012(QWidget *parent)
 {
     ui.setupUi(this);
 
-    prepareScene();
-
     QWidget * c = centralWidget();
     c->layout()->addWidget(new MyGlWidget(this));
+
+    prepareScene();
 }
 
 Grid_QT_GUI_VS2012::~Grid_QT_GUI_VS2012()

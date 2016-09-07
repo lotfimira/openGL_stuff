@@ -54,7 +54,7 @@ void MyGlWidget::paintGL()
 
     MeshList::instance()->draw();
 
-    _camera.printOrbitCamera();
+    //_camera.printOrbitCamera();
 }
 
 void MyGlWidget::mousePressEvent(QMouseEvent * event)

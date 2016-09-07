@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "GlUtils.h"
 #include <QImage>
 #include <QFileInfo>
 #include <QGLWidget>
@@ -16,6 +17,8 @@ Texture2D::~Texture2D()
 
 void Texture2D::load(const QString & filename)
 {
+    //glActiveTexture(GL_TEXTURE0);
+
     clean();
 
     QFileInfo file_info(filename);
@@ -25,27 +28,28 @@ void Texture2D::load(const QString & filename)
         return;
     }
 
-    glEnable(GL_TEXTURE_2D); // Enable texturing
+    QImage image(filename);
+    image = image.convertToFormat(QImage::Format_RGBA8888);
 
-    glGenTextures(1, &_id); // Obtain an id for the texture
-    glBindTexture(GL_TEXTURE_2D, _id); // Set as the current texture
+    uchar * bits = image.bits();
+    for(int i = 0; i < 128; ++i)
+    {
+        printf("%d ", bits[i]);
+    }
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    GLuint id;
+    glGenTextures(1, &id); // ??  why can't i use _id member directly here
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
 
-    QImage im(filename);
-    QImage tex = QGLWidget::convertToGLFormat(im);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width(), tex.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _filter);
-
-    glDisable(GL_TEXTURE_2D);
-
+    _id = id;
     _filename = filename;
-    _width = tex.width();
-    _height = tex.height();
+    _width = image.width();
+    _height = image.height();
 }
 
 void Texture2D::clean()

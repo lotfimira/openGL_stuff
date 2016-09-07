@@ -228,6 +228,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GlUtils.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshList.h" />
     <ClInclude Include="Texture.h" />

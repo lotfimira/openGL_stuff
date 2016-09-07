@@ -20,4 +20,6 @@ public:
 
     void clean();
     void load(const QString & filename);
+
+    GLuint id() {return _id;}
 };
