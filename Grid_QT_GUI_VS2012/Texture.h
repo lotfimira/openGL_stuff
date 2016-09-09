@@ -13,6 +13,7 @@ private:
     int _height;
 
     GLint _filter;
+    GLint _wrap;
 
 public:
     Texture2D();

@@ -5,7 +5,7 @@
 
 GroundPlaneAnisotropic::GroundPlaneAnisotropic()
 {
-    _texture2D.load("E:\\lena_color.gif");
+    _texture2D.load("E:\\4x4grid.png");
 }
 
 GroundPlaneAnisotropic::~GroundPlaneAnisotropic()
@@ -31,18 +31,19 @@ void GroundPlaneAnisotropic::draw()
     // quad facing the camera
     int s = 100;
     int y = 0;
+    int nb_repeat = 20;
     glBegin(GL_QUADS);
 
-    glTexCoord2f(0,0);
+    glTexCoord2f(0, 0);
     glVertex3f(s, y, s);
 
-    glTexCoord2f(0,1);
+    glTexCoord2f(0, nb_repeat);
     glVertex3f(s, y, -s);
 
-    glTexCoord2f(1,1);
+    glTexCoord2f(nb_repeat, nb_repeat);
     glVertex3f(-s, y, -s);
 
-    glTexCoord2f(1,0);
+    glTexCoord2f(nb_repeat, 0);
     glVertex3f(-s, y, s);
 
     glEnd();

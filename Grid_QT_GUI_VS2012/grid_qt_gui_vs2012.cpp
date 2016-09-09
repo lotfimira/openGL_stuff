@@ -2,7 +2,6 @@
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
-#include "MyGlWidget.h"
 
 Grid_QT_GUI_VS2012::Grid_QT_GUI_VS2012(QWidget *parent)
     : QMainWindow(parent)
@@ -10,7 +9,8 @@ Grid_QT_GUI_VS2012::Grid_QT_GUI_VS2012(QWidget *parent)
     ui.setupUi(this);
 
     QWidget * c = centralWidget();
-    c->layout()->addWidget(new MyGlWidget(this));
+    _gl_widget = new MyGlWidget(this);
+    c->layout()->addWidget(_gl_widget);
 
     prepareScene();
 }
@@ -22,6 +22,8 @@ Grid_QT_GUI_VS2012::~Grid_QT_GUI_VS2012()
 
 void Grid_QT_GUI_VS2012::prepareScene()
 {
+    _gl_widget->makeCurrent();
+
     GroundPlaneAnisotropic * groundPlaneAnisotropic = new GroundPlaneAnisotropic();
     MeshList::instance()->addMesh(groundPlaneAnisotropic);
 }

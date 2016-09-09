@@ -57,23 +57,40 @@ void MyGlWidget::paintGL()
     //_camera.printOrbitCamera();
 }
 
+//-----------------------------------------------------------------------------
 void MyGlWidget::mousePressEvent(QMouseEvent * event)
 {
+    // the next instructions will use OpenGL so make
+    // the windows openGL context current
+    makeCurrent();
+
     _input.mousePressEvent(event);
 }
 
 void MyGlWidget::mouseReleaseEvent(QMouseEvent * event)
 {
+    // the next instructions will use OpenGL so make
+    // the windows openGL context current
+    makeCurrent();
+
     _input.mouseReleaseEvent(event);
 }
 
 void MyGlWidget::mouseMoveEvent(QMouseEvent * event)
 {
+    // the next instructions will use OpenGL so make
+    // the windows openGL context current
+    makeCurrent();
+
     _input.mouseMoveEvent(event);
 }
 
 void MyGlWidget::wheelEvent(QWheelEvent * event)
 {
+    // the next instructions will use OpenGL so make
+    // the windows openGL context current
+    makeCurrent();
+
     _input.mouseWheelEvent(event);
 }
 

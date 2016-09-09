@@ -2,6 +2,7 @@
 #define GRID_QT_GUI_VS2012_H
 
 #include <QtWidgets/QMainWindow>
+#include "MyGlWidget.h"
 #include "ui_grid_qt_gui_vs2012.h"
 
 class Grid_QT_GUI_VS2012 : public QMainWindow
@@ -14,6 +15,7 @@ public:
 
 private:
     Ui::Grid_QT_GUI_VS2012Class ui;
+    MyGlWidget * _gl_widget;
 
     void prepareScene();
     void cleanupScene();
