@@ -17,7 +17,7 @@ private:
     Input _input;
 
 public:
-    MyGlWidget(QWidget *parent);
+    MyGlWidget(const QGLFormat & gl_format, QWidget *parent);
     virtual ~MyGlWidget();
 
 protected:
@@ -30,6 +30,9 @@ protected:
     void wheelEvent(QWheelEvent * event);
     void keyPressEvent(QKeyEvent * event);
     void centerOnScene();
+
+    // THIS SHOULD NOT BE HERE
+    void prepareScene();
 
 protected slots:
     void onCameraChanged();

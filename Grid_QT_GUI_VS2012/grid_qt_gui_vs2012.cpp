@@ -8,28 +8,17 @@ Grid_QT_GUI_VS2012::Grid_QT_GUI_VS2012(QWidget *parent)
 {
     ui.setupUi(this);
 
-    QWidget * c = centralWidget();
-    _gl_widget = new MyGlWidget(this);
-    c->layout()->addWidget(_gl_widget);
+    QGLFormat gl_format;
+    gl_format.setVersion(4,2);
+    gl_format.setProfile(QGLFormat::CompatibilityProfile);
 
-    prepareScene();
+    _gl_widget = new MyGlWidget(gl_format, this);
+
+    QWidget * c = centralWidget();
+    c->layout()->addWidget(_gl_widget);
 }
 
 Grid_QT_GUI_VS2012::~Grid_QT_GUI_VS2012()
 {
-    cleanupScene();
-}
-
-void Grid_QT_GUI_VS2012::prepareScene()
-{
-    _gl_widget->makeCurrent();
-
-    GroundPlaneAnisotropic * groundPlaneAnisotropic = new GroundPlaneAnisotropic();
-    MeshList::instance()->addMesh(groundPlaneAnisotropic);
-}
-
-void Grid_QT_GUI_VS2012::cleanupScene()
-{
-
 }
 

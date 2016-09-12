@@ -3,7 +3,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-MyGlWidget::MyGlWidget(QWidget *parent) : QGLWidget(parent)
+MyGlWidget::MyGlWidget(const QGLFormat & format, QWidget *parent) : 
+            QGLWidget(format, parent)
 {
     QObject::connect(&_input,  SIGNAL(leftDrag(int, int)), 
                      &_camera, SLOT(rotate(int, int)));
@@ -26,6 +27,21 @@ MyGlWidget::~MyGlWidget()
 
 void MyGlWidget::initializeGL()
 {
+    if (glewInit() != GLEW_OK)
+    {
+        printf("ERROR: failed to initialize GLEW\n");
+        getchar();
+        exit(1);
+    }
+
+    printf("Running on a %s\nfrom %s\nOpenGL version %s\n",
+           (const char *)(glGetString(GL_RENDERER)),
+           (const char *)(glGetString(GL_VENDOR)),
+           (const char *)(glGetString(GL_VERSION)));
+
+    // THIS SHOULD NOT BE HERE
+    prepareScene();
+
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
 
@@ -114,4 +130,11 @@ void MyGlWidget::onCameraChanged()
 void MyGlWidget::centerOnScene()
 {
     _camera.setCenter(glm::vec3(0,0,0));
+}
+
+// THIS SHOULD NOT BE HERE
+void MyGlWidget::prepareScene()
+{
+    GroundPlaneAnisotropic * groundPlaneAnisotropic = new GroundPlaneAnisotropic();
+    MeshList::instance()->addMesh(groundPlaneAnisotropic);
 }
