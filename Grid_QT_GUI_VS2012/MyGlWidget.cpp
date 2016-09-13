@@ -48,6 +48,8 @@ void MyGlWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
+    glEnable(GL_MULTISAMPLE);
+
     _camera.setCenter(glm::vec3(0, 0, 0));
     _camera.setRadius(3.0f);
 }
