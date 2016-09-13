@@ -12,10 +12,12 @@ private:
     int _width;
     int _height;
 
-    GLint _filter;
+    GLint _mag_filter;
+    GLint _min_filter;
     GLint _wrap;
 
     bool _anisotropic;
+    bool _mipmaps;
 
 public:
     Texture2D();
@@ -27,4 +29,5 @@ public:
     GLuint id() {return _id;}
 
     void setAnisotropic(bool val);
+    void setMipmaps(bool val);
 };

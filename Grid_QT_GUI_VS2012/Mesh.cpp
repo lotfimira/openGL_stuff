@@ -5,6 +5,7 @@
 
 GroundPlaneAnisotropic::GroundPlaneAnisotropic()
 {
+    _texture2D.setMipmaps(true);
     _texture2D.setAnisotropic(true);
     _texture2D.load("E:\\4x4grid.png");
 }
