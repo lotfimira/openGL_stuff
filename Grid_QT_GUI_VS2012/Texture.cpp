@@ -59,6 +59,9 @@ void Texture2D::load(const QString & filename)
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
 
+    glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
     _id = id;
     _filename = filename;
     _width = image.width();
