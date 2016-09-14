@@ -2,6 +2,44 @@
 #include "GlUtils.h"
 #include <QImage>
 #include <QGLWidget>
+#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
+
+
+GLuint Mesh::createBuffer(GLenum target, GLsizeiptr size, const GLvoid * data)
+{
+    CLEAR_GL_ERRORS
+
+    GLuint buffer = 0;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(target, buffer);
+    glBufferData(target, size, data, GL_STATIC_DRAW);
+    glBindBuffer(target, 0);
+
+    CHECK_GL_ERRORS;
+
+    return buffer;
+}
+
+GLuint Mesh::createArrayBuffer(GLsizeiptr size, const GLvoid * data)
+{
+    return createBuffer(GL_ARRAY_BUFFER, size, data);
+}
+
+GLuint Mesh::createElementArrayBuffer(GLsizeiptr size, const GLvoid * data)
+{
+    return createBuffer(GL_ELEMENT_ARRAY_BUFFER, size, data);
+}
+
+void Mesh::deleteBuffer(GLuint & buffer)
+{
+    if(glIsBuffer(buffer))
+    {
+        glDeleteBuffers(1, &buffer);
+    }
+
+    buffer = 0;
+}
 
 GroundPlaneAnisotropic::GroundPlaneAnisotropic()
 {
@@ -54,4 +92,80 @@ void GroundPlaneAnisotropic::draw()
     glDisable(GL_TEXTURE_2D);
 
     CHECK_GL_ERRORS
+}
+
+//-----------------------------------------------------------------------------
+GridAnisotropic::GridAnisotropic() : 
+    _pos_buffer(0), _index_buffer(0), _color_buffer(0), _tex_coord_buffer(0)
+{
+    _texture2D.setMipmaps(true);
+    _texture2D.setAnisotropic(true);
+    _texture2D.load("E:\\4x4grid.png");
+
+    // create vertices
+    int size = 100;
+    QVector<glm::vec3> pos;
+    for(int i = 0; i < size; ++i)
+    {
+        for(int j = 0; j < size; ++j)
+        {
+            glm::vec3 p(i, j, 0);
+            pos.push_back(p);
+        }
+    }
+
+    // create colors
+
+    // create texture coordinates
+
+    // create triangles indices
+    QVector<GLuint> indices;
+    for(int j = 0; j < size - 1; ++j)
+    {
+        int base_index = size * j;
+
+        for(int i = 0; i < size - 1; ++i)
+        {
+            // 1st triangle of quad
+            int idx0 = base_index;
+            int idx1 = base_index + 1;
+            int idx2 = base_index + 1 + size;
+
+            indices.push_back(idx0);
+            indices.push_back(idx1);
+            indices.push_back(idx2);
+
+            // 2nd triangle of quad
+            idx0 = base_index + size;
+            idx1 = base_index;
+            idx2 = base_index + 1 + size;
+
+            indices.push_back(idx0);
+            indices.push_back(idx1);
+            indices.push_back(idx2);
+
+            base_index++;
+        }
+    }
+
+    // load buffer in OpenGL
+    _pos_buffer = createArrayBuffer(pos.size() * sizeof(GLfloat), &pos[0]);
+    _index_buffer = createElementArrayBuffer(indices.size() * sizeof(GLuint), &indices[0]);
+
+    _vert_count = pos.size() / 3;
+}
+
+GridAnisotropic::~GridAnisotropic()
+{
+    deleteBuffer(_pos_buffer);
+    deleteBuffer(_index_buffer);
+    deleteBuffer(_color_buffer);
+    deleteBuffer(_tex_coord_buffer);
+
+    _vert_count = 0;
+}
+
+void GridAnisotropic::draw()
+{
+
 }
