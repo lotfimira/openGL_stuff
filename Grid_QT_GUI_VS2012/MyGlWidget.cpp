@@ -137,9 +137,9 @@ void MyGlWidget::centerOnScene()
 // THIS SHOULD NOT BE HERE
 void MyGlWidget::prepareScene()
 {
-    GroundPlaneAnisotropic * groundPlaneAnisotropic = new GroundPlaneAnisotropic();
-    MeshList::instance()->addMesh(groundPlaneAnisotropic);
+    //GroundPlaneAnisotropic * groundPlaneAnisotropic = new GroundPlaneAnisotropic();
+    //MeshList::instance()->addMesh(groundPlaneAnisotropic);
 
-    //GridAnisotropic * grid_anisotropic = new GridAnisotropic();
-    //MeshList::instance()->addMesh(grid_anisotropic);
+    GridAnisotropic * grid_anisotropic = new GridAnisotropic();
+    MeshList::instance()->addMesh(grid_anisotropic);
 }

@@ -35,6 +35,7 @@ private:
     GLuint _color_buffer;
     GLuint _tex_coord_buffer;
     int _vert_count;
+    int _index_count;
 
 public:
     GridAnisotropic();

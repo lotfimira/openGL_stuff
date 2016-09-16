@@ -109,7 +109,7 @@ GridAnisotropic::GridAnisotropic() :
     {
         for(int j = 0; j < size; ++j)
         {
-            glm::vec3 p(i, j, 0);
+            glm::vec3 p(i - size / 2, 0, j - size / 2);
             pos.push_back(p);
         }
     }
@@ -149,10 +149,11 @@ GridAnisotropic::GridAnisotropic() :
     }
 
     // load buffer in OpenGL
-    _pos_buffer = createArrayBuffer(pos.size() * sizeof(GLfloat), &pos[0]);
+    _pos_buffer = createArrayBuffer(pos.size() * sizeof(glm::vec3), &pos[0]);
     _index_buffer = createElementArrayBuffer(indices.size() * sizeof(GLuint), &indices[0]);
 
-    _vert_count = pos.size() / 3;
+    _vert_count = pos.size();
+    _index_count = indices.size();
 }
 
 GridAnisotropic::~GridAnisotropic()
@@ -167,5 +168,22 @@ GridAnisotropic::~GridAnisotropic()
 
 void GridAnisotropic::draw()
 {
+    CLEAR_GL_ERRORS;
 
+    glBindBuffer(GL_ARRAY_BUFFER, _pos_buffer);
+    glVertexPointer(3, GL_FLOAT, 0, NULL);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    CHECK_GL_ERRORS;
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
+    CHECK_GL_ERRORS;
+
+    //glDrawArrays(GL_POINTS, 0, _vert_count);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glDrawElements(GL_TRIANGLES, _index_count, GL_UNSIGNED_INT, 0);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
