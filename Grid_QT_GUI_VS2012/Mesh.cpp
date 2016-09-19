@@ -115,6 +115,15 @@ GridAnisotropic::GridAnisotropic() :
     }
 
     // create colors
+    QVector<glm::vec4> colors;
+    for(int i = 0; i < size; ++i)
+    {
+        for(int j = 0; j < size; ++j)
+        {
+            glm::vec4 p((float)i / (float)size , 0, (float)j / (float)size, 0);
+            colors.push_back(p);
+        }
+    }
 
     // create texture coordinates
 
@@ -150,6 +159,7 @@ GridAnisotropic::GridAnisotropic() :
 
     // load buffer in OpenGL
     _pos_buffer = createArrayBuffer(pos.size() * sizeof(glm::vec3), &pos[0]);
+    _color_buffer = createArrayBuffer(colors.size() * sizeof(glm::vec4), &colors[0]);
     _index_buffer = createElementArrayBuffer(indices.size() * sizeof(GLuint), &indices[0]);
 
     _vert_count = pos.size();
@@ -175,15 +185,21 @@ void GridAnisotropic::draw()
     glEnableClientState(GL_VERTEX_ARRAY);
     CHECK_GL_ERRORS;
 
+    glBindBuffer(GL_ARRAY_BUFFER, _color_buffer);
+    glColorPointer(4, GL_FLOAT, 0, NULL);
+    glEnableClientState(GL_COLOR_ARRAY);
+    CHECK_GL_ERRORS;
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
     CHECK_GL_ERRORS;
 
-    //glDrawArrays(GL_POINTS, 0, _vert_count);
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     glDrawElements(GL_TRIANGLES, _index_count, GL_UNSIGNED_INT, 0);
     glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
