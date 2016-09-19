@@ -126,6 +126,15 @@ GridAnisotropic::GridAnisotropic() :
     }
 
     // create texture coordinates
+    QVector<glm::vec2> tex_coords;
+    for(int i = 0; i < size; ++i)
+    {
+        for(int j = 0; j < size; ++j)
+        {
+            glm::vec2 coord(i, j);
+            tex_coords.push_back(coord);
+        }
+    }
 
     // create triangles indices
     QVector<GLuint> indices;
@@ -160,6 +169,7 @@ GridAnisotropic::GridAnisotropic() :
     // load buffer in OpenGL
     _pos_buffer = createArrayBuffer(pos.size() * sizeof(glm::vec3), &pos[0]);
     _color_buffer = createArrayBuffer(colors.size() * sizeof(glm::vec4), &colors[0]);
+    _tex_coord_buffer = createArrayBuffer(tex_coords.size() * sizeof(glm::vec2), &tex_coords[0]);
     _index_buffer = createElementArrayBuffer(indices.size() * sizeof(GLuint), &indices[0]);
 
     _vert_count = pos.size();
@@ -180,6 +190,9 @@ void GridAnisotropic::draw()
 {
     CLEAR_GL_ERRORS;
 
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, _texture2D.id());
+
     glBindBuffer(GL_ARRAY_BUFFER, _pos_buffer);
     glVertexPointer(3, GL_FLOAT, 0, NULL);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -190,16 +203,25 @@ void GridAnisotropic::draw()
     glEnableClientState(GL_COLOR_ARRAY);
     CHECK_GL_ERRORS;
 
+    glBindBuffer(GL_ARRAY_BUFFER, _tex_coord_buffer);
+    glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    CHECK_GL_ERRORS;
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
     CHECK_GL_ERRORS;
 
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     glDrawElements(GL_TRIANGLES, _index_count, GL_UNSIGNED_INT, 0);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
