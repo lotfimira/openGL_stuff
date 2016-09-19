@@ -109,7 +109,9 @@ GridAnisotropic::GridAnisotropic() :
     {
         for(int j = 0; j < size; ++j)
         {
-            glm::vec3 p(i - size / 2, 0, j - size / 2);
+            float z = (2.0f * sin(20.0f * (float) i / (float)size)) + 
+                      (2.0f * sin(20.0f * (float) j / (float)size));
+            glm::vec3 p(i - size / 2, z, j - size / 2);
             pos.push_back(p);
         }
     }
