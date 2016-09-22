@@ -4,6 +4,7 @@
 #include <QGLWidget>
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 GLuint Mesh::createBuffer(GLenum target, GLsizeiptr size, const GLvoid * data)
@@ -53,7 +54,7 @@ GroundPlaneAnisotropic::~GroundPlaneAnisotropic()
 
 }
 
-void GroundPlaneAnisotropic::draw()
+void GroundPlaneAnisotropic::draw(const Camera & camera)
 {
     CLEAR_GL_ERRORS
 
@@ -188,7 +189,7 @@ GridAnisotropic::~GridAnisotropic()
     _vert_count = 0;
 }
 
-void GridAnisotropic::draw()
+void GridAnisotropic::draw(const Camera & camera)
 {
     CLEAR_GL_ERRORS;
 
@@ -226,4 +227,54 @@ void GridAnisotropic::draw()
 
     glDisable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+ShadedGridAnisotropic::ShadedGridAnisotropic()
+{
+    QOpenGLShader vs(QOpenGLShader::Vertex);
+    if(!vs.compileSourceFile("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_vertex.glsl"))
+    {
+        printf("%s\n", vs.log().toStdString().c_str());
+        return;
+    }
+
+    QOpenGLShader fs(QOpenGLShader::Fragment);
+    if(!fs.compileSourceFile("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_fragment.glsl"))
+    {
+        printf("%s\n", fs.log().toStdString().c_str());
+        return;
+    }
+
+    if(!_program.addShader(&vs))
+    {
+        printf("%s\n", _program.log().toStdString().c_str());
+        return;
+    }
+    if(!_program.addShader(&fs))
+    {
+        printf("%s\n", _program.log().toStdString().c_str());
+        return;
+    }
+    if(!_program.link())
+    {
+        printf("%s\n", _program.log().toStdString().c_str());
+        return;
+    }
+}
+
+ShadedGridAnisotropic::~ShadedGridAnisotropic()
+{
+
+}
+
+void ShadedGridAnisotropic::draw(const Camera & camera)
+{
+    _program.bind();
+
+    // TODO: is this class caching the location of uniforms and attribute
+    // so it does not have to do a get every time
+    glm::mat4 mvp = camera.mvpMat();
+    _program.setUniformValueArray("mvp_mat", glm::value_ptr(mvp));
+
+    _program.release();
 }

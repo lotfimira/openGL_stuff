@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Texture.h"
+#include "Camera.h"
 #include <QString>
+#include <QOpenGLShaderProgram>
 
 class Mesh
 {
@@ -12,7 +14,8 @@ protected:
     void deleteBuffer(GLuint & buffer);
 
 public:
-    virtual void draw() = 0;
+    virtual void draw(const Camera &) = 0;
+    virtual ~Mesh(){}
 };
 
 class GroundPlaneAnisotropic : public Mesh
@@ -23,7 +26,7 @@ private:
 public:
     GroundPlaneAnisotropic();
     ~GroundPlaneAnisotropic();
-    void draw();
+    void draw(const Camera &);
 };
 
 class GridAnisotropic : public Mesh
@@ -39,6 +42,17 @@ private:
 
 public:
     GridAnisotropic();
-    ~GridAnisotropic();
-    void draw();
+    virtual ~GridAnisotropic();
+    virtual void draw(const Camera &);
+};
+
+class ShadedGridAnisotropic : public GridAnisotropic
+{
+private:
+    QOpenGLShaderProgram _program;
+
+public:
+    ShadedGridAnisotropic();
+    virtual ~ShadedGridAnisotropic();
+    virtual void draw(const Camera &);
 };

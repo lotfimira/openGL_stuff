@@ -37,6 +37,12 @@ void Camera::GlLoadMatrices()
     glLoadMatrixf(glm::value_ptr(_view_mat));
 }
 
+glm::mat4 Camera::mvpMat() const
+{
+    return _proj_mat *_view_mat;
+}
+
+//-----------------------------------------------------------------------------
 void OrbitCamera::rotate(int x, int y)
 {
     float h_rad = ((float)x) * 2.0f * M_PI / 360.0f;

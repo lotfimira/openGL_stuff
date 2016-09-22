@@ -11,6 +11,6 @@ private:
 
 public:
     static MeshList * instance();
-    void draw();
+    void draw(const Camera &);
     void addMesh(Mesh *);
 };

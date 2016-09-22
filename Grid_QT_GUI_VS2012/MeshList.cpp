@@ -30,11 +30,11 @@ void drawBlueQuad()
     glEnd();
 }
 
-void MeshList::draw()
+void MeshList::draw(const Camera & camera)
 {
     for(Mesh * mesh : _meshes)
     {
-        mesh->draw();
+        mesh->draw(camera);
     }
 }
 

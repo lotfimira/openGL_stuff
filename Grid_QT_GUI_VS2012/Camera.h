@@ -29,6 +29,8 @@ public:
     void Frustum(float left, float right, float bottom, float top, float near, float far);
     void GlLoadMatrices();
 
+    glm::mat4 mvpMat() const;
+
 signals:
     void changed();
 };
