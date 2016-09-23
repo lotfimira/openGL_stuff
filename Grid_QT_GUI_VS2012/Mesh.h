@@ -31,7 +31,7 @@ public:
 
 class GridAnisotropic : public Mesh
 {
-private:
+protected:
     Texture2D _texture2D;
     GLuint _pos_buffer;
     GLuint _index_buffer; // indexed geometry

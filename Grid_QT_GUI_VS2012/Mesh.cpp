@@ -123,7 +123,7 @@ GridAnisotropic::GridAnisotropic() :
     {
         for(int j = 0; j < size; ++j)
         {
-            glm::vec4 p((float)i / (float)size , 0, (float)j / (float)size, 0);
+            glm::vec4 p((float)i / (float)size , 0, (float)j / (float)size, 1);
             colors.push_back(p);
         }
     }
@@ -245,13 +245,51 @@ ShadedGridAnisotropic::~ShadedGridAnisotropic()
 
 void ShadedGridAnisotropic::draw(const Camera & camera)
 {
-    /*
+    CLEAR_GL_ERRORS
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, _texture2D.id());
+
     _program.bind();
 
     // TODO: is this class caching the location of uniforms and attribute
     // so it does not have to do a get every time
     glm::mat4 mvp = camera.mvpMat();
-    _program.setUniformValueArray("mvp_mat", glm::value_ptr(mvp));
+    _program.setUniformMatrix("mvp_mat", glm::value_ptr(mvp), 4);
 
-    _program.release();*/
+    const GLuint POS_ATTRIB = _program.getAttribLocation("pos");
+    const GLuint COLOR_ATTRIB   = _program.getAttribLocation("color");
+    const GLuint TEX_COORD_ATTRIB  = _program.getAttribLocation("tex_coord");
+
+    glEnableVertexAttribArray(POS_ATTRIB);
+    glBindBuffer(GL_ARRAY_BUFFER, _pos_buffer);
+    glVertexAttribPointer(POS_ATTRIB, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    CHECK_GL_ERRORS
+
+    glEnableVertexAttribArray(COLOR_ATTRIB);
+    glBindBuffer(GL_ARRAY_BUFFER, _color_buffer);
+    glVertexAttribPointer(COLOR_ATTRIB, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    CHECK_GL_ERRORS
+
+    glEnableVertexAttribArray(TEX_COORD_ATTRIB);
+    glBindBuffer(GL_ARRAY_BUFFER, _tex_coord_buffer);
+    glVertexAttribPointer(TEX_COORD_ATTRIB, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    CHECK_GL_ERRORS
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
+    CHECK_GL_ERRORS;
+
+    glDrawElements(GL_TRIANGLES, _index_count, GL_UNSIGNED_INT, 0);
+
+    _program.unbind();
+
+    glDisableVertexAttribArray(POS_ATTRIB);
+    glDisableVertexAttribArray(COLOR_ATTRIB);
+    glDisableVertexAttribArray(TEX_COORD_ATTRIB);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }

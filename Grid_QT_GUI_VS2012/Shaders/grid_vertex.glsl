@@ -1,18 +1,18 @@
 #version 150
 
-in vec3 in_pos;
-in vec4 in_color;
-in vec2 in_tex_coord;
+in vec3 pos;
+in vec4 color;
+in vec2 tex_coord;
 
-out vec4 out_color;
-out vec2 out_tex_coord;
+out vec4 i_color;
+out vec2 i_tex_coord;
 
 uniform mat4 mvp_mat;
 
 void main(void)
 {
-    gl_Position = mvp_mat * vec4(in_pos, 1.0);
+    gl_Position = mvp_mat * vec4(pos, 1.0);
 
-    out_color = in_color;
-    out_tex_coord = in_tex_coord;
+    i_color = color;
+    i_tex_coord = tex_coord;
 }
