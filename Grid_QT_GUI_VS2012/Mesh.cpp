@@ -231,35 +231,11 @@ void GridAnisotropic::draw(const Camera & camera)
 
 ShadedGridAnisotropic::ShadedGridAnisotropic()
 {
-    QOpenGLShader vs(QOpenGLShader::Vertex);
-    if(!vs.compileSourceFile("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_vertex.glsl"))
-    {
-        printf("%s\n", vs.log().toStdString().c_str());
-        return;
-    }
+    bool success = true;
 
-    QOpenGLShader fs(QOpenGLShader::Fragment);
-    if(!fs.compileSourceFile("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_fragment.glsl"))
-    {
-        printf("%s\n", fs.log().toStdString().c_str());
-        return;
-    }
-
-    if(!_program.addShader(&vs))
-    {
-        printf("%s\n", _program.log().toStdString().c_str());
-        return;
-    }
-    if(!_program.addShader(&fs))
-    {
-        printf("%s\n", _program.log().toStdString().c_str());
-        return;
-    }
-    if(!_program.link())
-    {
-        printf("%s\n", _program.log().toStdString().c_str());
-        return;
-    }
+    success &= _program.attachVertexShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_vertex.glsl");
+    success &= _program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_fragment.glsl");
+    success &= _program.link();
 }
 
 ShadedGridAnisotropic::~ShadedGridAnisotropic()
@@ -269,6 +245,7 @@ ShadedGridAnisotropic::~ShadedGridAnisotropic()
 
 void ShadedGridAnisotropic::draw(const Camera & camera)
 {
+    /*
     _program.bind();
 
     // TODO: is this class caching the location of uniforms and attribute
@@ -276,5 +253,5 @@ void ShadedGridAnisotropic::draw(const Camera & camera)
     glm::mat4 mvp = camera.mvpMat();
     _program.setUniformValueArray("mvp_mat", glm::value_ptr(mvp));
 
-    _program.release();
+    _program.release();*/
 }

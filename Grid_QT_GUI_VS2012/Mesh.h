@@ -2,8 +2,8 @@
 
 #include "Texture.h"
 #include "Camera.h"
+#include "GLSLProgramObject.h"
 #include <QString>
-#include <QOpenGLShaderProgram>
 
 class Mesh
 {
@@ -49,7 +49,7 @@ public:
 class ShadedGridAnisotropic : public GridAnisotropic
 {
 private:
-    QOpenGLShaderProgram _program;
+    GLSLProgramObject _program;
 
 public:
     ShadedGridAnisotropic();

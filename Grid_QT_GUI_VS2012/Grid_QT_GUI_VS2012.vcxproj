@@ -179,6 +179,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GLSLProgramObject.cpp" />
     <ClCompile Include="grid_qt_gui_vs2012.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
@@ -228,9 +229,12 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GLSLProgramObject.h" />
     <ClInclude Include="GlUtils.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshList.h" />
+    <ClInclude Include="nvSDKPath.h" />
+    <ClInclude Include="nvShaderUtils.h" />
     <ClInclude Include="Texture.h" />
     <CustomBuild Include="Camera.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
