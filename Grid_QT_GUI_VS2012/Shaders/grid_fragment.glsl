@@ -12,5 +12,5 @@ void main(void)
     vec4 tex_color = texture(grid_texture, i_tex_coord);
 
     // for the moment ignore the texture
-    out_color = mix(i_color, tex_color, vec4(0.5));
+    out_color = tex_color * i_color;
 }
