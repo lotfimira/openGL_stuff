@@ -6,42 +6,6 @@
 #include <glm/vec3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
-GLuint Mesh::createBuffer(GLenum target, GLsizeiptr size, const GLvoid * data)
-{
-    CLEAR_GL_ERRORS
-
-    GLuint buffer = 0;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(target, buffer);
-    glBufferData(target, size, data, GL_STATIC_DRAW);
-    glBindBuffer(target, 0);
-
-    CHECK_GL_ERRORS;
-
-    return buffer;
-}
-
-GLuint Mesh::createArrayBuffer(GLsizeiptr size, const GLvoid * data)
-{
-    return createBuffer(GL_ARRAY_BUFFER, size, data);
-}
-
-GLuint Mesh::createElementArrayBuffer(GLsizeiptr size, const GLvoid * data)
-{
-    return createBuffer(GL_ELEMENT_ARRAY_BUFFER, size, data);
-}
-
-void Mesh::deleteBuffer(GLuint & buffer)
-{
-    if(glIsBuffer(buffer))
-    {
-        glDeleteBuffers(1, &buffer);
-    }
-
-    buffer = 0;
-}
-
 GroundPlaneAnisotropic::GroundPlaneAnisotropic()
 {
     _texture2D.setMipmaps(true);
@@ -96,8 +60,7 @@ void GroundPlaneAnisotropic::draw(const Camera & camera)
 }
 
 //-----------------------------------------------------------------------------
-GridAnisotropic::GridAnisotropic() : 
-    _pos_buffer(0), _index_buffer(0), _color_buffer(0), _tex_coord_buffer(0)
+GridAnisotropic::GridAnisotropic()
 {
     _texture2D.setMipmaps(true);
     _texture2D.setAnisotropic(true);
@@ -140,7 +103,7 @@ GridAnisotropic::GridAnisotropic() :
     }
 
     // create triangles indices
-    QVector<GLuint> indices;
+    QVector<GLuint> triangles;
     for(int j = 0; j < size - 1; ++j)
     {
         int base_index = size * j;
@@ -152,41 +115,36 @@ GridAnisotropic::GridAnisotropic() :
             int idx1 = base_index + 1;
             int idx2 = base_index + 1 + size;
 
-            indices.push_back(idx0);
-            indices.push_back(idx1);
-            indices.push_back(idx2);
+            triangles.push_back(idx0);
+            triangles.push_back(idx1);
+            triangles.push_back(idx2);
 
             // 2nd triangle of quad
             idx0 = base_index + size;
             idx1 = base_index;
             idx2 = base_index + 1 + size;
 
-            indices.push_back(idx0);
-            indices.push_back(idx1);
-            indices.push_back(idx2);
+            triangles.push_back(idx0);
+            triangles.push_back(idx1);
+            triangles.push_back(idx2);
 
             base_index++;
         }
     }
 
-    // load buffer in OpenGL
-    _pos_buffer = createArrayBuffer(pos.size() * sizeof(glm::vec3), &pos[0]);
-    _color_buffer = createArrayBuffer(colors.size() * sizeof(glm::vec4), &colors[0]);
-    _tex_coord_buffer = createArrayBuffer(tex_coords.size() * sizeof(glm::vec2), &tex_coords[0]);
-    _index_buffer = createElementArrayBuffer(indices.size() * sizeof(GLuint), &indices[0]);
-
-    _vert_count = pos.size();
-    _index_count = indices.size();
+    // create OpenGL buffers
+    _pos_buffer = ArrayBuffer(pos);
+    _color_buffer = ArrayBuffer(colors);
+    _tex_coord_buffer = ArrayBuffer(tex_coords);
+    _index_buffer = ElementArrayBuffer(triangles);
 }
 
 GridAnisotropic::~GridAnisotropic()
 {
-    deleteBuffer(_pos_buffer);
-    deleteBuffer(_index_buffer);
-    deleteBuffer(_color_buffer);
-    deleteBuffer(_tex_coord_buffer);
-
-    _vert_count = 0;
+    _pos_buffer.clean();
+    _color_buffer.clean();
+    _tex_coord_buffer.clean();
+    _index_buffer.clean();
 }
 
 void GridAnisotropic::draw(const Camera & camera)
@@ -196,27 +154,27 @@ void GridAnisotropic::draw(const Camera & camera)
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _texture2D.id());
 
-    glBindBuffer(GL_ARRAY_BUFFER, _pos_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _pos_buffer.id());
     glVertexPointer(3, GL_FLOAT, 0, NULL);
     glEnableClientState(GL_VERTEX_ARRAY);
     CHECK_GL_ERRORS;
 
-    glBindBuffer(GL_ARRAY_BUFFER, _color_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _color_buffer.id());
     glColorPointer(4, GL_FLOAT, 0, NULL);
     glEnableClientState(GL_COLOR_ARRAY);
     CHECK_GL_ERRORS;
 
-    glBindBuffer(GL_ARRAY_BUFFER, _tex_coord_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _tex_coord_buffer.id());
     glTexCoordPointer(2, GL_FLOAT, 0, NULL);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     CHECK_GL_ERRORS;
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer.id());
     CHECK_GL_ERRORS;
 
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    glDrawElements(GL_TRIANGLES, _index_count, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _index_buffer.nbElements(), GL_UNSIGNED_INT, 0);
     //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -262,24 +220,24 @@ void ShadedGridAnisotropic::draw(const Camera & camera)
     const GLuint TEX_COORD_ATTRIB  = _program.getAttribLocation("tex_coord");
 
     glEnableVertexAttribArray(POS_ATTRIB);
-    glBindBuffer(GL_ARRAY_BUFFER, _pos_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _pos_buffer.id());
     glVertexAttribPointer(POS_ATTRIB, 3, GL_FLOAT, GL_FALSE, 0, 0);
     CHECK_GL_ERRORS
 
     glEnableVertexAttribArray(COLOR_ATTRIB);
-    glBindBuffer(GL_ARRAY_BUFFER, _color_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _color_buffer.id());
     glVertexAttribPointer(COLOR_ATTRIB, 4, GL_FLOAT, GL_FALSE, 0, 0);
     CHECK_GL_ERRORS
 
     glEnableVertexAttribArray(TEX_COORD_ATTRIB);
-    glBindBuffer(GL_ARRAY_BUFFER, _tex_coord_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _tex_coord_buffer.id());
     glVertexAttribPointer(TEX_COORD_ATTRIB, 2, GL_FLOAT, GL_FALSE, 0, 0);
     CHECK_GL_ERRORS
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer.id());
     CHECK_GL_ERRORS;
 
-    glDrawElements(GL_TRIANGLES, _index_count, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _index_buffer.nbElements(), GL_UNSIGNED_INT, 0);
 
     _program.unbind();
 
