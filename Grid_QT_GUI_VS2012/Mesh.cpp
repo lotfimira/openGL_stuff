@@ -1,11 +1,44 @@
 #include "Mesh.h"
 #include "GlUtils.h"
+#include "Geometry.h"
+#include "Material.h"
 #include <QImage>
 #include <QGLWidget>
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+void Mesh::drawTriangles(const Geometry & geometry, Material & material, const Camera & camera)
+{
+    // always surround material operations with enable and disable
+    material.enable();
+
+    const QMap<QString, ArrayBuffer> attributes = geometry.attributes();
+    for(const QString & name : attributes.keys())
+    {
+        const ArrayBuffer & buffer = attributes[name];
+        material.setAttribute(name, buffer);
+    }
+
+    material.setUniform("mvp_mat", camera.mvpMat());
+
+    if(geometry.hasElements())
+    {
+        const ElementArrayBuffer & elements = geometry.elements();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements.id());
+        glDrawElements(GL_TRIANGLES, elements.nbElements(), GL_UNSIGNED_INT, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+    else
+    {
+        glDrawArrays(GL_TRIANGLES, 0, geometry.nbVertices());
+    }
+
+    // always surround material operations with enable and disable
+    material.disable();
+}
+
+//-----------------------------------------------------------------------------
 GroundPlaneAnisotropic::GroundPlaneAnisotropic()
 {
     _texture2D.setMipmaps(true);
@@ -62,10 +95,16 @@ void GroundPlaneAnisotropic::draw(const Camera & camera)
 //-----------------------------------------------------------------------------
 GridAnisotropic::GridAnisotropic()
 {
-    _texture2D.setMipmaps(true);
-    _texture2D.setAnisotropic(true);
-    _texture2D.load("E:\\4x4grid.png");
+}
 
+GridAnisotropic::~GridAnisotropic()
+{
+    _geometry.clean();
+    _material.clean();
+}
+
+void GridAnisotropic::initializeGeometry()
+{
     // create vertices
     int size = 100;
     QVector<glm::vec3> pos;
@@ -133,76 +172,37 @@ GridAnisotropic::GridAnisotropic()
     }
 
     // create OpenGL buffers
-    _pos_buffer = ArrayBuffer(pos);
-    _color_buffer = ArrayBuffer(colors);
-    _tex_coord_buffer = ArrayBuffer(tex_coords);
-    _index_buffer = ElementArrayBuffer(triangles);
+    _geometry.addAttribute("pos", pos);
+    _geometry.addAttribute("color", colors);
+    _geometry.addAttribute("tex_coord", tex_coords);
+    _geometry.setElements(triangles);
 }
 
-GridAnisotropic::~GridAnisotropic()
+void GridAnisotropic::initializeMaterial()
 {
-    _pos_buffer.clean();
-    _color_buffer.clean();
-    _tex_coord_buffer.clean();
-    _index_buffer.clean();
+    // textures
+    Texture2D grid_texture;
+    grid_texture.setMipmaps(true);
+    grid_texture.setAnisotropic(true);
+    grid_texture.load("E:\\4x4grid.png");
+
+    _material.addTexture(grid_texture);
+
+    // shaders
+    bool success = true;
+
+    GLSLProgramObject program;
+    success &= program.attachVertexShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_vertex.glsl");
+    success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_fragment.glsl");
+    success &= program.link();
+
+    _material.setProgram(program);
 }
 
 void GridAnisotropic::draw(const Camera & camera)
 {
-    CLEAR_GL_ERRORS;
+    drawTriangles(_geometry, _material, camera);
 
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, _texture2D.id());
-
-    glBindBuffer(GL_ARRAY_BUFFER, _pos_buffer.id());
-    glVertexPointer(3, GL_FLOAT, 0, NULL);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    CHECK_GL_ERRORS;
-
-    glBindBuffer(GL_ARRAY_BUFFER, _color_buffer.id());
-    glColorPointer(4, GL_FLOAT, 0, NULL);
-    glEnableClientState(GL_COLOR_ARRAY);
-    CHECK_GL_ERRORS;
-
-    glBindBuffer(GL_ARRAY_BUFFER, _tex_coord_buffer.id());
-    glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    CHECK_GL_ERRORS;
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer.id());
-    CHECK_GL_ERRORS;
-
-    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    glDrawElements(GL_TRIANGLES, _index_buffer.nbElements(), GL_UNSIGNED_INT, 0);
-    //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    glDisable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-ShadedGridAnisotropic::ShadedGridAnisotropic()
-{
-    bool success = true;
-
-    success &= _program.attachVertexShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_vertex.glsl");
-    success &= _program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_fragment.glsl");
-    success &= _program.link();
-}
-
-ShadedGridAnisotropic::~ShadedGridAnisotropic()
-{
-
-}
-
-void ShadedGridAnisotropic::draw(const Camera & camera)
-{
     CLEAR_GL_ERRORS
 
     glEnable(GL_TEXTURE_2D);

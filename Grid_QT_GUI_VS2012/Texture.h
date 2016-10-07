@@ -26,7 +26,7 @@ public:
     void clean();
     void load(const QString & filename);
 
-    GLuint id() {return _id;}
+    GLuint id() const {return _id;}
 
     void setAnisotropic(bool val);
     void setMipmaps(bool val);

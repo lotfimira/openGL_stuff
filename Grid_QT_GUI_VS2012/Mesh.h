@@ -6,8 +6,14 @@
 #include "Buffer.h"
 #include <QString>
 
+//-----------------------------------------------------------------------------
 class Mesh
 {
+protected:
+    void drawTriangles(const Geometry & geometry, 
+                       Material & material, 
+                       const Camera & camera);
+
 public:
     virtual void draw(const Camera &) = 0;
     virtual ~Mesh(){}
@@ -24,28 +30,18 @@ public:
     void draw(const Camera &);
 };
 
+//-----------------------------------------------------------------------------
 class GridAnisotropic : public Mesh
 {
 protected:
-    Texture2D _texture2D;
-    ArrayBuffer _pos_buffer;
-    ArrayBuffer _color_buffer;
-    ArrayBuffer _tex_coord_buffer;
-    ElementArrayBuffer _index_buffer; // indexed triangle geometry
+    Geometry _geometry;
+    Material _material;
+
+    void initializeGeometry();
+    void initializeMaterial();
 
 public:
     GridAnisotropic();
     virtual ~GridAnisotropic();
-    virtual void draw(const Camera &);
-};
-
-class ShadedGridAnisotropic : public GridAnisotropic
-{
-private:
-    GLSLProgramObject _program;
-
-public:
-    ShadedGridAnisotropic();
-    virtual ~ShadedGridAnisotropic();
     virtual void draw(const Camera &);
 };

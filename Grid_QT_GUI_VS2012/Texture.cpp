@@ -14,7 +14,6 @@ Texture2D::Texture2D() : _filename(""), _width(0), _height(0), _id(0),
 
 Texture2D::~Texture2D()
 {
-    clean();
 }
 
 void Texture2D::load(const QString & filename)

@@ -180,10 +180,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="geometry.cpp" />
     <ClCompile Include="GLSLProgramObject.cpp" />
     <ClCompile Include="grid_qt_gui_vs2012.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshList.cpp" />
     <ClCompile Include="MyGlWidget.cpp" />
@@ -230,9 +232,12 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Attribute.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Geometry.h" />
     <ClInclude Include="GLSLProgramObject.h" />
     <ClInclude Include="GlUtils.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshList.h" />
     <ClInclude Include="nvSDKPath.h" />

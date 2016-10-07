@@ -40,6 +40,11 @@ void BufferObject::clean()
     _id = 0;
 }
 
+bool BufferObject::isValid() const
+{
+    return glIsBuffer(_id);
+}
+
 //-----------------------------------------------------------------------------
 ArrayBuffer::ArrayBuffer() : _nb_components_per_item(0), _nb_items(0), _type(0)
 {
@@ -79,6 +84,11 @@ void ArrayBuffer::clean()
     _nb_components_per_item = 0;
     _nb_items = 0;
     _type = 0;
+}
+
+GLuint ArrayBuffer::nbItems() const
+{
+    return _nb_items;
 }
 
 //-----------------------------------------------------------------------------
