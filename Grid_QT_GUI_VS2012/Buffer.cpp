@@ -91,6 +91,16 @@ GLuint ArrayBuffer::nbItems() const
     return _nb_items;
 }
 
+GLuint ArrayBuffer::nbComponentsPerItem() const
+{
+    return _nb_components_per_item; 
+}
+
+GLenum ArrayBuffer::type() const
+{
+    return _type;
+}
+
 //-----------------------------------------------------------------------------
 ElementArrayBuffer::ElementArrayBuffer() : _nb_elements(0)
 {

@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "GLSLProgramObject.h"
 #include "Buffer.h"
+#include "Geometry.h"
+#include "Material.h"
 #include <QString>
 
 //-----------------------------------------------------------------------------

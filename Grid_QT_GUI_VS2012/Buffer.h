@@ -37,6 +37,8 @@ public:
     virtual ~ArrayBuffer();
     virtual void clean();
     GLuint nbItems() const;
+    GLuint nbComponentsPerItem() const;
+    GLenum type() const;
 };
 
 //-----------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 #include "Buffer.h"
 #include <QMap>
-#include <QList>
+#include <QString>
 
 //-----------------------------------------------------------------------------
 class Geometry
