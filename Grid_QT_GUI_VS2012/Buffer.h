@@ -17,7 +17,6 @@ protected:
 
 public:
     GLuint id() const;
-    virtual void clean();
     bool isValid() const;
 };
 
@@ -35,7 +34,6 @@ public:
     ArrayBuffer(const QVector<glm::vec3> & array);
     ArrayBuffer(const QVector<glm::vec2> & array);
     virtual ~ArrayBuffer();
-    virtual void clean();
     GLuint nbItems() const;
     GLuint nbComponentsPerItem() const;
     GLenum type() const;
@@ -51,7 +49,6 @@ public:
     ElementArrayBuffer();
     ElementArrayBuffer(const QVector<GLuint> & array);
     ~ElementArrayBuffer();
-    virtual void clean();
 
     GLuint nbElements() const;
 };

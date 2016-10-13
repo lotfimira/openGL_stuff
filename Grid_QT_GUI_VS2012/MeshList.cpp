@@ -42,3 +42,13 @@ void MeshList::addMesh(Mesh * mesh)
 {
     _meshes.push_back(mesh);
 }
+
+void MeshList::clean()
+{
+    for(Mesh * mesh : _meshes)
+    {
+        delete mesh;
+    }
+
+    _meshes.clear();
+}

@@ -2,50 +2,45 @@
 
 bool Geometry::hasElements() const
 {
-    return _elements.isValid();
+    if(_elements)
+        return _elements->isValid();
+    else
+        return false;
 }
 
-const ElementArrayBuffer & Geometry::elements() const
+const std::shared_ptr<ElementArrayBuffer> Geometry::elements() const
 {
     return _elements;
 }
 
-void Geometry::setElements(const ElementArrayBuffer & elements)
+void Geometry::setElements(const std::shared_ptr<ElementArrayBuffer> & elements)
 {
-    if(_elements.isValid())
-        _elements.clean();
-
     _elements = elements;
 }
 
-void Geometry::addAttribute(const QString & name, const ArrayBuffer & buffer)
+void Geometry::addAttribute(const QString & name, const std::shared_ptr<ArrayBuffer> & buffer)
 {
-    if(_attributes.contains(name))
-        _attributes[name].clean();
+    if(!buffer)
+        throw std::invalid_argument( "addAttribute: NULL buffer" );
 
     _attributes[name] = buffer;
 }
 
 void Geometry::clean()
 {
-    for(ArrayBuffer & attribute : _attributes)
-    {
-        attribute.clean();
-    }
-
     _attributes.clear();
 }
 
-const QMap<QString, ArrayBuffer> & Geometry::attributes() const
+const QMap<QString, std::shared_ptr<ArrayBuffer>> & Geometry::attributes() const
 {
     return _attributes;
 }
 
 unsigned int Geometry::nbELements() const
 {
-    if(_elements.isValid())
+    if(_elements && _elements->isValid())
     {
-        return _elements.nbElements();
+        return _elements->nbElements();
     }
     else
     {
@@ -58,5 +53,5 @@ unsigned int Geometry::nbVertices() const
     if(_attributes.empty())
         return 0;
     else
-        return _attributes.first().nbItems();
+        return _attributes.first()->nbItems();
 }

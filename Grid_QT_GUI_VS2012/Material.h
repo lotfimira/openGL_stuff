@@ -5,6 +5,7 @@
 #include "GLSLProgramObject.h"
 #include <QString>
 #include <glm/glm.hpp>
+#include <memory>
 
 class Material
 {
@@ -18,7 +19,7 @@ protected:
 public:
     void enable();
     void disable();
-    void setAttribute(const QString & name, const ArrayBuffer & attribute);
+    void setAttribute(const QString & name, const std::shared_ptr<ArrayBuffer> & attribute);
     void setUniform(const QString & name, glm::mat4 matrix);
     void setProgram(const GLSLProgramObject & program);
     void addTexture(const Texture2D & texture);

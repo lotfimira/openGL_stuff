@@ -19,16 +19,16 @@ void Material::disable()
     _program.unbind();
 }
 
-void Material::setAttribute(const QString & name, const ArrayBuffer & attribute)
+void Material::setAttribute(const QString & name, const std::shared_ptr<ArrayBuffer> & attribute)
 {
     CLEAR_GL_ERRORS
 
     const GLuint ATTRIB_LOCATION = _program.getAttribLocation(name.toStdString().c_str());
     glEnableVertexAttribArray(ATTRIB_LOCATION);
-    glBindBuffer(GL_ARRAY_BUFFER, attribute.id());
+    glBindBuffer(GL_ARRAY_BUFFER, attribute->id());
     glVertexAttribPointer(ATTRIB_LOCATION, 
-                          attribute.nbComponentsPerItem(), 
-                          attribute.type(), 
+                          attribute->nbComponentsPerItem(), 
+                          attribute->type(), 
                           GL_FALSE, // normalized ??? for colors
                           0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

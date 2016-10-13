@@ -23,6 +23,7 @@ MyGlWidget::MyGlWidget(const QGLFormat & format, QWidget *parent) :
 
 MyGlWidget::~MyGlWidget()
 {
+    MeshList::instance()->clean();
 }
 
 void MyGlWidget::initializeGL()
