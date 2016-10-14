@@ -19,9 +19,20 @@ BufferObject::BufferObject(GLenum target, GLsizeiptr size, const GLvoid * data)
     CHECK_GL_ERRORS
 
     _id = buffer;
+
+    _auto_clean = std::make_shared<BufferAutoCleaner>(buffer);
 }
 
 BufferObject::~BufferObject()
+{
+}
+
+GLuint BufferObject::id() const
+{
+    return _id;
+}
+
+void BufferObject::clean()
 {
     GLuint buffer = _id;
     if(glIsBuffer(buffer))
@@ -29,11 +40,6 @@ BufferObject::~BufferObject()
         glDeleteBuffers(1, &buffer);
     }
     _id = 0;
-}
-
-GLuint BufferObject::id() const
-{
-    return _id;
 }
 
 bool BufferObject::isValid() const
@@ -72,6 +78,11 @@ ArrayBuffer::ArrayBuffer(const QVector<glm::vec2> & array) :
 
 ArrayBuffer::~ArrayBuffer()
 {
+}
+
+void ArrayBuffer::clean()
+{
+    BufferObject::clean();
     _nb_components_per_item = 0;
     _nb_items = 0;
     _type = 0;
@@ -105,10 +116,15 @@ ElementArrayBuffer::ElementArrayBuffer(const QVector<GLuint> & array) :
 
 ElementArrayBuffer::~ElementArrayBuffer()
 {
-    _nb_elements = 0;
 }
 
 GLuint ElementArrayBuffer::nbElements() const
 {
     return _nb_elements;
+}
+
+void ElementArrayBuffer::clean()
+{
+    BufferObject::clean();
+    _nb_elements = 0;
 }

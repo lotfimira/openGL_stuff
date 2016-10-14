@@ -3,17 +3,39 @@
 #include <GL/glew.h>
 #include <QVector>
 #include <glm/glm.hpp>
+#include <memory>
+
+//-----------------------------------------------------------------------------
+class BufferAutoCleaner
+{
+private:
+    GLuint _id;
+
+public:
+    BufferAutoCleaner() : _id(0) {}
+    BufferAutoCleaner(GLuint id) : _id(id) {}
+    ~BufferAutoCleaner()
+    {
+        GLuint buffer_id = _id;
+        if(glIsBuffer(buffer_id))
+        {
+            glDeleteBuffers(1, &buffer_id);
+        }
+    }
+};
 
 //-----------------------------------------------------------------------------
 class BufferObject
 {
 protected:
     GLuint _id;
+    std::shared_ptr<BufferAutoCleaner> _auto_clean;
 
 protected:
     BufferObject();
     BufferObject(GLenum target, GLsizeiptr size, const GLvoid * data);
     virtual ~BufferObject();
+    virtual void clean();
 
 public:
     GLuint id() const;
@@ -27,6 +49,7 @@ protected:
     GLuint _nb_components_per_item; // 1, 2, 3 or 4
     GLuint _nb_items;
     GLenum _type;
+    virtual void clean();
 
 public:
     ArrayBuffer();
@@ -44,6 +67,7 @@ class ElementArrayBuffer : public BufferObject
 {
 protected:
     GLuint _nb_elements;
+    virtual void clean();
 
 public:
     ElementArrayBuffer();

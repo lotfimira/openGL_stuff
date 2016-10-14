@@ -3,17 +3,16 @@
 #include <QImage>
 #include <QGLWidget>
 #include <glm/glm.hpp>
-#include <memory>
 
 void Mesh::drawTriangles(const Geometry & geometry, Material & material, const Camera & camera)
 {
     // always surround material operations with enable and disable
     material.enable();
 
-    const QMap<QString, std::shared_ptr<ArrayBuffer>> attributes = geometry.attributes();
+    const QMap<QString, ArrayBuffer> attributes = geometry.attributes();
     for(const QString & name : attributes.keys())
     {
-        const std::shared_ptr<ArrayBuffer> & buffer = attributes[name];
+        const ArrayBuffer & buffer = attributes[name];
         material.setAttribute(name, buffer);
     }
 
@@ -21,9 +20,9 @@ void Mesh::drawTriangles(const Geometry & geometry, Material & material, const C
 
     if(geometry.hasElements())
     {
-        const std::shared_ptr<ElementArrayBuffer> & elements = geometry.elements();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements->id());
-        glDrawElements(GL_TRIANGLES, elements->nbElements(), GL_UNSIGNED_INT, 0);
+        const ElementArrayBuffer & elements = geometry.elements();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements.id());
+        glDrawElements(GL_TRIANGLES, elements.nbElements(), GL_UNSIGNED_INT, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     else
@@ -170,10 +169,10 @@ void GridAnisotropic::initializeGeometry()
         }
     }
 
-    auto pos_buffer = std::make_shared<ArrayBuffer>(pos);
-    auto color_buffer = std::make_shared<ArrayBuffer>(colors);
-    auto tex_coord_buffer = std::make_shared<ArrayBuffer>(tex_coords);
-    auto triangle_buffer = std::make_shared<ElementArrayBuffer>(triangles);
+    ArrayBuffer pos_buffer(pos);
+    ArrayBuffer color_buffer(colors);
+    ArrayBuffer tex_coord_buffer(tex_coords);
+    ElementArrayBuffer triangle_buffer(triangles);
 
     // create OpenGL buffers
     _geometry.addAttribute("pos", pos_buffer);
