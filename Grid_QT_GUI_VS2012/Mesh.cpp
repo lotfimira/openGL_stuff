@@ -18,6 +18,8 @@ void Mesh::drawTriangles(const Geometry & geometry, Material & material, const C
 
     material.setUniform("mvp_mat", camera.mvpMat());
 
+    CLEAR_GL_ERRORS
+
     if(geometry.hasElements())
     {
         const ElementArrayBuffer & elements = geometry.elements();
@@ -29,6 +31,8 @@ void Mesh::drawTriangles(const Geometry & geometry, Material & material, const C
     {
         glDrawArrays(GL_TRIANGLES, 0, geometry.nbVertices());
     }
+
+    CHECK_GL_ERRORS
 
     // always surround material operations with enable and disable
     material.disable();
@@ -169,16 +173,11 @@ void GridAnisotropic::initializeGeometry()
         }
     }
 
-    ArrayBuffer pos_buffer(pos);
-    ArrayBuffer color_buffer(colors);
-    ArrayBuffer tex_coord_buffer(tex_coords);
-    ElementArrayBuffer triangle_buffer(triangles);
-
     // create OpenGL buffers
-    _geometry.addAttribute("pos", pos_buffer);
-    _geometry.addAttribute("color", color_buffer);
-    _geometry.addAttribute("tex_coord", tex_coord_buffer);
-    _geometry.setElements(triangle_buffer);
+    _geometry.addAttribute("pos", pos);
+    _geometry.addAttribute("color", colors);
+    _geometry.addAttribute("tex_coord", tex_coords);
+    _geometry.setElements(triangles);
 }
 
 void GridAnisotropic::initializeMaterial()
