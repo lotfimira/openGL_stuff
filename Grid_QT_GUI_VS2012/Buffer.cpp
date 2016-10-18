@@ -32,16 +32,6 @@ GLuint BufferObject::id() const
     return _id;
 }
 
-void BufferObject::clean()
-{
-    GLuint buffer = _id;
-    if(glIsBuffer(buffer))
-    {
-        glDeleteBuffers(1, &buffer);
-    }
-    _id = 0;
-}
-
 bool BufferObject::isValid() const
 {
     return glIsBuffer(_id);
@@ -80,14 +70,6 @@ ArrayBuffer::~ArrayBuffer()
 {
 }
 
-void ArrayBuffer::clean()
-{
-    BufferObject::clean();
-    _nb_components_per_item = 0;
-    _nb_items = 0;
-    _type = 0;
-}
-
 GLuint ArrayBuffer::nbItems() const
 {
     return _nb_items;
@@ -121,10 +103,4 @@ ElementArrayBuffer::~ElementArrayBuffer()
 GLuint ElementArrayBuffer::nbElements() const
 {
     return _nb_elements;
-}
-
-void ElementArrayBuffer::clean()
-{
-    BufferObject::clean();
-    _nb_elements = 0;
 }

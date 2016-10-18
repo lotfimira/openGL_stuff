@@ -41,9 +41,9 @@ void Mesh::drawTriangles(const Geometry & geometry, Material & material, const C
 //-----------------------------------------------------------------------------
 GroundPlaneAnisotropic::GroundPlaneAnisotropic()
 {
+    _texture2D = Texture2D("E:\\4x4grid.png");
     _texture2D.setMipmaps(true);
     _texture2D.setAnisotropic(true);
-    _texture2D.load("E:\\4x4grid.png");
 }
 
 GroundPlaneAnisotropic::~GroundPlaneAnisotropic()
@@ -101,8 +101,6 @@ GridAnisotropic::GridAnisotropic()
 
 GridAnisotropic::~GridAnisotropic()
 {
-    _geometry.clean();
-    _material.clean();
 }
 
 void GridAnisotropic::initializeGeometry()
@@ -183,10 +181,9 @@ void GridAnisotropic::initializeGeometry()
 void GridAnisotropic::initializeMaterial()
 {
     // textures
-    Texture2D grid_texture;
+    Texture2D grid_texture = Texture2D("E:\\4x4grid.png");
     grid_texture.setMipmaps(true);
     grid_texture.setAnisotropic(true);
-    grid_texture.load("E:\\4x4grid.png");
 
     _material.addTexture(grid_texture);
 

@@ -35,7 +35,6 @@ protected:
     BufferObject();
     BufferObject(GLenum target, GLsizeiptr size, const GLvoid * data);
     virtual ~BufferObject();
-    virtual void clean();
 
 public:
     GLuint id() const;
@@ -49,7 +48,6 @@ protected:
     GLuint _nb_components_per_item; // 1, 2, 3 or 4
     GLuint _nb_items;
     GLenum _type;
-    virtual void clean();
 
 public:
     ArrayBuffer();
@@ -67,7 +65,6 @@ class ElementArrayBuffer : public BufferObject
 {
 protected:
     GLuint _nb_elements;
-    virtual void clean();
 
 public:
     ElementArrayBuffer();

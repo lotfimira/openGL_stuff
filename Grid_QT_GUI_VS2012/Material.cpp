@@ -90,10 +90,5 @@ void Material::disableTextures()
 
 void Material::clean()
 {
-    for(Texture2D & texture : _textures)
-    {
-        texture.clean();
-    }
-
     _textures.clear();
 }

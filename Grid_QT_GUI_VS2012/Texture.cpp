@@ -16,10 +16,11 @@ Texture2D::~Texture2D()
 {
 }
 
-void Texture2D::load(const QString & filename)
+Texture2D::Texture2D(const QString & filename) : 
+    _mag_filter(GL_LINEAR), _min_filter(GL_LINEAR), 
+    _wrap(GL_REPEAT), 
+    _mipmaps(false), _anisotropic(false)
 {
-    clean();
-
     QFileInfo file_info(filename);
     if(!file_info.exists())
     {
@@ -30,22 +31,47 @@ void Texture2D::load(const QString & filename)
     QImage image(filename);
     image = image.convertToFormat(QImage::Format_RGBA8888);
 
+    CLEAR_GL_ERRORS
+
     GLuint id;
     glGenTextures(1, &id); // ??  why can't i use _id member directly here
     glBindTexture(GL_TEXTURE_2D, id);
 
-    // wrap
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap);
 
-    // filter
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
 
-    // anisotropic
-    if(_anisotropic)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    CHECK_GL_ERRORS
+
+    _id = id;
+    _filename = filename;
+    _width = image.width();
+    _height = image.height();
+
+    _auto_clean = std::make_shared<TextureAutoCleaner>(id);
+}
+
+void Texture2D::setAnisotropic(bool val)
+{
+    CLEAR_GL_ERRORS
+
+    GLuint id = _id;
+    if(!glIsTexture(id))
+        return;
+
+    _anisotropic = val;
+
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    if(glewIsExtensionSupported("GL_EXT_texture_filter_anisotropic"))
     {
-        if(glewIsExtensionSupported("GL_EXT_texture_filter_anisotropic"))
+        if(_anisotropic)
         {
             GLfloat aniso;
             glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aniso);
@@ -53,45 +79,40 @@ void Texture2D::load(const QString & filename)
         }
         else
         {
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 0.0f);
+        }
+    }
+    else
+    {
+        if(_anisotropic)
+        {
             printf("WARNING: Anisotropic filtering not supported\n");
         }
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
+    glBindTexture(GL_TEXTURE_2D, 0);
 
+    CHECK_GL_ERRORS
+}
+
+void Texture2D::setMipmaps(bool val)
+{
+    CLEAR_GL_ERRORS
+
+    GLuint id = _id;
+    if(!glIsTexture(id))
+        return;
+
+    _mipmaps = val;
+
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    // generate mipmaps
     if(_mipmaps)
     {
         glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-
-    _id = id;
-    _filename = filename;
-    _width = image.width();
-    _height = image.height();
-}
-
-void Texture2D::clean()
-{
-    if(glIsTexture(_id))
-    {
-        glDeleteTextures(1, &_id);
-    }
-
-    _id = 0;
-    _width = 0;
-    _height = 0;
-    _filename = "";
-}
-
-void Texture2D::setAnisotropic(bool val)
-{
-    _anisotropic = val;
-}
-
-void Texture2D::setMipmaps(bool val)
-{
-    _mipmaps = val;
 
     // make sure the minification filter comply with the status of mipmaps
     if(_mipmaps)
@@ -118,4 +139,53 @@ void Texture2D::setMipmaps(bool val)
             _min_filter = GL_NEAREST;
         }
     }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    CHECK_GL_ERRORS
+}
+
+void Texture2D::setFiltering(GLint val)
+{
+    CLEAR_GL_ERRORS
+
+    GLuint id = _id;
+    if(!glIsTexture(id))
+        return;
+
+    _min_filter = val;
+    _mag_filter = val;
+
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    // filter
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    CHECK_GL_ERRORS
+}
+
+void Texture2D::setWrapping(GLint wrap)
+{
+    CLEAR_GL_ERRORS
+
+    GLuint id = _id;
+    if(!glIsTexture(id))
+        return;
+
+    _wrap = wrap;
+
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    // wrap
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    CHECK_GL_ERRORS
 }
