@@ -9,12 +9,7 @@ void Mesh::drawTriangles(const Geometry & geometry, Material & material, const C
     // always surround material operations with enable and disable
     material.enable();
 
-    const QMap<QString, ArrayBuffer> attributes = geometry.attributes();
-    for(const QString & name : attributes.keys())
-    {
-        const ArrayBuffer & buffer = attributes[name];
-        material.setAttribute(name, buffer);
-    }
+    material.setAttributes(geometry);
 
     material.setUniform("mvp_mat", camera.mvpMat());
 
