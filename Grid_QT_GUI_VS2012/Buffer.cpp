@@ -19,12 +19,12 @@ BufferObject::BufferObject(GLenum target, GLsizeiptr size, const GLvoid * data)
     CHECK_GL_ERRORS
 
     _id = buffer;
-
-    _auto_clean = std::make_shared<BufferAutoCleaner>(buffer);
 }
 
 BufferObject::~BufferObject()
 {
+    // checks reference counter, if last then call clean()
+    autoClean();
 }
 
 GLuint BufferObject::id() const
@@ -35,6 +35,20 @@ GLuint BufferObject::id() const
 bool BufferObject::isValid() const
 {
     return glIsBuffer(_id);
+}
+
+void BufferObject::clean()
+{
+    CLEAR_GL_ERRORS
+
+    GLuint buffer = _id;
+    if(glIsBuffer(buffer))
+    {
+        glDeleteBuffers(1, & buffer);
+        _id = 0;
+    }
+
+    CHECK_GL_ERRORS
 }
 
 //-----------------------------------------------------------------------------

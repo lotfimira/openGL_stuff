@@ -242,6 +242,7 @@
     <ClInclude Include="MeshList.h" />
     <ClInclude Include="nvSDKPath.h" />
     <ClInclude Include="nvShaderUtils.h" />
+    <ClInclude Include="SelfCleaned.h" />
     <ClInclude Include="Texture.h" />
     <CustomBuild Include="Camera.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

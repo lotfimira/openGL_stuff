@@ -3,38 +3,19 @@
 #include <GL/glew.h>
 #include <QVector>
 #include <glm/glm.hpp>
-#include <memory>
+#include "SelfCleaned.h"
 
 //-----------------------------------------------------------------------------
-class BufferAutoCleaner
-{
-private:
-    GLuint _id;
-
-public:
-    BufferAutoCleaner() : _id(0) {}
-    BufferAutoCleaner(GLuint id) : _id(id) {}
-    ~BufferAutoCleaner()
-    {
-        GLuint buffer_id = _id;
-        if(glIsBuffer(buffer_id))
-        {
-            glDeleteBuffers(1, &buffer_id);
-        }
-    }
-};
-
-//-----------------------------------------------------------------------------
-class BufferObject
+class BufferObject : public SelfCleaned
 {
 protected:
     GLuint _id;
-    std::shared_ptr<BufferAutoCleaner> _auto_clean;
 
 protected:
     BufferObject();
     BufferObject(GLenum target, GLsizeiptr size, const GLvoid * data);
     virtual ~BufferObject();
+    virtual void clean();
 
 public:
     GLuint id() const;

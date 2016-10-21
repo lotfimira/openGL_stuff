@@ -4,22 +4,31 @@
 #include <QFileInfo>
 #include <QGLWidget>
 
-Texture2D::Texture2D() : _filename(""), _width(0), _height(0), _id(0), 
-                         _mag_filter(GL_LINEAR), _min_filter(GL_LINEAR), 
-                         _wrap(GL_REPEAT), 
-                         _mipmaps(false), _anisotropic(false)
+Texture2D::Texture2D() : 
+    _filename(""), 
+    _width(0), 
+    _height(0), 
+    _id(0), 
+    _mag_filter(GL_LINEAR), 
+    _min_filter(GL_LINEAR), 
+    _wrap(GL_REPEAT), 
+    _mipmaps(false), 
+    _anisotropic(false)
 {
-
 }
 
 Texture2D::~Texture2D()
 {
+    // checks reference counter, if last then call clean()
+    autoClean();
 }
 
 Texture2D::Texture2D(const QString & filename) : 
-    _mag_filter(GL_LINEAR), _min_filter(GL_LINEAR), 
+    _mag_filter(GL_LINEAR),
+    _min_filter(GL_LINEAR), 
     _wrap(GL_REPEAT), 
-    _mipmaps(false), _anisotropic(false)
+    _mipmaps(false), 
+    _anisotropic(false)
 {
     QFileInfo file_info(filename);
     if(!file_info.exists())
@@ -53,8 +62,6 @@ Texture2D::Texture2D(const QString & filename) :
     _filename = filename;
     _width = image.width();
     _height = image.height();
-
-    _auto_clean = std::make_shared<TextureAutoCleaner>(id);
 }
 
 void Texture2D::setAnisotropic(bool val)
@@ -186,6 +193,20 @@ void Texture2D::setWrapping(GLint wrap)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    CHECK_GL_ERRORS
+}
+
+void Texture2D::clean()
+{
+    CLEAR_GL_ERRORS
+
+    GLuint texture_id = _id;
+    if(glIsTexture(texture_id))
+    {
+        glDeleteTextures(1, &texture_id);
+        _id = 0;
+    }
 
     CHECK_GL_ERRORS
 }
