@@ -13,7 +13,7 @@ public:
     unsigned int nbVertices() const;
 
     const ElementArrayBuffer elements() const;
-    const QMap<QString, ArrayBuffer> & Geometry::attributes() const;
+    const QMap<QString, ArrayBuffer> & attributes() const;
 
     void setElements(const ElementArrayBuffer & elements);
     void addAttribute(const QString & name, const ArrayBuffer & buffer);
