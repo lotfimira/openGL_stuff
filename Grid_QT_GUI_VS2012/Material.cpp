@@ -71,7 +71,12 @@ void Material::setProgram(const GLSLProgramObject & program)
 
 void Material::setUniform(const QString & name, glm::mat4 matrix)
 {
-    _program.setUniformMatrix("mvp_mat", glm::value_ptr(matrix), 4);
+    _program.setUniformMatrix(name.toStdString().c_str(), glm::value_ptr(matrix), 4);
+}
+
+void Material::setUniform(const QString & name, glm::vec4 v)
+{
+    _program.setUniform(name.toStdString().c_str(), glm::value_ptr(v), 4);
 }
 
 void Material::addTexture(const Texture2D & texture)

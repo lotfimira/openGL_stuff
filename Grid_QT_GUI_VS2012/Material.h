@@ -24,6 +24,7 @@ public:
     void setAttribute(const QString & name, const ArrayBuffer & attribute);
     void setAttributes(const Geometry & geometry);
     void setUniform(const QString & name, glm::mat4 matrix);
+    void setUniform(const QString & name, glm::vec4 v);
     void setProgram(const GLSLProgramObject & program);
     void addTexture(const Texture2D & texture);
     void clean();

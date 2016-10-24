@@ -1,4 +1,5 @@
 #include "MyGlWidget.h"
+#include "WaterMesh.h" // SHOULD NOT BE HERE
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -141,6 +142,9 @@ void MyGlWidget::prepareScene()
     //GroundPlaneAnisotropic * groundPlaneAnisotropic = new GroundPlaneAnisotropic();
     //MeshList::instance()->addMesh(groundPlaneAnisotropic);
 
-    GridAnisotropic * grid_anisotropic = new GridAnisotropic();
-    MeshList::instance()->addMesh(grid_anisotropic);
+    //GridAnisotropic * grid_anisotropic = new GridAnisotropic();
+    //MeshList::instance()->addMesh(grid_anisotropic);
+
+    WaterMesh * water_mesh = new WaterMesh();
+    MeshList::instance()->addMesh(water_mesh);
 }
