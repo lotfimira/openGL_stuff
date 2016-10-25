@@ -137,7 +137,7 @@ void GridAnisotropic::initializeGeometry()
     }
 
     // create triangles indices
-    QVector<GLuint> triangles;
+    QVector<glm::uvec3> triangles;
     for(int j = 0; j < size - 1; ++j)
     {
         int base_index = size * j;
@@ -149,28 +149,31 @@ void GridAnisotropic::initializeGeometry()
             int idx1 = base_index + 1;
             int idx2 = base_index + 1 + size;
 
-            triangles.push_back(idx0);
-            triangles.push_back(idx1);
-            triangles.push_back(idx2);
+            glm::uvec3 triangle_1(idx0, idx1, idx2);
+            triangles.push_back(triangle_1);
 
             // 2nd triangle of quad
             idx0 = base_index + size;
             idx1 = base_index;
             idx2 = base_index + 1 + size;
 
-            triangles.push_back(idx0);
-            triangles.push_back(idx1);
-            triangles.push_back(idx2);
+            glm::uvec3 triangle_2(idx0, idx1, idx2);
+            triangles.push_back(triangle_2);
 
             base_index++;
         }
     }
 
     // create OpenGL buffers
-    _geometry.addAttribute("pos", pos);
-    _geometry.addAttribute("color", colors);
-    _geometry.addAttribute("tex_coord", tex_coords);
-    _geometry.setElements(triangles);
+    StaticArrayBuffer pos_buffer(pos);
+    StaticArrayBuffer color_buffer(colors);
+    StaticArrayBuffer tex_coord_buffer(tex_coords);
+    ElementArrayBuffer triangle_buffer(triangles);
+
+    _geometry.addAttribute("pos", pos_buffer);
+    _geometry.addAttribute("color", color_buffer);
+    _geometry.addAttribute("tex_coord", tex_coord_buffer);
+    _geometry.setElements(triangle_buffer);
 }
 
 void GridAnisotropic::initializeMaterial()

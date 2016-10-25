@@ -13,7 +13,10 @@ protected:
 
 protected:
     BufferObject();
-    BufferObject(GLenum target, GLsizeiptr size, const GLvoid * data);
+    BufferObject(GLenum target, 
+                 GLsizeiptr size, 
+                 const GLvoid * data, 
+                 GLenum usage);
     virtual ~BufferObject();
     virtual void clean();
 
@@ -32,13 +35,35 @@ protected:
 
 public:
     ArrayBuffer();
-    ArrayBuffer(const QVector<glm::vec4> & array);
-    ArrayBuffer(const QVector<glm::vec3> & array);
-    ArrayBuffer(const QVector<glm::vec2> & array);
+    ArrayBuffer(const QVector<glm::vec4> & array, GLenum usage);
+    ArrayBuffer(const QVector<glm::vec3> & array, GLenum usage);
+    ArrayBuffer(const QVector<glm::vec2> & array, GLenum usage);
     virtual ~ArrayBuffer();
     GLuint nbItems() const;
     GLuint nbComponentsPerItem() const;
     GLenum type() const;
+};
+
+//-----------------------------------------------------------------------------
+class StaticArrayBuffer : public ArrayBuffer
+{
+public:
+    StaticArrayBuffer();
+    StaticArrayBuffer(const QVector<glm::vec4> & array);
+    StaticArrayBuffer(const QVector<glm::vec3> & array);
+    StaticArrayBuffer(const QVector<glm::vec2> & array);
+    virtual ~StaticArrayBuffer();
+};
+
+//-----------------------------------------------------------------------------
+class StreamArrayBuffer : public ArrayBuffer
+{
+public:
+    StreamArrayBuffer();
+    StreamArrayBuffer(const QVector<glm::vec4> & array);
+    StreamArrayBuffer(const QVector<glm::vec3> & array);
+    StreamArrayBuffer(const QVector<glm::vec2> & array);
+    virtual ~StreamArrayBuffer();
 };
 
 //-----------------------------------------------------------------------------
@@ -49,7 +74,7 @@ protected:
 
 public:
     ElementArrayBuffer();
-    ElementArrayBuffer(const QVector<GLuint> & array);
+    ElementArrayBuffer(const QVector<glm::uvec3> & array);
     ~ElementArrayBuffer();
 
     GLuint nbElements() const;

@@ -1,6 +1,8 @@
 #include "WaterMesh.h"
+#include "MathUtils.h"
 
 
+//-----------------------------------------------------------------------------
 void WaterMesh::initializeGeometry()
 {
     // create vertices
@@ -18,7 +20,8 @@ void WaterMesh::initializeGeometry()
     }
 
     // create triangles indices
-    QVector<GLuint> triangles;
+    QVector<glm::uvec3> triangles;
+    QVector<glm::vec3> normals(size * size);
     for(int j = 0; j < size - 1; ++j)
     {
         int base_index = size * j;
@@ -30,28 +33,52 @@ void WaterMesh::initializeGeometry()
             int idx1 = base_index + 1;
             int idx2 = base_index + 1 + size;
 
-            triangles.push_back(idx0);
-            triangles.push_back(idx1);
-            triangles.push_back(idx2);
+            glm::uvec3 triangle_1(idx0, idx1, idx2);
+            triangles.push_back(triangle_1);
+
+            glm::vec3 tri_1_normal = triangleNormal(pos[idx0], 
+                                                    pos[idx1], 
+                                                    pos[idx2]);
+            normals[idx0] += tri_1_normal;
+            normals[idx1] += tri_1_normal;
+            normals[idx2] += tri_1_normal;
 
             // 2nd triangle of quad
             idx0 = base_index + size;
             idx1 = base_index;
             idx2 = base_index + 1 + size;
 
-            triangles.push_back(idx0);
-            triangles.push_back(idx1);
-            triangles.push_back(idx2);
+            glm::uvec3 triangle_2(idx0, idx1, idx2);
+            triangles.push_back(triangle_2);
+
+            glm::vec3 tri_2_normal = triangleNormal(pos[idx0], 
+                                                    pos[idx1], 
+                                                    pos[idx2]);
+            normals[idx0] += tri_2_normal;
+            normals[idx1] += tri_2_normal;
+            normals[idx2] += tri_2_normal;
 
             base_index++;
         }
     }
 
+    // normals
+    for(int i = 0; i < normals.size(); ++i)
+    {
+        normals[i] = glm::normalize(normals[i]);
+    }
+
     // create OpenGL buffers
-    _geometry.addAttribute("pos", pos);
-    _geometry.setElements(triangles);
+    StreamArrayBuffer pos_buffer(pos);
+    StreamArrayBuffer normal_buffer(normals);
+    ElementArrayBuffer triangle_buffer(triangles);
+
+    _geometry.addAttribute("pos", pos_buffer);
+    //_geometry.addAttribute("normals", normal_buffer);
+    _geometry.setElements(triangle_buffer);
 }
 
+//-----------------------------------------------------------------------------
 void WaterMesh::initializeMaterial()
 {
     // shaders
