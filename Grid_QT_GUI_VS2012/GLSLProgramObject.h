@@ -59,7 +59,7 @@ public:
 
 	inline GLuint getProgId() { return _progId; }
 	
-    GLuint getAttribLocation(const char * attrib_name);
+    GLuint getAttribLocation(const char * attrib_name) const;
 
 protected:
 	std::vector<GLuint>		_vertexShaders;

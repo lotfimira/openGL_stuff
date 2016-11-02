@@ -39,7 +39,13 @@ void Camera::GlLoadMatrices()
 
 glm::mat4 Camera::mvpMat() const
 {
+    // TODO: this costs a multiplication for every mesh that uses it
     return _proj_mat *_view_mat;
+}
+
+glm::mat4 Camera::viewMat() const
+{
+    return _view_mat;
 }
 
 //-----------------------------------------------------------------------------

@@ -4,16 +4,37 @@
 #include <QGLWidget>
 #include <glm/glm.hpp>
 
-void Mesh::drawTriangles(const Geometry & geometry, Material & material, const Camera & camera)
+//-----------------------------------------------------------------------------
+void Mesh::drawTriangles(const Geometry & geometry, 
+                         Material & material, 
+                         const Camera & camera, 
+                         const QVector<Light> & lights)
 {
-    // always surround material operations with enable and disable
+    // bind the program
     material.enable();
 
-    material.setAttributes(geometry);
-
-    material.setUniform("mvp_mat", camera.mvpMat());
+    material.setUniforms(camera, lights);
 
     CLEAR_GL_ERRORS
+
+    // set attributes
+    const QMap<QString, ArrayBuffer> attributes = geometry.attributes();
+    for(const QString & name : attributes.keys())
+    {
+        const ArrayBuffer & buffer = attributes[name];
+
+        const GLuint ATTRIB_LOCATION = material.getAttributeLocation(name);
+        glEnableVertexAttribArray(ATTRIB_LOCATION);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer.id());
+        glVertexAttribPointer(ATTRIB_LOCATION, 
+                              buffer.nbComponentsPerItem(), 
+                              buffer.type(), 
+                              GL_FALSE, // normalized ??? for colors
+                              0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    CHECK_GL_ERRORS
 
     if(geometry.hasElements())
     {
@@ -29,7 +50,7 @@ void Mesh::drawTriangles(const Geometry & geometry, Material & material, const C
 
     CHECK_GL_ERRORS
 
-    // always surround material operations with enable and disable
+    // always surround draw operations with enable and disable material
     material.disable();
 }
 

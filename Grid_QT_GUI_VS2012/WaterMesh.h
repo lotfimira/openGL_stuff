@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Mesh.h"
+#include "StandardMaterial.h"
 
 class WaterMesh : public Mesh
 {
 protected:
     Geometry _geometry;
-    Material _material;
+    StandardMaterial _material;
 
     void initializeGeometry();
     void initializeMaterial();

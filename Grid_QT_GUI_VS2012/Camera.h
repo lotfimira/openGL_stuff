@@ -30,6 +30,7 @@ public:
     void GlLoadMatrices();
 
     glm::mat4 mvpMat() const;
+    glm::mat4 viewMat() const;
 
 signals:
     void changed();

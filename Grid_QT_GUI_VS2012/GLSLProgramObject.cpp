@@ -268,7 +268,7 @@ void GLSLProgramObject::bindTexture(GLenum target, std::string texname, GLuint t
 	glActiveTexture(GL_TEXTURE0);
 }
 
-GLuint GLSLProgramObject::getAttribLocation(const char * attrib_name)
+GLuint GLSLProgramObject::getAttribLocation(const char * attrib_name) const
 {
     return glGetAttribLocation(_progId, attrib_name);
 }

@@ -74,22 +74,13 @@ void WaterMesh::initializeGeometry()
     ElementArrayBuffer triangle_buffer(triangles);
 
     _geometry.addAttribute("pos", pos_buffer);
-    //_geometry.addAttribute("normals", normal_buffer);
+    _geometry.addAttribute("normal", normal_buffer);
     _geometry.setElements(triangle_buffer);
 }
 
 //-----------------------------------------------------------------------------
 void WaterMesh::initializeMaterial()
 {
-    // shaders
-    bool success = true;
-
-    GLSLProgramObject program;
-    success &= program.attachVertexShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\water_mesh_vertex.glsl");
-    success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\water_mesh_fragment.glsl");
-    success &= program.link();
-
-    _material.setProgram(program);
 }
 
 WaterMesh::WaterMesh()
@@ -105,12 +96,7 @@ WaterMesh::~WaterMesh()
 
 void WaterMesh::draw(const Camera & camera)
 {
-    _material.enable();
-
-    glm::vec4 color(0.0f, 0.0f, 1.0f, 1.0f);
-    _material.setUniform("color", color);
+    _material.setColor(Qt::blue);
 
     drawTriangles(_geometry, _material, camera);
-
-    _material.disable();
 }

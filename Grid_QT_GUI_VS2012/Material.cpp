@@ -9,6 +9,8 @@ void Material::enable()
     if(!_textures.isEmpty())
         enableTextures();
 
+    initGL();
+
     _program.bind();
 }
 
@@ -16,67 +18,35 @@ void Material::disable()
 {
     disableTextures();
 
-    disableAttributes();
+    cleanupGL();
 
     _program.unbind();
 }
 
-void Material::disableAttributes()
-{
-    CLEAR_GL_ERRORS
-
-    for(GLuint attribute : _attributes)
-    {
-        glDisableVertexAttribArray(attribute);
-    }
-
-    _attributes.clear();
-
-    CHECK_GL_ERRORS
-}
-
-void Material::setAttribute(const QString & name, const ArrayBuffer & attribute)
-{
-    CLEAR_GL_ERRORS
-
-    const GLuint ATTRIB_LOCATION = _program.getAttribLocation(name.toStdString().c_str());
-    glEnableVertexAttribArray(ATTRIB_LOCATION);
-    glBindBuffer(GL_ARRAY_BUFFER, attribute.id());
-    glVertexAttribPointer(ATTRIB_LOCATION, 
-                          attribute.nbComponentsPerItem(), 
-                          attribute.type(), 
-                          GL_FALSE, // normalized ??? for colors
-                          0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    CHECK_GL_ERRORS
-
-    _attributes.push_back(ATTRIB_LOCATION);
-}
-
-void Material::setAttributes(const Geometry & geometry)
-{
-    const QMap<QString, ArrayBuffer> attributes = geometry.attributes();
-    for(const QString & name : attributes.keys())
-    {
-        const ArrayBuffer & buffer = attributes[name];
-        setAttribute(name, buffer);
-    }
-}
-
-void Material::setProgram(const GLSLProgramObject & program)
-{
-    _program = program;
-}
-
-void Material::setUniform(const QString & name, glm::mat4 matrix)
+void Material::setUniform(const QString & name, glm::mat4 & matrix)
 {
     _program.setUniformMatrix(name.toStdString().c_str(), glm::value_ptr(matrix), 4);
 }
 
-void Material::setUniform(const QString & name, glm::vec4 v)
+void Material::setUniform(const QString & name, glm::vec4 & v)
 {
     _program.setUniform(name.toStdString().c_str(), glm::value_ptr(v), 4);
+}
+
+void Material::setUniform(const QString & name, glm::vec3 & v)
+{
+    _program.setUniform(name.toStdString().c_str(), glm::value_ptr(v), 3);
+}
+
+void Material::setUniform(const QString & name, float & v)
+{
+    _program.setUniform(name.toStdString().c_str(), &v, 1);
+}
+
+void Material::setUniform(const QString & name, QColor & color)
+{
+    glm::vec4 c(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+    _program.setUniform(name.toStdString().c_str(), glm::value_ptr(c), 4);
 }
 
 void Material::addTexture(const Texture2D & texture)
@@ -124,4 +94,9 @@ void Material::disableTextures()
 void Material::clean()
 {
     _textures.clear();
+}
+
+GLuint Material::getAttributeLocation(const QString & name) const
+{
+    return _program.getAttribLocation(name.toStdString().c_str());
 }

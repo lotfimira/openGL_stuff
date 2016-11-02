@@ -6,6 +6,7 @@
 #include "Buffer.h"
 #include "Geometry.h"
 #include "Material.h"
+#include "Light.h"
 #include <QString>
 
 //-----------------------------------------------------------------------------
@@ -14,13 +15,15 @@ class Mesh
 protected:
     void drawTriangles(const Geometry & geometry, 
                        Material & material, 
-                       const Camera & camera);
+                       const Camera & camera,
+                       const QVector<Light> & lights = QVector<Light>());
 
 public:
     virtual void draw(const Camera &) = 0;
     virtual ~Mesh(){}
 };
 
+//-----------------------------------------------------------------------------
 class GroundPlaneAnisotropic : public Mesh
 {
 private:
