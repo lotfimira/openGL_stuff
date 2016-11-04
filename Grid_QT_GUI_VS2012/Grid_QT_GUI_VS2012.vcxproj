@@ -182,6 +182,7 @@
     </ClCompile>
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="GLSLProgramObject.cpp" />
+    <ClCompile Include="GridMaterial.cpp" />
     <ClCompile Include="grid_qt_gui_vs2012.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="GLSLProgramObject.h" />
     <ClInclude Include="GlUtils.h" />
+    <ClInclude Include="GridMaterial.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathUtils.h" />

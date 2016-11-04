@@ -7,6 +7,7 @@
 #include "Geometry.h"
 #include "Material.h"
 #include "Light.h"
+#include "GridMaterial.h"
 #include <QString>
 
 //-----------------------------------------------------------------------------
@@ -40,7 +41,7 @@ class GridAnisotropic : public Mesh
 {
 protected:
     Geometry _geometry;
-    Material _material;
+    GridMaterial _material;
 
     void initializeGeometry();
     void initializeMaterial();

@@ -205,16 +205,6 @@ void GridAnisotropic::initializeMaterial()
     grid_texture.setAnisotropic(true);
 
     _material.addTexture(grid_texture);
-
-    // shaders
-    bool success = true;
-
-    GLSLProgramObject program;
-    success &= program.attachVertexShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_vertex.glsl");
-    success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_fragment.glsl");
-    success &= program.link();
-
-    _material.setProgram(program);
 }
 
 void GridAnisotropic::draw(const Camera & camera)
