@@ -24,7 +24,7 @@ MyGlWidget::MyGlWidget(const QGLFormat & format, QWidget *parent) :
 
 MyGlWidget::~MyGlWidget()
 {
-    MeshList::instance()->clean();
+    MeshList::instance()->clear();
 }
 
 void MyGlWidget::initializeGL()
@@ -145,6 +145,15 @@ void MyGlWidget::prepareScene()
     //GridAnisotropic * grid_anisotropic = new GridAnisotropic();
     //MeshList::instance()->addMesh(grid_anisotropic);
 
-    WaterMesh * water_mesh = new WaterMesh();
-    MeshList::instance()->addMesh(water_mesh);
+    //WaterMesh * water_mesh = new WaterMesh();
+    MeshList::instance()->push_back(WaterMesh());
+}
+
+// THIS SHOULD NOT BE HERE
+void MyGlWidget::animateMeshes()
+{
+    for(Mesh & mesh : *MeshList::instance())
+    {
+        mesh.animate();
+    }
 }

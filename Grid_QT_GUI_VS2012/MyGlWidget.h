@@ -33,6 +33,8 @@ protected:
 
     // THIS SHOULD NOT BE HERE
     void prepareScene();
+    // THIS SHOULD NOT BE HERE
+    void animateMeshes();
 
 protected slots:
     void onCameraChanged();

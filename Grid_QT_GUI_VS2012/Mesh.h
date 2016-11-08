@@ -21,6 +21,7 @@ protected:
 
 public:
     virtual void draw(const Camera &) = 0;
+    virtual void animate() {};
     virtual ~Mesh(){}
 };
 

@@ -11,44 +11,10 @@ MeshList * MeshList::instance()
     return _instance;
 }
 
-void drawBlueQuad()
-{
-    // no lighting
-    glDisable(GL_LIGHTING);
-
-    // blue
-    glColor4f(0, 0, 1, 1);
-
-    // quad facing the camera
-    int s = 1;
-    int z = 0;
-    glBegin(GL_QUADS);
-    glVertex3f(-s, -s, z);
-    glVertex3f(s, -s, z);
-    glVertex3f(s, s, z);
-    glVertex3f(-s, s, z);
-    glEnd();
-}
-
 void MeshList::draw(const Camera & camera)
 {
-    for(Mesh * mesh : _meshes)
+    for(Mesh & mesh : *this)
     {
-        mesh->draw(camera);
+        mesh.draw(camera);
     }
-}
-
-void MeshList::addMesh(Mesh * mesh)
-{
-    _meshes.push_back(mesh);
-}
-
-void MeshList::clean()
-{
-    for(Mesh * mesh : _meshes)
-    {
-        delete mesh;
-    }
-
-    _meshes.clear();
 }
