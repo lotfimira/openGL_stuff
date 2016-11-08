@@ -1,5 +1,6 @@
 #include "GridMaterial.h"
 #include "GlUtils.h"
+#include "ShaderManager.h"
 #include <GL/glew.h>
 
 // default values
@@ -8,12 +9,17 @@ GridMaterial::GridMaterial()
     bool success = true;
 
     // TODO: share instance of shader
-    GLSLProgramObject program;
-    success &= program.attachVertexShader(  "E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_vertex.glsl");
-    success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_fragment.glsl");
-    success &= program.link();
+    if(!ShaderManager::hasShader("grid"))
+    {
+        GLSLProgramObject program;
+        success &= program.attachVertexShader(  "E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_vertex.glsl");
+        success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\grid_fragment.glsl");
+        success &= program.link();
 
-    _program = program;
+        ShaderManager::addShader("grid", program);
+    }
+
+    _program = ShaderManager::getShader("grid");
 }
 
 void GridMaterial::initGL()

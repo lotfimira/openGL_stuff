@@ -346,8 +346,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\blinn_phong_fragment.glsl" />
-    <None Include="Shaders\water_mesh_fragment.glsl" />
-    <None Include="Shaders\water_mesh_vertex.glsl" />
+    <None Include="Shaders\standard_fragment.glsl" />
+    <None Include="Shaders\standard_vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

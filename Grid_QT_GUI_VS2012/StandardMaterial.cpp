@@ -16,8 +16,8 @@ StandardMaterial::StandardMaterial() :
     {
         bool success = true;
         GLSLProgramObject program;
-        success &= program.attachVertexShader(  "E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\water_mesh_vertex.glsl");
-        success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\water_mesh_fragment.glsl");
+        success &= program.attachVertexShader(  "E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\standard_vertex.glsl");
+        success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\standard_fragment.glsl");
         success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\blinn_phong_fragment.glsl");
         success &= program.link();
         ShaderManager::addShader("standard", program);
