@@ -1,6 +1,8 @@
 #include "StandardMaterial.h"
+#include "ShaderManager.h"
 #include "GlUtils.h"
 #include <GL/glew.h>
+
 
 // default values
 StandardMaterial::StandardMaterial() :
@@ -9,16 +11,19 @@ StandardMaterial::StandardMaterial() :
     _shine_intensity(0),
     _color(Qt::white)
 {
-    bool success = true;
+    // cache shader in the manager to avoid multiplication of shader instances
+    if(!ShaderManager::hasShader("standard"))
+    {
+        bool success = true;
+        GLSLProgramObject program;
+        success &= program.attachVertexShader(  "E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\water_mesh_vertex.glsl");
+        success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\water_mesh_fragment.glsl");
+        success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\blinn_phong_fragment.glsl");
+        success &= program.link();
+        ShaderManager::addShader("standard", program);
+    }
 
-    // TODO: share instance of shader
-    GLSLProgramObject program;
-    success &= program.attachVertexShader(  "E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\water_mesh_vertex.glsl");
-    success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\water_mesh_fragment.glsl");
-    success &= program.attachFragmentShader("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Shaders\\blinn_phong_fragment.glsl");
-    success &= program.link();
-
-    _program = program;
+    _program =  ShaderManager::getShader("standard");
 }
 
 void StandardMaterial::initGL()

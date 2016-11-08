@@ -2,27 +2,27 @@
 
 
 //-----------------------------------------------------------------------------
-ShaderManager::ShaderManager()
+QMap<QString, GLSLProgramObject> ShaderManager::_shaders;
+
+
+void ShaderManager::addShader(const QString & name, 
+                              const GLSLProgramObject & program)
 {
+    _shaders[name] = program;
 }
 
-ShaderManager::~ShaderManager()
+GLSLProgramObject ShaderManager::getShader(const QString & name)
 {
+    if(_shaders.contains(name))
+        return _shaders[name];
+    else
+    {
+        printf("WARNING: unknown shader %s\n", name.toStdString().c_str());
+        return GLSLProgramObject();
+    }
 }
 
-static ShaderManager * instance()
+bool ShaderManager::hasShader(const QString & name)
 {
-
-}
-
-bool ShaderManager::addShader(const QString & name,
-                              const QVector<QString> & vertex_shader_files,
-                              const QVector<QString> & fragment_shader_files)
-{
-
-}
-
-GLSLProgramObject * getShader(const QString & name)
-{
-
+    return _shaders.contains(name);
 }

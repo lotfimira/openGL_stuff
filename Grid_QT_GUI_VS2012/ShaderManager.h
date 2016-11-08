@@ -2,25 +2,18 @@
 
 #include <QString>
 #include <QMap>
+#include <QVector>
 #include <GLSLProgramObject.h>
 
 //-----------------------------------------------------------------------------
 class ShaderManager
 {
 private:
-    static ShaderManager * _instance;
-    QMap<QString, GLSLProgramObject *> _shaders;
+    static QMap<QString, GLSLProgramObject> _shaders;
 
 public:
 
-    ShaderManager();
-    ~ShaderManager();
-
-    static ShaderManager * instance();
-
-    bool addShader(const QString & name,
-                   const QVector<QString> & vertex_shader_files,
-                   const QVector<QString> & fragment_shader_files);
-
-    GLSLProgramObject * getShader(const QString & name);
+    static void addShader(const QString & name, const GLSLProgramObject & program);
+    static bool hasShader (const QString & name);
+    static GLSLProgramObject getShader(const QString & name);
 };
