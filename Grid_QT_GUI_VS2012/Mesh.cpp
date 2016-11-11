@@ -24,6 +24,9 @@ void Mesh::drawTriangles(const Geometry & geometry,
         const ArrayBuffer & buffer = attributes[name];
 
         const GLuint ATTRIB_LOCATION = material.getAttributeLocation(name);
+        if(-1 == ATTRIB_LOCATION)
+            continue;
+
         glEnableVertexAttribArray(ATTRIB_LOCATION);
         glBindBuffer(GL_ARRAY_BUFFER, buffer.id());
         glVertexAttribPointer(ATTRIB_LOCATION, 

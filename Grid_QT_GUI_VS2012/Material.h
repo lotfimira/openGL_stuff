@@ -8,12 +8,13 @@
 #include "Light.h"
 #include <QString>
 #include <QColor>
+#include <QMap>
 #include <glm/glm.hpp>
 
 class Material
 {
 protected:
-    QVector<Texture2D> _textures;
+    QMap<QString, Texture2D> _textures;
     GLSLProgramObject _program;
     QVector<GLuint> _attributes;
 
@@ -33,7 +34,7 @@ protected:
 public:
     virtual void enable();
     virtual void disable();
-    void addTexture(const Texture2D & texture);
+    void addTexture(const QString & name, const Texture2D & texture);
     void clean();
 
     // material must be enabled (bind program) prior to call these
