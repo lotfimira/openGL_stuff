@@ -1,37 +1,42 @@
 #include "WaterMesh.h"
 #include "MathUtils.h"
 
+#define SIZE 100
 
-//-----------------------------------------------------------------------------
-void WaterMesh::initializeGeometry()
+
+void computeShape(QVector<glm::vec3> & pos, 
+                  QVector<glm::vec3> & normals, 
+                  QVector<glm::uvec3> & triangles)
 {
     // create vertices
-    int size = 100;
-    QVector<glm::vec3> pos;
-    for(int i = 0; i < size; ++i)
+    pos.clear();
+    pos.reserve(SIZE * SIZE);
+    for(int i = 0; i < SIZE; ++i)
     {
-        for(int j = 0; j < size; ++j)
+        for(int j = 0; j < SIZE; ++j)
         {
-            float z = (2.0f * sin(20.0f * (float) i / (float)size)) + 
-                      (2.0f * sin(20.0f * (float) j / (float)size));
-            glm::vec3 p(i - size / 2, z, j - size / 2);
+            float z = (2.0f * sin(20.0f * (float) i / (float)SIZE)) + 
+                      (2.0f * sin(20.0f * (float) j / (float)SIZE));
+            glm::vec3 p(i - SIZE / 2, z, j - SIZE / 2);
             pos.push_back(p);
         }
     }
 
     // create triangles indices
-    QVector<glm::uvec3> triangles;
-    QVector<glm::vec3> normals(size * size);
-    for(int j = 0; j < size - 1; ++j)
+    normals.clear();
+    normals.resize(SIZE * SIZE);
+    triangles.clear();
+    triangles.reserve(SIZE * SIZE);
+    for(int j = 0; j < SIZE - 1; ++j)
     {
-        int base_index = size * j;
+        int base_index = SIZE * j;
 
-        for(int i = 0; i < size - 1; ++i)
+        for(int i = 0; i < SIZE - 1; ++i)
         {
             // 1st triangle of quad
             int idx0 = base_index;
             int idx1 = base_index + 1;
-            int idx2 = base_index + 1 + size;
+            int idx2 = base_index + 1 + SIZE;
 
             glm::uvec3 triangle_1(idx0, idx1, idx2);
             triangles.push_back(triangle_1);
@@ -44,9 +49,9 @@ void WaterMesh::initializeGeometry()
             normals[idx2] += tri_1_normal;
 
             // 2nd triangle of quad
-            idx0 = base_index + size;
+            idx0 = base_index + SIZE;
             idx1 = base_index;
-            idx2 = base_index + 1 + size;
+            idx2 = base_index + 1 + SIZE;
 
             glm::uvec3 triangle_2(idx0, idx1, idx2);
             triangles.push_back(triangle_2);
@@ -67,15 +72,23 @@ void WaterMesh::initializeGeometry()
     {
         normals[i] = glm::normalize(normals[i]);
     }
+}
 
-    // create OpenGL buffers
-    StreamArrayBuffer pos_buffer(pos);
-    StreamArrayBuffer normal_buffer(normals);
-    ElementArrayBuffer triangle_buffer(triangles);
+//-----------------------------------------------------------------------------
+void WaterMesh::initializeGeometry()
+{
+    QVector<glm::vec3> pos;
+    QVector<glm::vec3> normals;
+    QVector<glm::uvec3> triangles;
 
-    _geometry.addAttribute("pos", pos_buffer);
-    _geometry.addAttribute("normal", normal_buffer);
-    _geometry.setElements(triangle_buffer);
+    computeShape(pos, normals, triangles);
+
+    _pos_buffer = StreamArrayBuffer(pos);
+    _normal_buffer = StreamArrayBuffer(normals);
+
+    _geometry.setStreamAttribute("pos", _pos_buffer);
+    _geometry.setStreamAttribute("normal", _normal_buffer);
+    _geometry.setElements(ElementArrayBuffer(triangles));
 }
 
 //-----------------------------------------------------------------------------
@@ -99,4 +112,16 @@ void WaterMesh::draw(const Camera & camera)
     _material.setColor(Qt::blue);
 
     drawTriangles(_geometry, _material, camera);
+}
+
+void WaterMesh::animate()
+{
+    QVector<glm::vec3> pos;
+    QVector<glm::vec3> normals;
+    QVector<glm::uvec3> triangles;
+
+    computeShape(pos, normals, triangles);
+
+    _pos_buffer.update(pos);
+    _normal_buffer.update(normals);
 }

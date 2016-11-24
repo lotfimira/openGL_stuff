@@ -17,11 +17,13 @@ void Mesh::drawTriangles(const Geometry & geometry,
 
     CLEAR_GL_ERRORS
 
+    QVector<GLuint> attrib_locations;
+
     // set attributes
-    const QMap<QString, ArrayBuffer> attributes = geometry.attributes();
-    for(const QString & name : attributes.keys())
+    const QMap<QString, StaticArrayBuffer> & static_attributes = geometry.staticAttributes();
+    for(const QString & name : static_attributes.keys())
     {
-        const ArrayBuffer & buffer = attributes[name];
+        const ArrayBuffer & buffer = static_attributes[name];
 
         const GLuint ATTRIB_LOCATION = material.getAttributeLocation(name);
         if(-1 == ATTRIB_LOCATION)
@@ -35,6 +37,32 @@ void Mesh::drawTriangles(const Geometry & geometry,
                               GL_FALSE, // normalized ??? for colors
                               0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        attrib_locations.push_back(ATTRIB_LOCATION);
+    }
+
+    CHECK_GL_ERRORS
+
+    // set attributes
+    const QMap<QString, StreamArrayBuffer> & stream_attributes = geometry.streamAttributes();
+    for(const QString & name : stream_attributes.keys())
+    {
+        const ArrayBuffer & buffer = stream_attributes[name];
+
+        const GLuint ATTRIB_LOCATION = material.getAttributeLocation(name);
+        if(-1 == ATTRIB_LOCATION)
+            continue;
+
+        glEnableVertexAttribArray(ATTRIB_LOCATION);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer.id());
+        glVertexAttribPointer(ATTRIB_LOCATION, 
+                              buffer.nbComponentsPerItem(), 
+                              buffer.type(), 
+                              GL_FALSE, // normalized ??? for colors
+                              0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        attrib_locations.push_back(ATTRIB_LOCATION);
     }
 
     CHECK_GL_ERRORS
@@ -50,6 +78,11 @@ void Mesh::drawTriangles(const Geometry & geometry,
     {
         glDrawArrays(GL_TRIANGLES, 0, geometry.nbVertices());
     }
+
+    CHECK_GL_ERRORS
+
+    for(const GLuint ATTRIB_LOCATION : attrib_locations)
+        glDisableVertexAttribArray(ATTRIB_LOCATION);
 
     CHECK_GL_ERRORS
 
@@ -194,9 +227,9 @@ void GridAnisotropic::initializeGeometry()
     StaticArrayBuffer tex_coord_buffer(tex_coords);
     ElementArrayBuffer triangle_buffer(triangles);
 
-    _geometry.addAttribute("pos", pos_buffer);
-    _geometry.addAttribute("color", color_buffer);
-    _geometry.addAttribute("tex_coord", tex_coord_buffer);
+    _geometry.setStaticAttribute("pos", pos_buffer);
+    _geometry.setStaticAttribute("color", color_buffer);
+    _geometry.setStaticAttribute("tex_coord", tex_coord_buffer);
     _geometry.setElements(triangle_buffer);
 }
 
@@ -207,7 +240,7 @@ void GridAnisotropic::initializeMaterial()
     grid_texture.setMipmaps(true);
     grid_texture.setAnisotropic(true);
 
-    _material.addTexture(grid_texture);
+    _material.addTexture("grid_texture", grid_texture);
 }
 
 void GridAnisotropic::draw(const Camera & camera)

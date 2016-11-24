@@ -181,3 +181,30 @@ StreamArrayBuffer::StreamArrayBuffer(const QVector<glm::vec2> & array)
 StreamArrayBuffer::~StreamArrayBuffer()
 {
 }
+
+void StreamArrayBuffer::update(const QVector<glm::vec4> & array)
+{
+    assert(_nb_components_per_item == 4);
+
+    // TODO use excpetions instead
+}
+
+void StreamArrayBuffer::update(const QVector<glm::vec3> & array)
+{
+    if(!isValid())
+        return;
+
+    // TODO throw exception
+    if(_nb_components_per_item != 3)
+        return;
+
+    glBufferData(GL_ARRAY_BUFFER, 
+                 sizeof(glm::vec3) * array.size(), 
+                 array.data(), 
+                 GL_STREAM_DRAW);
+}
+
+void StreamArrayBuffer::update(const QVector<glm::vec2> & array)
+{
+
+}

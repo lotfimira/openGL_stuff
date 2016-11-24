@@ -64,6 +64,9 @@ public:
     StreamArrayBuffer(const QVector<glm::vec3> & array);
     StreamArrayBuffer(const QVector<glm::vec2> & array);
     virtual ~StreamArrayBuffer();
+    void update(const QVector<glm::vec4> & array);
+    void update(const QVector<glm::vec3> & array);
+    void update(const QVector<glm::vec2> & array);
 };
 
 //-----------------------------------------------------------------------------
