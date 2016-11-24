@@ -249,6 +249,7 @@
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshList.h" />
+    <ClInclude Include="MyException.h" />
     <ClInclude Include="nvSDKPath.h" />
     <ClInclude Include="nvShaderUtils.h" />
     <ClInclude Include="SelfCleaned.h" />

@@ -1,5 +1,6 @@
 #include "Buffer.h"
 #include "GlUtils.h"
+#include "MyException.h"
 
 //-----------------------------------------------------------------------------
 BufferObject::BufferObject() : _id(0)
@@ -182,11 +183,22 @@ StreamArrayBuffer::~StreamArrayBuffer()
 {
 }
 
+//-----------------------------------------------------------------------------
 void StreamArrayBuffer::update(const QVector<glm::vec4> & array)
 {
-    assert(_nb_components_per_item == 4);
+    if(!isValid())
+        return;
 
-    // TODO use excpetions instead
+    if(_nb_components_per_item != 4)
+        throw new MyException("StreamArrayBuffer::update unmatch nb of items");
+
+    if(_type != GL_FLOAT)
+        throw new MyException("StreamArrayBuffer::update unmatch type");
+
+    glBufferData(GL_ARRAY_BUFFER, 
+                 sizeof(glm::vec4) * array.size(), 
+                 array.data(), 
+                 GL_STREAM_DRAW);
 }
 
 void StreamArrayBuffer::update(const QVector<glm::vec3> & array)
@@ -194,9 +206,11 @@ void StreamArrayBuffer::update(const QVector<glm::vec3> & array)
     if(!isValid())
         return;
 
-    // TODO throw exception
     if(_nb_components_per_item != 3)
-        return;
+        throw new MyException("StreamArrayBuffer::update unmatch nb of items");
+
+    if(_type != GL_FLOAT)
+        throw new MyException("StreamArrayBuffer::update unmatch type");
 
     glBufferData(GL_ARRAY_BUFFER, 
                  sizeof(glm::vec3) * array.size(), 
@@ -206,5 +220,17 @@ void StreamArrayBuffer::update(const QVector<glm::vec3> & array)
 
 void StreamArrayBuffer::update(const QVector<glm::vec2> & array)
 {
+    if(!isValid())
+        return;
 
+    if(_nb_components_per_item != 2)
+        throw new MyException("StreamArrayBuffer::update unmatch nb of items");
+
+    if(_type != GL_FLOAT)
+        throw new MyException("StreamArrayBuffer::update unmatch type");
+
+    glBufferData(GL_ARRAY_BUFFER, 
+                 sizeof(glm::vec2) * array.size(), 
+                 array.data(), 
+                 GL_STREAM_DRAW);
 }
