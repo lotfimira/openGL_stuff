@@ -15,6 +15,9 @@ Q_OBJECT
 private:
     OrbitCamera _camera;
     Input _input;
+    QTimer _timer_fps;
+    bool _valid;
+    DWORD _last_frame_time;
 
 public:
     MyGlWidget(const QGLFormat & gl_format, QWidget *parent);

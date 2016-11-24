@@ -20,6 +20,8 @@ MyGlWidget::MyGlWidget(const QGLFormat & format, QWidget *parent) :
                      this,     SLOT(onCameraChanged()));
 
     setFocusPolicy(Qt::StrongFocus);
+
+    _last_frame_time = GetTickCount();
 }
 
 MyGlWidget::~MyGlWidget()
@@ -75,6 +77,13 @@ void MyGlWidget::paintGL()
     MeshList::instance()->draw(_camera);
 
     //_camera.printOrbitCamera();
+
+    // compute fps
+    DWORD now = GetTickCount();
+    double fps = 1000.0 / double(now - _last_frame_time);
+    _last_frame_time = now;
+
+    renderText(10, 20, QString::number(fps, 'f', 0) + " FPS");
 }
 
 //-----------------------------------------------------------------------------
