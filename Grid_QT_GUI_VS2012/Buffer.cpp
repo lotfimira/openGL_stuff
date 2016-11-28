@@ -184,64 +184,41 @@ StreamArrayBuffer::~StreamArrayBuffer()
 }
 
 //-----------------------------------------------------------------------------
+void StreamArrayBuffer::update(GLsizeiptr size, 
+                               const GLvoid * data, 
+                               int nb_components_per_items, 
+                               GLenum type
+                               )
+{
+    if(!isValid())
+        return;
+
+    if(_nb_components_per_item != nb_components_per_items)
+        throw new MyException("StreamArrayBuffer::update unmatch nb of items");
+
+    if(_type != type)
+        throw new MyException("StreamArrayBuffer::update unmatch type");
+
+    GLuint id = _id;
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+    glBufferData(GL_ARRAY_BUFFER, 
+                 size, 
+                 data, 
+                 GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void StreamArrayBuffer::update(const QVector<glm::vec4> & array)
 {
-    if(!isValid())
-        return;
-
-    if(_nb_components_per_item != 4)
-        throw new MyException("StreamArrayBuffer::update unmatch nb of items");
-
-    if(_type != GL_FLOAT)
-        throw new MyException("StreamArrayBuffer::update unmatch type");
-
-    GLuint id = _id;
-    glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, 
-                 sizeof(glm::vec4) * array.size(), 
-                 array.data(), 
-                 GL_STREAM_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    update(sizeof(glm::vec4) * array.size(), array.data(), 4, GL_FLOAT);
 }
 
-// TODO Duplicate
 void StreamArrayBuffer::update(const QVector<glm::vec3> & array)
 {
-    if(!isValid())
-        return;
-
-    if(_nb_components_per_item != 3)
-        throw new MyException("StreamArrayBuffer::update unmatch nb of items");
-
-    if(_type != GL_FLOAT)
-        throw new MyException("StreamArrayBuffer::update unmatch type");
-
-    GLuint id = _id;
-    glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, 
-                 sizeof(glm::vec3) * array.size(), 
-                 array.data(), 
-                 GL_STREAM_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    update(sizeof(glm::vec3) * array.size(), array.data(), 3, GL_FLOAT);
 }
 
-// TODO Duplicate
 void StreamArrayBuffer::update(const QVector<glm::vec2> & array)
 {
-    if(!isValid())
-        return;
-
-    if(_nb_components_per_item != 2)
-        throw new MyException("StreamArrayBuffer::update unmatch nb of items");
-
-    if(_type != GL_FLOAT)
-        throw new MyException("StreamArrayBuffer::update unmatch type");
-
-    GLuint id = _id;
-    glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, 
-                 sizeof(glm::vec2) * array.size(), 
-                 array.data(), 
-                 GL_STREAM_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    update(sizeof(glm::vec2) * array.size(), array.data(), 2, GL_FLOAT);
 }

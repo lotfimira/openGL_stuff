@@ -58,6 +58,12 @@ public:
 //-----------------------------------------------------------------------------
 class StreamArrayBuffer : public ArrayBuffer
 {
+protected:
+    void update(GLsizeiptr size, 
+                const GLvoid * data,
+                int nb_components_per_items, 
+                GLenum type);
+
 public:
     StreamArrayBuffer();
     StreamArrayBuffer(const QVector<glm::vec4> & array);
