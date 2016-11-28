@@ -84,8 +84,8 @@ void WaterMesh::initializeGeometry()
 
     computeShape(pos, normals, triangles);
 
-    _pos_buffer = GLFactory::createStreamArrayBuffer(pos);
-    _normal_buffer = GLFactory::createStreamArrayBuffer(normals);
+    _pos_buffer = createStreamArrayBuffer(pos);
+    _normal_buffer = createStreamArrayBuffer(normals);
 
     _geometry.setAttribute("pos", _pos_buffer);
     _geometry.setAttribute("normal", _normal_buffer);

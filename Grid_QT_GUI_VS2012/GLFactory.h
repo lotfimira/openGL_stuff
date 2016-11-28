@@ -5,12 +5,8 @@
 #include <QVector>
 
 //-----------------------------------------------------------------------------
-class GLFactory
-{
-public:
-    static StreamArrayBufferPtr createStreamArrayBuffer(const QVector<glm::vec3> &);
+StreamArrayBufferPtr createStreamArrayBuffer(const QVector<glm::vec3> &);
 
-    static StaticArrayBufferPtr createStaticArrayBuffer(const QVector<glm::vec4> &);
-    static StaticArrayBufferPtr createStaticArrayBuffer(const QVector<glm::vec3> &);
-    static StaticArrayBufferPtr createStaticArrayBuffer(const QVector<glm::vec2> &);
-};
+StaticArrayBufferPtr createStaticArrayBuffer(const QVector<glm::vec4> &);
+StaticArrayBufferPtr createStaticArrayBuffer(const QVector<glm::vec3> &);
+StaticArrayBufferPtr createStaticArrayBuffer(const QVector<glm::vec2> &);

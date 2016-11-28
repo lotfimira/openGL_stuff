@@ -199,9 +199,9 @@ void GridAnisotropic::initializeGeometry()
     }
 
     // create OpenGL buffers
-    StaticArrayBufferPtr pos_buffer = GLFactory::createStaticArrayBuffer(pos);
-    StaticArrayBufferPtr color_buffer = GLFactory::createStaticArrayBuffer(colors);
-    StaticArrayBufferPtr tex_coord_buffer = GLFactory::createStaticArrayBuffer(tex_coords);
+    StaticArrayBufferPtr pos_buffer = createStaticArrayBuffer(pos);
+    StaticArrayBufferPtr color_buffer = createStaticArrayBuffer(colors);
+    StaticArrayBufferPtr tex_coord_buffer = createStaticArrayBuffer(tex_coords);
     ElementArrayBuffer triangle_buffer(triangles);
 
     _geometry.setAttribute("pos", pos_buffer);
