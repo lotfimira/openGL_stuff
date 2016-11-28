@@ -13,18 +13,13 @@ public:
     unsigned int nbVertices() const;
 
     const ElementArrayBuffer elements() const;
-    const QMap<QString, StreamArrayBuffer> & streamAttributes() const;
-    const QMap<QString, StaticArrayBuffer> & staticAttributes() const;
-    const QMap<QString, ArrayBuffer> & attributes() const;
+    const QMap<QString, ArrayBufferPtr> & attributes() const;
 
     void setElements(const ElementArrayBuffer & elements);
-    void setStaticAttribute(const QString & name, const StaticArrayBuffer & buffer);
-    void setStreamAttribute(const QString & name, const StreamArrayBuffer & buffer);
+    void setAttribute(const QString & name, ArrayBufferPtr buffer);
     void clean();
 
 private:
     ElementArrayBuffer _elements;
-    QMap<QString, StaticArrayBuffer> _static_attributes; // copies owned
-    QMap<QString, StreamArrayBuffer> _stream_attributes; // copies owned
-    QMap<QString, ArrayBuffer> _attributes; // copies of the copies
+    QMap<QString, ArrayBufferPtr> _attributes;
 };

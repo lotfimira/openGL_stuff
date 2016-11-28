@@ -8,8 +8,8 @@ class WaterMesh : public Mesh
 protected:
     Geometry _geometry;
     StandardMaterial _material;
-    StreamArrayBuffer _pos_buffer;
-    StreamArrayBuffer _normal_buffer;
+    StreamArrayBufferPtr _pos_buffer;
+    StreamArrayBufferPtr _normal_buffer;
 
     void initializeGeometry();
     void initializeMaterial();

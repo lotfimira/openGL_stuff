@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "GlUtils.h"
+#include "GLFactory.h"
 #include <QImage>
 #include <QGLWidget>
 #include <glm/glm.hpp>
@@ -20,44 +21,20 @@ void Mesh::drawTriangles(const Geometry & geometry,
     QVector<GLuint> attrib_locations;
 
     // set attributes
-    const QMap<QString, StaticArrayBuffer> & static_attributes = geometry.staticAttributes();
-    for(const QString & name : static_attributes.keys())
+    const QMap<QString, ArrayBufferPtr> & attributes = geometry.attributes();
+    for(const QString & name : attributes.keys())
     {
-        const ArrayBuffer & buffer = static_attributes[name];
+        const ArrayBufferPtr buffer = attributes[name];
 
         const GLuint ATTRIB_LOCATION = material.getAttributeLocation(name);
         if(-1 == ATTRIB_LOCATION)
             continue;
 
         glEnableVertexAttribArray(ATTRIB_LOCATION);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer.id());
+        glBindBuffer(GL_ARRAY_BUFFER, buffer->id());
         glVertexAttribPointer(ATTRIB_LOCATION, 
-                              buffer.nbComponentsPerItem(), 
-                              buffer.type(), 
-                              GL_FALSE, // normalized ??? for colors
-                              0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        attrib_locations.push_back(ATTRIB_LOCATION);
-    }
-
-    CHECK_GL_ERRORS
-
-    // set attributes
-    const QMap<QString, StreamArrayBuffer> & stream_attributes = geometry.streamAttributes();
-    for(const QString & name : stream_attributes.keys())
-    {
-        const ArrayBuffer & buffer = stream_attributes[name];
-
-        const GLuint ATTRIB_LOCATION = material.getAttributeLocation(name);
-        if(-1 == ATTRIB_LOCATION)
-            continue;
-
-        glEnableVertexAttribArray(ATTRIB_LOCATION);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer.id());
-        glVertexAttribPointer(ATTRIB_LOCATION, 
-                              buffer.nbComponentsPerItem(), 
-                              buffer.type(), 
+                              buffer->nbComponentsPerItem(), 
+                              buffer->type(), 
                               GL_FALSE, // normalized ??? for colors
                               0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -222,14 +199,14 @@ void GridAnisotropic::initializeGeometry()
     }
 
     // create OpenGL buffers
-    StaticArrayBuffer pos_buffer(pos);
-    StaticArrayBuffer color_buffer(colors);
-    StaticArrayBuffer tex_coord_buffer(tex_coords);
+    StaticArrayBufferPtr pos_buffer = GLFactory::createStaticArrayBuffer(pos);
+    StaticArrayBufferPtr color_buffer = GLFactory::createStaticArrayBuffer(colors);
+    StaticArrayBufferPtr tex_coord_buffer = GLFactory::createStaticArrayBuffer(tex_coords);
     ElementArrayBuffer triangle_buffer(triangles);
 
-    _geometry.setStaticAttribute("pos", pos_buffer);
-    _geometry.setStaticAttribute("color", color_buffer);
-    _geometry.setStaticAttribute("tex_coord", tex_coord_buffer);
+    _geometry.setAttribute("pos", pos_buffer);
+    _geometry.setAttribute("color", color_buffer);
+    _geometry.setAttribute("tex_coord", tex_coord_buffer);
     _geometry.setElements(triangle_buffer);
 }
 

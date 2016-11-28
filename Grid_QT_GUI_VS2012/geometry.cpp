@@ -15,39 +15,20 @@ void Geometry::setElements(const ElementArrayBuffer & elements)
     _elements = elements;
 }
 
-void Geometry::setStreamAttribute(const QString & name, const StreamArrayBuffer & buffer)
+void Geometry::setAttribute(const QString & name, ArrayBufferPtr buffer)
 {
-    _stream_attributes[name] = buffer;
-    //_attributes[name] = _stream_attributes[name];
-}
-
-void Geometry::setStaticAttribute(const QString & name, const StaticArrayBuffer & buffer)
-{
-    _static_attributes[name] = buffer;
-    //_attributes[name] = _static_attributes[name];
+    _attributes[name] = buffer;
 }
 
 void Geometry::clean()
 {
-    _static_attributes.clear();
-    _stream_attributes.clear();
-    //_attributes.clear();
+    _attributes.clear();
 }
 
-const QMap<QString, StreamArrayBuffer> & Geometry::streamAttributes() const
+const QMap<QString, ArrayBufferPtr> & Geometry::attributes() const
 {
-    return _stream_attributes;
+    return _attributes;
 }
-
-const QMap<QString, StaticArrayBuffer> & Geometry::staticAttributes() const
-{
-    return _static_attributes;
-}
-/*
-const QMap<QString, ArrayBuffer &> & Geometry::attributes() const
-{
-    //return _attributes;
-}*/
 
 unsigned int Geometry::nbELements() const
 {
@@ -56,8 +37,8 @@ unsigned int Geometry::nbELements() const
 
 unsigned int Geometry::nbVertices() const
 {
-    //if(!_attributes.empty())
-      //  return _attributes.first().nbItems();
+    if(!_attributes.empty())
+        return _attributes.first()->nbItems();
 
     return 0;
 }

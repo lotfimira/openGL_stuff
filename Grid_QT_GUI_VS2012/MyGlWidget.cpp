@@ -151,11 +151,11 @@ void MyGlWidget::prepareScene()
     //GroundPlaneAnisotropic * groundPlaneAnisotropic = new GroundPlaneAnisotropic();
     //MeshList::instance()->addMesh(groundPlaneAnisotropic);
 
-    //GridAnisotropic * grid_anisotropic = new GridAnisotropic();
-    //MeshList::instance()->addMesh(grid_anisotropic);
+    GridAnisotropic * grid_anisotropic = new GridAnisotropic();
+    MeshList::instance()->addMesh(grid_anisotropic);
 
-    WaterMesh * water_mesh = new WaterMesh();
-    MeshList::instance()->addMesh(water_mesh);
+    //WaterMesh * water_mesh = new WaterMesh();
+    //MeshList::instance()->addMesh(water_mesh);
 }
 
 // THIS SHOULD NOT BE HERE

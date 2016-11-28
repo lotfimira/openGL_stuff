@@ -82,3 +82,7 @@ public:
 
     GLuint nbElements() const;
 };
+
+typedef std::shared_ptr<StaticArrayBuffer> StaticArrayBufferPtr;
+typedef std::shared_ptr<StreamArrayBuffer> StreamArrayBufferPtr;
+typedef std::shared_ptr<ArrayBuffer> ArrayBufferPtr;

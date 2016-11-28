@@ -1,5 +1,6 @@
 #include "WaterMesh.h"
 #include "MathUtils.h"
+#include "GLFactory.h"
 
 #define SIZE 100
 
@@ -83,11 +84,11 @@ void WaterMesh::initializeGeometry()
 
     computeShape(pos, normals, triangles);
 
-    _pos_buffer = StreamArrayBuffer(pos);
-    _normal_buffer = StreamArrayBuffer(normals);
+    _pos_buffer = GLFactory::createStreamArrayBuffer(pos);
+    _normal_buffer = GLFactory::createStreamArrayBuffer(normals);
 
-    _geometry.setStreamAttribute("pos", _pos_buffer);
-    _geometry.setStreamAttribute("normal", _normal_buffer);
+    _geometry.setAttribute("pos", _pos_buffer);
+    _geometry.setAttribute("normal", _normal_buffer);
     _geometry.setElements(ElementArrayBuffer(triangles));
 }
 
@@ -122,6 +123,6 @@ void WaterMesh::animate()
 
     computeShape(pos, normals, triangles);
 
-    _pos_buffer.update(pos);
-    _normal_buffer.update(normals);
+    _pos_buffer->update(pos);
+    _normal_buffer->update(normals);
 }

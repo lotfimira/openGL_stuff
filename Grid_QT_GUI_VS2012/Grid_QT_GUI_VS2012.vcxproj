@@ -181,6 +181,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="geometry.cpp" />
+    <ClCompile Include="GLFactory.cpp" />
     <ClCompile Include="GLSLProgramObject.cpp" />
     <ClCompile Include="GridMaterial.cpp" />
     <ClCompile Include="grid_qt_gui_vs2012.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Attribute.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="GLFactory.h" />
     <ClInclude Include="GLSLProgramObject.h" />
     <ClInclude Include="GlUtils.h" />
     <ClInclude Include="GridMaterial.h" />
