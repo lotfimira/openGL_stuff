@@ -1,14 +1,16 @@
 #include "WaterMesh.h"
 #include "MathUtils.h"
 #include "GLFactory.h"
+#include <Windows.h>
 
 #define SIZE 100
-
 
 void computeShape(QVector<glm::vec3> & pos, 
                   QVector<glm::vec3> & normals, 
                   QVector<glm::uvec3> & triangles)
 {
+    int t = GetTickCount();
+
     // create vertices
     pos.clear();
     pos.reserve(SIZE * SIZE);
@@ -16,7 +18,7 @@ void computeShape(QVector<glm::vec3> & pos,
     {
         for(int j = 0; j < SIZE; ++j)
         {
-            float z = (2.0f * sin(20.0f * (float) i / (float)SIZE)) + 
+            float z = (2.0f * sin((20.0f * (float) i + t) / (float)SIZE)) + 
                       (2.0f * sin(20.0f * (float) j / (float)SIZE));
             glm::vec3 p(i - SIZE / 2, z, j - SIZE / 2);
             pos.push_back(p);
@@ -125,4 +127,6 @@ void WaterMesh::animate()
 
     _pos_buffer->update(pos);
     _normal_buffer->update(normals);
+
+    printf("%.2f\r", pos[0].y);
 }

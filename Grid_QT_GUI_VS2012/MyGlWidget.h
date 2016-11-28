@@ -15,7 +15,7 @@ Q_OBJECT
 private:
     OrbitCamera _camera;
     Input _input;
-    QTimer _timer_fps;
+    QTimer _timer_refresh;
     bool _valid;
     DWORD _last_frame_time;
 
@@ -41,4 +41,5 @@ protected:
 
 protected slots:
     void onCameraChanged();
+    void onRefreshTimout();
 };

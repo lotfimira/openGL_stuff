@@ -195,12 +195,16 @@ void StreamArrayBuffer::update(const QVector<glm::vec4> & array)
     if(_type != GL_FLOAT)
         throw new MyException("StreamArrayBuffer::update unmatch type");
 
+    GLuint id = _id;
+    glBindBuffer(GL_ARRAY_BUFFER, id);
     glBufferData(GL_ARRAY_BUFFER, 
                  sizeof(glm::vec4) * array.size(), 
                  array.data(), 
                  GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+// TODO Duplicate
 void StreamArrayBuffer::update(const QVector<glm::vec3> & array)
 {
     if(!isValid())
@@ -212,12 +216,16 @@ void StreamArrayBuffer::update(const QVector<glm::vec3> & array)
     if(_type != GL_FLOAT)
         throw new MyException("StreamArrayBuffer::update unmatch type");
 
+    GLuint id = _id;
+    glBindBuffer(GL_ARRAY_BUFFER, id);
     glBufferData(GL_ARRAY_BUFFER, 
                  sizeof(glm::vec3) * array.size(), 
                  array.data(), 
                  GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+// TODO Duplicate
 void StreamArrayBuffer::update(const QVector<glm::vec2> & array)
 {
     if(!isValid())
@@ -229,8 +237,11 @@ void StreamArrayBuffer::update(const QVector<glm::vec2> & array)
     if(_type != GL_FLOAT)
         throw new MyException("StreamArrayBuffer::update unmatch type");
 
+    GLuint id = _id;
+    glBindBuffer(GL_ARRAY_BUFFER, id);
     glBufferData(GL_ARRAY_BUFFER, 
                  sizeof(glm::vec2) * array.size(), 
                  array.data(), 
                  GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

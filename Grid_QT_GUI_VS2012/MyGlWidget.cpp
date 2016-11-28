@@ -22,6 +22,10 @@ MyGlWidget::MyGlWidget(const QGLFormat & format, QWidget *parent) :
     setFocusPolicy(Qt::StrongFocus);
 
     _last_frame_time = GetTickCount();
+
+    _timer_refresh.setInterval(1000 / 60);
+    _timer_refresh.setSingleShot(true);
+    QObject::connect(&_timer_refresh, SIGNAL(timeout()), this, SLOT(onRefreshTimout()));
 }
 
 MyGlWidget::~MyGlWidget()
@@ -82,8 +86,15 @@ void MyGlWidget::paintGL()
     DWORD now = GetTickCount();
     double fps = 1000.0 / double(now - _last_frame_time);
     _last_frame_time = now;
-
     renderText(10, 20, QString::number(fps, 'f', 0) + " FPS");
+
+    _timer_refresh.start();
+}
+
+void MyGlWidget::onRefreshTimout()
+{
+    animateMeshes();
+    updateGL();
 }
 
 //-----------------------------------------------------------------------------
@@ -151,11 +162,11 @@ void MyGlWidget::prepareScene()
     //GroundPlaneAnisotropic * groundPlaneAnisotropic = new GroundPlaneAnisotropic();
     //MeshList::instance()->addMesh(groundPlaneAnisotropic);
 
-    GridAnisotropic * grid_anisotropic = new GridAnisotropic();
-    MeshList::instance()->addMesh(grid_anisotropic);
+    //GridAnisotropic * grid_anisotropic = new GridAnisotropic();
+    //MeshList::instance()->addMesh(grid_anisotropic);
 
-    //WaterMesh * water_mesh = new WaterMesh();
-    //MeshList::instance()->addMesh(water_mesh);
+    WaterMesh * water_mesh = new WaterMesh();
+    MeshList::instance()->addMesh(water_mesh);
 }
 
 // THIS SHOULD NOT BE HERE
