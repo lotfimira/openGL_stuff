@@ -16,7 +16,7 @@ void BlinnPhongLighting(
     fragColor = inputColor * AMBIANT;
 
     //add Diffuse Terms
-    //fragColor += inputColor * DIFFUSE * max(dot(normal,light_dir), 0.0);
+    fragColor += inputColor * DIFFUSE * max(dot(normal,light_dir), 0.0);
 
     // add specular term
     //fragColor += shine_intensity * pow( max(dot(normal, half_vec), 0.0), shininess );

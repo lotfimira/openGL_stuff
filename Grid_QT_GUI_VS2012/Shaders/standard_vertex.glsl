@@ -15,7 +15,7 @@ void main(void)
     gl_Position = mvp_mat * vec4(pos, 1.0);
 
     // normal in eye space
-    normal_eye = (mv_mat * vec4(normal, 1.0)).xyz;
+    normal_eye = normalize((mv_mat * vec4(normal, 1.0)).xyz);
 
     // camera vector in eye space
     vec3 camera_vec_eye = normalize((mv_mat * vec4(pos, 1.0)).xyz);
