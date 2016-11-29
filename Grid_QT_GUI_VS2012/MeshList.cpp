@@ -30,11 +30,11 @@ void drawBlueQuad()
     glEnd();
 }
 
-void MeshList::draw(const Camera & camera)
+void MeshList::draw(const Camera & camera, const QVector<Light> & lights)
 {
     for(Mesh * mesh : _meshes)
     {
-        mesh->draw(camera);
+        mesh->draw(camera, lights);
     }
 }
 

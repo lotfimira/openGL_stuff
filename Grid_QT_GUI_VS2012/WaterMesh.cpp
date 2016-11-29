@@ -5,11 +5,13 @@
 
 #define SIZE 100
 
+int t = 0;
+
 void computeShape(QVector<glm::vec3> & pos, 
                   QVector<glm::vec3> & normals, 
                   QVector<glm::uvec3> & triangles)
 {
-    int t = GetTickCount();
+    t += 4;
 
     // create vertices
     pos.clear();
@@ -110,11 +112,11 @@ WaterMesh::~WaterMesh()
 
 }
 
-void WaterMesh::draw(const Camera & camera)
+void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
 {
     _material.setColor(Qt::blue);
 
-    drawTriangles(_geometry, _material, camera);
+    drawTriangles(_geometry, _material, camera, lights);
 }
 
 void WaterMesh::animate()

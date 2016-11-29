@@ -62,7 +62,7 @@ void StandardMaterial::setUniforms(const Camera & camera, const QVector<Light> &
     if(!lights.empty())
     {
         glm::vec4 light_dir_eye = camera.viewMat() * glm::vec4(lights[0].direction(), 1);
-        setUniform("light_dir", glm::vec3(light_dir_eye));
+        setUniform("light_dir_eye", glm::vec3(light_dir_eye));
     }
     setUniform("mvp_mat", camera.mvpMat());
     setUniform("mv_mat", camera.viewMat());

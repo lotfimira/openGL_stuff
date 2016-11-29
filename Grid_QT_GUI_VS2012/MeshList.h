@@ -11,7 +11,7 @@ private:
 
 public:
     static MeshList * instance();
-    void draw(const Camera &);
+    void draw(const Camera &, const QVector<Light> & lights);
     void addMesh(Mesh *);
     void clean();
     void animate();

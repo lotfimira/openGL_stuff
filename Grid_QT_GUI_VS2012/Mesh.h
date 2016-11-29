@@ -20,7 +20,7 @@ protected:
                        const QVector<Light> & lights = QVector<Light>());
 
 public:
-    virtual void draw(const Camera &) = 0;
+    virtual void draw(const Camera &, const QVector<Light> & lights) = 0;
     virtual void animate() {};
     virtual ~Mesh(){}
 };

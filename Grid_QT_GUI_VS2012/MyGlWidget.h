@@ -3,17 +3,20 @@
 #include "Camera.h"
 #include "Input.h"
 #include "MeshList.h"
+#include "Light.h"
 
 #include <QGLWidget>
 #include <QMouseEvent>
 #include <QTimer>
 
+//-----------------------------------------------------------------------------
 class MyGlWidget : public QGLWidget
 {
 Q_OBJECT
 
 private:
     OrbitCamera _camera;
+    QVector<Light> _lights; // TODO: THIS SHOULD NOT BE HERE
     Input _input;
     QTimer _timer_refresh;
     bool _valid;

@@ -50,6 +50,9 @@ void MyGlWidget::initializeGL()
     // THIS SHOULD NOT BE HERE
     prepareScene();
 
+    Light sun(glm::vec3(-1,-1,1));
+    _lights.push_back(sun);
+
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
 
@@ -78,7 +81,7 @@ void MyGlWidget::paintGL()
 
     _camera.GlLoadMatrices();
 
-    MeshList::instance()->draw(_camera);
+    MeshList::instance()->draw(_camera, _lights);
 
     //_camera.printOrbitCamera();
 

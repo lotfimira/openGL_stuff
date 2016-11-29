@@ -17,6 +17,6 @@ protected:
 public:
     WaterMesh();
     virtual ~WaterMesh();
-    virtual void draw(const Camera &);
+    virtual void draw(const Camera &, const QVector<Light> & lights);
     virtual void animate();
 };
