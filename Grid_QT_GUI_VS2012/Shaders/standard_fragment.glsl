@@ -5,7 +5,6 @@ in vec3 half_vec_eye; // half vector in eye space
 
 out vec4 out_color;
 
-uniform sampler2D grid_texture;
 uniform vec4 color;
 
 // lighting constants

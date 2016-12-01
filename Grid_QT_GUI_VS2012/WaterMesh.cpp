@@ -129,6 +129,4 @@ void WaterMesh::animate()
 
     _pos_buffer->update(pos);
     _normal_buffer->update(normals);
-
-    printf("%.2f\r", pos[0].y);
 }
