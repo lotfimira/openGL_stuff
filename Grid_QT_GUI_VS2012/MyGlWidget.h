@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "MeshList.h"
 #include "Light.h"
+#include "RenderTarget.h"
 
 #include <QGLWidget>
 #include <QMouseEvent>
@@ -21,6 +22,7 @@ private:
     QTimer _timer_refresh;
     bool _valid;
     DWORD _last_frame_time;
+    RenderTargetPtr _debug_render_target;
 
 public:
     MyGlWidget(const QGLFormat & gl_format, QWidget *parent);
@@ -28,6 +30,7 @@ public:
 
 protected:
     void initializeGL();
+    void initRenderTargets(int width, int height);
     void resizeGL(int w, int h);
     void paintGL();
     void mousePressEvent(QMouseEvent * event);

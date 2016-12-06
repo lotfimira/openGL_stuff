@@ -24,3 +24,18 @@ StaticArrayBufferPtr createStaticArrayBuffer(const QVector<glm::vec2> & data)
     StaticArrayBufferPtr ptr = std::make_shared<StaticArrayBuffer>(data);
     return ptr;
 }
+
+DepthBufferPtr createDepthBuffer(int width, int height)
+{
+    return std::make_shared<DepthBuffer>(width, height);
+}
+
+Texture2DPtr createTexture(int width, int height, Texture2D::Type type)
+{
+    return std::make_shared<Texture2D>(width, height, type);
+}
+
+Texture2DPtr createTexture(const QString & filename)
+{
+    return std::make_shared<Texture2D>(filename);
+}

@@ -138,6 +138,8 @@
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DepthBuffer.cpp" />
+    <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_Camera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -193,6 +195,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshList.cpp" />
     <ClCompile Include="MyGlWidget.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="StandardMaterial.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -241,6 +244,8 @@
   <ItemGroup>
     <ClInclude Include="Attribute.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="DepthBuffer.h" />
+    <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="GLFactory.h" />
     <ClInclude Include="GLSLProgramObject.h" />
@@ -254,6 +259,7 @@
     <ClInclude Include="MyException.h" />
     <ClInclude Include="nvSDKPath.h" />
     <ClInclude Include="nvShaderUtils.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="SelfCleaned.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="StandardMaterial.h" />

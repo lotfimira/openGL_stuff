@@ -63,6 +63,8 @@ void MyGlWidget::initializeGL()
 
     _camera.setCenter(glm::vec3(0, 0, 0));
     _camera.setRadius(3.0f);
+
+    initRenderTargets(width(), height());
 }
 
 void MyGlWidget::resizeGL(int w, int h)
@@ -73,17 +75,32 @@ void MyGlWidget::resizeGL(int w, int h)
                         (float)w / (float)h, // aspect ratio
                         0.1f,   // near
                         1000.0f); // far
+
+    initRenderTargets(w, h);
+}
+
+void MyGlWidget::initRenderTargets(int width, int height)
+{
+    // create render target for debugging shaders
+    Texture2DPtr texture = createTexture(width, height, Texture2D::Float);
+    texture->setFiltering(Texture2D::Nearest);
+
+    _debug_render_target = createRenderTarget(width, height);
+    _debug_render_target->addColorAttachement(texture);
 }
 
 void MyGlWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // render
     _camera.GlLoadMatrices();
-
     MeshList::instance()->draw(_camera, _lights);
 
-    //_camera.printOrbitCamera();
+    // debug render
+    _debug_render_target->bind();
+    MeshList::instance()->draw(_camera, _lights);
+    _debug_render_target->unbind();
 
     // compute fps
     DWORD now = GetTickCount();
@@ -91,6 +108,7 @@ void MyGlWidget::paintGL()
     _last_frame_time = now;
     renderText(10, 20, QString::number(fps, 'f', 0) + " FPS");
 
+    // schedule next render
     _timer_refresh.start();
 }
 

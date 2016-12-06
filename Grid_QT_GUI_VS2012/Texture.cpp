@@ -1,5 +1,6 @@
 #include "Texture.h"
 #include "GlUtils.h"
+#include "MyException.h"
 #include <QImage>
 #include <QFileInfo>
 #include <QGLWidget>
@@ -62,6 +63,37 @@ Texture2D::Texture2D(const QString & filename) :
     _filename = filename;
     _width = image.width();
     _height = image.height();
+}
+
+Texture2D::Texture2D(int width, int height, Type type) : 
+    _mag_filter(GL_LINEAR),
+    _min_filter(GL_LINEAR), 
+    _wrap(GL_REPEAT), 
+    _mipmaps(false), 
+    _anisotropic(false)
+{
+    CLEAR_GL_ERRORS
+
+    GLuint id;
+    glGenTextures(1, &id); // ??  why can't i use _id member directly here
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, type, nullptr);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    CHECK_GL_ERRORS
+
+    _id = id;
+    _filename = "";
+    _width = width;
+    _height = height;
 }
 
 void Texture2D::setAnisotropic(bool val)
@@ -154,7 +186,18 @@ void Texture2D::setMipmaps(bool val)
     CHECK_GL_ERRORS
 }
 
-void Texture2D::setFiltering(GLint val)
+GLint Texture2D::getMipmapFilter(Filter f)
+{
+    switch(f)
+    {
+        case Nearest : return GL_NEAREST_MIPMAP_NEAREST;
+        case Linear  : return GL_LINEAR_MIPMAP_LINEAR;
+    }
+
+    throw new MyException("Texture2D::getMipmapFilter unknown filter typre");
+}
+
+void Texture2D::setFiltering(Filter val)
 {
     CLEAR_GL_ERRORS
 
@@ -163,20 +206,19 @@ void Texture2D::setFiltering(GLint val)
         return;
 
     _min_filter = val;
+    if(_mipmaps)
+        _min_filter = getMipmapFilter(val);
     _mag_filter = val;
 
     glBindTexture(GL_TEXTURE_2D, id);
-
-    // filter
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
-
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _mag_filter);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     CHECK_GL_ERRORS
 }
 
-void Texture2D::setWrapping(GLint wrap)
+void Texture2D::setWrapping(Wrap wrap)
 {
     CLEAR_GL_ERRORS
 
