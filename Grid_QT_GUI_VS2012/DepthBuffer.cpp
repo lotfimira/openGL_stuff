@@ -1,7 +1,8 @@
 #include "DepthBuffer.h"
 #include "GlUtils.h"
 
-DepthBuffer::DepthBuffer(int width, int height)
+DepthBuffer::DepthBuffer(int width, int height) : 
+    _id(0)
 {
     CLEAR_GL_ERRORS
 
@@ -27,4 +28,9 @@ DepthBuffer::~DepthBuffer()
         glDeleteRenderbuffers(1, &id);
 
     CHECK_GL_ERRORS
+}
+
+GLuint DepthBuffer::id() const
+{
+    return _id;
 }

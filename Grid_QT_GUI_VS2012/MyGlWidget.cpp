@@ -82,11 +82,7 @@ void MyGlWidget::resizeGL(int w, int h)
 void MyGlWidget::initRenderTargets(int width, int height)
 {
     // create render target for debugging shaders
-    Texture2DPtr texture = createTexture(width, height, Texture2D::Float);
-    texture->setFiltering(Texture2D::Nearest);
-
-    _debug_render_target = createRenderTarget(width, height);
-    _debug_render_target->addColorAttachement(texture);
+    //_debug_render_target = createvec4FragmentTarget(width, height, 4);
 }
 
 void MyGlWidget::paintGL()
@@ -98,9 +94,9 @@ void MyGlWidget::paintGL()
     MeshList::instance()->draw(_camera, _lights);
 
     // debug render
-    _debug_render_target->bind();
-    MeshList::instance()->draw(_camera, _lights);
-    _debug_render_target->unbind();
+    //_debug_render_target->bind();
+    //MeshList::instance()->draw(_camera, _lights);
+    //_debug_render_target->unbind();
 
     // compute fps
     DWORD now = GetTickCount();

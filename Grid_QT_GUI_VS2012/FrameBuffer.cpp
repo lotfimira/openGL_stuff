@@ -57,8 +57,8 @@ void FrameBuffer::addColorAttachment(Texture2DPtr texture)
         return;
     }
 
-        // attach texture
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+    // attach texture
+    //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
 
 }
 

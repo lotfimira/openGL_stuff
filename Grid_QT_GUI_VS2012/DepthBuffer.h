@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GLFactory.h"
+#include "GL\glew.h"
 
 class DepthBuffer
 {
@@ -12,4 +12,5 @@ protected:
 public:
     DepthBuffer(int width, int height);
     virtual ~DepthBuffer();
+    GLuint id() const;
 };

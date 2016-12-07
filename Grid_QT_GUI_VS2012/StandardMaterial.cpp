@@ -52,9 +52,9 @@ void StandardMaterial::setColor(const QColor & color)
     _color = color;
 }
 
-void StandardMaterial::setUniforms(const Camera & camera, const QVector<Light> & lights)
+void StandardMaterial::setPhongLightingUniforms(const Camera & camera, 
+                                                const QVector<Light> & lights)
 {
-    setUniform("color", _color);
     setUniform("shininess", _shininess);
     setUniform("shine_intensity", _shine_intensity);
 
@@ -65,6 +65,14 @@ void StandardMaterial::setUniforms(const Camera & camera, const QVector<Light> &
         glm::vec3 n_light_dir_eye = glm::normalize(glm::vec3(light_dir_eye));
         setUniform("light_dir_eye", n_light_dir_eye);
     }
+}
+
+void StandardMaterial::setUniforms(const Camera & camera, 
+                                   const QVector<Light> & lights)
+{
+    setUniform("color", _color);
     setUniform("mvp_mat", camera.mvpMat());
     setUniform("mv_mat", camera.viewMat());
+
+    setPhongLightingUniforms(camera, lights);
 }

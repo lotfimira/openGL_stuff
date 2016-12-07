@@ -13,10 +13,14 @@ protected:
 
     virtual void initGL();
     virtual void cleanupGL();
+    
+    void setPhongLightingUniforms(const Camera & camera, 
+                                  const QVector<Light> & lights);
 
 public:
     StandardMaterial();
-    virtual void setUniforms(const Camera & camera, const QVector<Light> & lights);
+    virtual void setUniforms(const Camera & camera, 
+                             const QVector<Light> & lights);
 
     void setColor(const QColor &);
 };

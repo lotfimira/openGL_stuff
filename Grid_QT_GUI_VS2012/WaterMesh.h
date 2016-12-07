@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include "StandardMaterial.h"
+#include "GLFactory.h"
 
 class WaterMesh : public Mesh
 {

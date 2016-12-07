@@ -5,15 +5,14 @@
 #include "DepthBuffer.h"
 #include "Texture.h"
 
-class RenderTarget : public SelfCleaned
+class RenderTarget
 {
 protected:
-    FrameBuffer _frame_buffer;
-    DepthBufferPtr _depth_buffer;
+    //FrameBuffer _frame_buffer;
+    //DepthBufferPtr _depth_buffer;
     Texture2D _texture;
 
 public:
     RenderTarget(int width, int height);
     virtual ~RenderTarget();
-    virtual void clean();
 };

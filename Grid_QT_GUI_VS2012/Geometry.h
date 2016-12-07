@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Buffer.h"
+#include "GLFactory.h"
 #include <QMap>
 #include <QString>
 

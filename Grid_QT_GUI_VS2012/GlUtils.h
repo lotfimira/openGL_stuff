@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <cstdio>
 
 #define CLEAR_GL_ERRORS  \
 { \
