@@ -17,9 +17,10 @@ protected:
 
     glm::mat4 _view_mat;
     glm::mat4 _proj_mat;
+    glm::mat3 _normal_mat;
 
 public:
-    Camera() : _pos(glm::vec3(0,0,-1)),
+    Camera() : _pos(glm::vec3(0,0,1)),
                _look_at(glm::vec3(0,0,0)), 
                _up(glm::vec3(0,1,0)) {}
     ~Camera() {};
@@ -31,6 +32,8 @@ public:
 
     glm::mat4 mvpMat() const;
     glm::mat4 viewMat() const;
+    glm::mat3 normalMat() const;
+    glm::vec3 pos() const;
 
 signals:
     void changed();

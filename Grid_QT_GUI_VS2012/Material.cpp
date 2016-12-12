@@ -28,6 +28,11 @@ void Material::setUniform(const QString & name, glm::mat4 & matrix)
     _program.setUniformMatrix(name.toStdString().c_str(), glm::value_ptr(matrix), 4);
 }
 
+void Material::setUniform(const QString & name, glm::mat3& matrix)
+{
+    _program.setUniformMatrix(name.toStdString().c_str(), glm::value_ptr(matrix), 3);
+}
+
 void Material::setUniform(const QString & name, glm::vec4 & v)
 {
     _program.setUniform(name.toStdString().c_str(), glm::value_ptr(v), 4);

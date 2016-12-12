@@ -61,10 +61,12 @@ void StandardMaterial::setPhongLightingUniforms(const Camera & camera,
     // convert light direction into eye space
     if(!lights.empty())
     {
-        glm::vec4 light_dir_eye = camera.viewMat() * glm::vec4(lights[0].direction(), 1);
-        glm::vec3 n_light_dir_eye = glm::normalize(glm::vec3(light_dir_eye));
-        setUniform("light_dir_eye", n_light_dir_eye);
+        glm::vec3 light_dir_eye = camera.normalMat() * (-lights[0].direction());
+        light_dir_eye = glm::normalize(light_dir_eye);
+        setUniform("light_dir_eye", light_dir_eye);
     }
+
+    setUniform("camera_pos", camera.pos());
 }
 
 void StandardMaterial::setUniforms(const Camera & camera, 
@@ -72,7 +74,7 @@ void StandardMaterial::setUniforms(const Camera & camera,
 {
     setUniform("color", _color);
     setUniform("mvp_mat", camera.mvpMat());
-    setUniform("mv_mat", camera.viewMat());
+    setUniform("normal_mat", camera.normalMat());
 
     setPhongLightingUniforms(camera, lights);
 }

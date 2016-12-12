@@ -50,7 +50,7 @@ void MyGlWidget::initializeGL()
     // THIS SHOULD NOT BE HERE
     prepareScene();
 
-    Light sun(glm::vec3(-1,-1,1));
+    Light sun(glm::vec3(-1,-1,-1));
     _lights.push_back(sun);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -103,6 +103,12 @@ void MyGlWidget::paintGL()
     double fps = 1000.0 / double(now - _last_frame_time);
     _last_frame_time = now;
     renderText(10, 20, QString::number(fps, 'f', 0) + " FPS");
+
+    // show camera pos
+    QString cam_pos = QString::number(_camera.pos().x, 'f', 1) + " " +
+                      QString::number(_camera.pos().y, 'f', 1) + " " +
+                      QString::number(_camera.pos().z, 'f', 1);
+    renderText(10, 40, cam_pos);
 
     // schedule next render
     _timer_refresh.start();

@@ -12,6 +12,7 @@
 void Camera::LookAt(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up)
 {
     _view_mat = glm::lookAt(eye, lookat, up);
+    _normal_mat = glm::transpose(glm::inverse(glm::mat3(_view_mat)));
 
     _look_at = lookat;
     _pos = eye;
@@ -46,6 +47,16 @@ glm::mat4 Camera::mvpMat() const
 glm::mat4 Camera::viewMat() const
 {
     return _view_mat;
+}
+
+glm::mat3 Camera::normalMat() const
+{
+    return _normal_mat;
+}
+
+glm::vec3 Camera::pos() const
+{
+    return _pos;
 }
 
 //-----------------------------------------------------------------------------

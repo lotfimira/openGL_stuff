@@ -26,6 +26,7 @@ protected:
 
     // material must be enabled (bind program) prior to call these
     void setUniform(const QString & name, glm::mat4 & matrix);
+    void setUniform(const QString & name, glm::mat3 & matrix);
     void setUniform(const QString & name, glm::vec4 & v);
     void setUniform(const QString & name, glm::vec3 & v);
     void setUniform(const QString & name, float & f);
