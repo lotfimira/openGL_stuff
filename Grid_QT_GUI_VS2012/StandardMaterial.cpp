@@ -52,6 +52,16 @@ void StandardMaterial::setColor(const QColor & color)
     _color = color;
 }
 
+void StandardMaterial::setShininess(float shininess)
+{
+    _shininess = shininess;
+}
+
+void StandardMaterial::setShineIntensity(float shine_intensity)
+{
+    _shine_intensity = shine_intensity;
+}
+
 void StandardMaterial::setPhongLightingUniforms(const Camera & camera, 
                                                 const QVector<Light> & lights)
 {

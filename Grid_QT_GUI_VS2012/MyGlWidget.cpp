@@ -111,7 +111,7 @@ void MyGlWidget::paintGL()
     renderText(10, 40, cam_pos);
 
     // schedule next render
-    _timer_refresh.start();
+    //_timer_refresh.start();
 }
 
 void MyGlWidget::onRefreshTimout()

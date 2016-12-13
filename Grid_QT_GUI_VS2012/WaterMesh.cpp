@@ -99,6 +99,8 @@ void WaterMesh::initializeGeometry()
 //-----------------------------------------------------------------------------
 void WaterMesh::initializeMaterial()
 {
+    _material.setShininess(256);
+    _material.setShineIntensity(0.7);
 }
 
 WaterMesh::WaterMesh()

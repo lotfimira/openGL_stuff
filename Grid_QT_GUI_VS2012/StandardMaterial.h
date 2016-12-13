@@ -23,4 +23,6 @@ public:
                              const QVector<Light> & lights);
 
     void setColor(const QColor &);
+    void setShininess(float);
+    void setShineIntensity(float);
 };
