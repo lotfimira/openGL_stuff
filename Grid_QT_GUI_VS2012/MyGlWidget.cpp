@@ -1,5 +1,6 @@
 #include "MyGlWidget.h"
 #include "WaterMesh.h" // SHOULD NOT BE HERE
+#include "GlUtils.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -102,16 +103,21 @@ void MyGlWidget::paintGL()
     DWORD now = GetTickCount();
     double fps = 1000.0 / double(now - _last_frame_time);
     _last_frame_time = now;
+    glColor4f(1,1,1,1);
     renderText(10, 20, QString::number(fps, 'f', 0) + " FPS");
 
     // show camera pos
-    QString cam_pos = QString::number(_camera.pos().x, 'f', 1) + " " +
-                      QString::number(_camera.pos().y, 'f', 1) + " " +
-                      QString::number(_camera.pos().z, 'f', 1);
+    glm::vec3 camera_pos = glm::normalize(_camera.pos());
+    QString cam_pos = QString::number(camera_pos.x, 'f', 1) + " " +
+                      QString::number(camera_pos.y, 'f', 1) + " " +
+                      QString::number(camera_pos.z, 'f', 1);
     renderText(10, 40, cam_pos);
 
+    // draw light
+    renderArrow(-_lights[0].direction() * 100.0f, glm::vec3(0,0,0), 5.0);
+
     // schedule next render
-    //_timer_refresh.start();
+    _timer_refresh.start();
 }
 
 void MyGlWidget::onRefreshTimout()

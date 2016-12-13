@@ -185,6 +185,7 @@
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="GLFactory.cpp" />
     <ClCompile Include="GLSLProgramObject.cpp" />
+    <ClCompile Include="GLutils.cpp" />
     <ClCompile Include="GridMaterial.cpp" />
     <ClCompile Include="grid_qt_gui_vs2012.cpp" />
     <ClCompile Include="Input.cpp" />
