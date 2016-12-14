@@ -44,6 +44,7 @@ protected:
     void prepareScene();
     // THIS SHOULD NOT BE HERE
     void animateMeshes();
+    void drawLights();
 
 protected slots:
     void onCameraChanged();

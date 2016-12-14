@@ -14,6 +14,7 @@ protected:
     glm::vec3 _pos;
     glm::vec3 _look_at;
     glm::vec3 _up;
+    glm::ivec4 _view_port;
 
     glm::mat4 _view_mat;
     glm::mat4 _proj_mat;
@@ -22,18 +23,21 @@ protected:
 public:
     Camera() : _pos(glm::vec3(0,0,1)),
                _look_at(glm::vec3(0,0,0)), 
-               _up(glm::vec3(0,1,0)) {}
+               _up(glm::vec3(0,1,0)),
+               _view_port(glm::ivec4(0, 0, 100, 100)) {}
     ~Camera() {};
 
     void LookAt(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up);
     void Perspective(float fovy_rad, float aspect_ratio, float near, float far);
     void Frustum(float left, float right, float bottom, float top, float near, float far);
     void GlLoadMatrices();
+    void ViewPort(int left, int bottom, int width, int height);
 
     glm::mat4 mvpMat() const;
     glm::mat4 viewMat() const;
     glm::mat3 normalMat() const;
     glm::vec3 pos() const;
+    glm::vec2 worldToScreenPos(const glm::vec3 &) const;
 
 signals:
     void changed();

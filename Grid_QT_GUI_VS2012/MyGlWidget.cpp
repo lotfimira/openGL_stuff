@@ -70,9 +70,9 @@ void MyGlWidget::initializeGL()
 
 void MyGlWidget::resizeGL(int w, int h)
 {
-    glViewport(0, 0, (GLint)w, (GLint)h);
+    _camera.ViewPort(0, 0, w, h);
 
-    _camera.Perspective(M_PI / 4.0f,  // fov
+    _camera.Perspective(M_PI / 4.0f,  // fov 45 degrees
                         (float)w / (float)h, // aspect ratio
                         0.1f,   // near
                         1000.0f); // far
@@ -84,6 +84,20 @@ void MyGlWidget::initRenderTargets(int width, int height)
 {
     // create render target for debugging shaders
     //_debug_render_target = createvec4FragmentTarget(width, height, 4);
+}
+
+void MyGlWidget::drawLights()
+{
+    for(int i = 0; i < _lights.size(); ++i)
+    {
+        Light & light = _lights[i];
+        glm::vec3 origin = -light.direction() * 10.0f;
+        renderArrow(origin, glm::vec3(0,0,0), 5.0);
+
+        QString name = "Light " + QString::number(i);
+        glm::vec2 screen_pos = _camera.worldToScreenPos(origin);
+        renderText(screen_pos.x + 10, this->height() - screen_pos.y, name);
+    }
 }
 
 void MyGlWidget::paintGL()
@@ -113,8 +127,8 @@ void MyGlWidget::paintGL()
                       QString::number(camera_pos.z, 'f', 1);
     renderText(10, 40, cam_pos);
 
-    // draw light
-    renderArrow(-_lights[0].direction() * 100.0f, glm::vec3(0,0,0), 5.0);
+    // view light direction
+    drawLights();
 
     // schedule next render
     _timer_refresh.start();

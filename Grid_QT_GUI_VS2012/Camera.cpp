@@ -38,6 +38,12 @@ void Camera::GlLoadMatrices()
     glLoadMatrixf(glm::value_ptr(_view_mat));
 }
 
+void Camera::ViewPort(int left, int bottom, int width, int height)
+{
+    _view_port = glm::ivec4(left, bottom, width, height);
+    glViewport(left, bottom, width, height); // TODO is this the proper place?
+}
+
 glm::mat4 Camera::mvpMat() const
 {
     // TODO: this costs a multiplication for every mesh that uses it
@@ -57,6 +63,16 @@ glm::mat3 Camera::normalMat() const
 glm::vec3 Camera::pos() const
 {
     return _pos;
+}
+
+glm::vec2 Camera::worldToScreenPos(const glm::vec3 & world_pos) const
+{
+   glm::vec3 screen_pos = glm::project(world_pos, 
+                                       _view_mat, 
+                                       _proj_mat, 
+                                       _view_port);
+
+   return glm::vec2(screen_pos);
 }
 
 //-----------------------------------------------------------------------------
