@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include "StandardMaterial.h"
+#include "WireframeMaterial.h"
 #include "GLFactory.h"
 
 //-----------------------------------------------------------------------------
@@ -21,6 +22,7 @@ class WaterMesh : public Mesh
 protected:
     Geometry _geometry;
     StandardMaterial _material;
+    WireframeMaterial _wireframe_material;
     StreamArrayBufferPtr _pos_buffer;
     StreamArrayBufferPtr _normal_buffer;
     QVector<SineWave> _waves;
@@ -35,5 +37,8 @@ public:
     WaterMesh();
     virtual ~WaterMesh();
     virtual void draw(const Camera &, const QVector<Light> & lights);
+    virtual void WaterMesh::draw(const Camera & camera, 
+                                 const QVector<Light> & lights, 
+                                 Material & material);
     virtual void animate();
 };

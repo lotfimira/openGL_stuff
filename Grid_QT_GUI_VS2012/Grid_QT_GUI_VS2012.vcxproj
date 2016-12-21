@@ -201,6 +201,7 @@
     <ClCompile Include="StandardMaterial.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="WaterMesh.cpp" />
+    <ClCompile Include="WireframeMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="grid_qt_gui_vs2012.h">
@@ -266,6 +267,7 @@
     <ClInclude Include="StandardMaterial.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="WaterMesh.h" />
+    <ClInclude Include="WireframeMaterial.h" />
     <CustomBuild Include="Camera.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing Camera.h...</Message>
@@ -358,6 +360,8 @@
     <None Include="Shaders\blinn_phong_fragment.glsl" />
     <None Include="Shaders\standard_fragment.glsl" />
     <None Include="Shaders\standard_vertex.glsl" />
+    <None Include="Shaders\wireframe_fragment.glsl" />
+    <None Include="Shaders\wireframe_vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -13,7 +13,7 @@ float SineWave::calc(float x, float y, float t) const
 
     //return amplitude * sin( glm::dot(direction, point_dir) * 
                             //omega + t * phase);
-    return 5 * sin( glm::dot(direction, point_dir) / 4.0f + t);
+    return amplitude * sin( glm::dot(direction, point_dir) / omega + t * phase);
 }
 
 void WaterMesh::computeShape(QVector<glm::vec3> & pos, 
@@ -98,10 +98,17 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
 void WaterMesh::initializeGeometry()
 {
     SineWave wave;
-    wave.amplitude = 10;
+    wave.amplitude = 2;
     wave.direction = glm::vec2(1, 0);
-    wave.phase = 0.1;
-    wave.omega = 1;
+    wave.phase = 0.2;
+    wave.omega = 4;
+
+    _waves.push_back(wave);
+
+    wave.amplitude = 1;
+    wave.direction = glm::vec2(1, 1);
+    wave.phase = 0.3;
+    wave.omega = 2;
 
     _waves.push_back(wave);
 
@@ -124,6 +131,9 @@ void WaterMesh::initializeMaterial()
 {
     _material.setShininess(256);
     _material.setShineIntensity(0.7);
+    _material.setColor(Qt::blue);
+
+    _wireframe_material.setColor(Qt::white);
 }
 
 WaterMesh::WaterMesh()
@@ -139,9 +149,22 @@ WaterMesh::~WaterMesh()
 
 void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
 {
-    _material.setColor(Qt::blue);
+    // TODO use this only when drawing the wireframe
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1,1);
 
     drawTriangles(_geometry, _material, camera, lights);
+    drawTriangles(_geometry, _wireframe_material, camera, lights);
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+}
+
+// TODO find a more elegant way to draw wireframe geometry
+void WaterMesh::draw(const Camera & camera, 
+                     const QVector<Light> & lights, 
+                     Material & material)
+{
+    drawTriangles(_geometry, material, camera, lights);
 }
 
 void WaterMesh::animate()
