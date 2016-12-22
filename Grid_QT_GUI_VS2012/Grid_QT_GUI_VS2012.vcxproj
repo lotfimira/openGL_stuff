@@ -196,6 +196,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshList.cpp" />
     <ClCompile Include="MyGlWidget.cpp" />
+    <ClCompile Include="NormalMaterial.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="StandardMaterial.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshList.h" />
     <ClInclude Include="MyException.h" />
+    <ClInclude Include="NormalMaterial.h" />
     <ClInclude Include="nvSDKPath.h" />
     <ClInclude Include="nvShaderUtils.h" />
     <ClInclude Include="RenderTarget.h" />
@@ -358,6 +360,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\blinn_phong_fragment.glsl" />
+    <None Include="Shaders\normal_fragment.glsl" />
+    <None Include="Shaders\normal_geometry.glsl" />
+    <None Include="Shaders\normal_vertex.glsl" />
     <None Include="Shaders\standard_fragment.glsl" />
     <None Include="Shaders\standard_vertex.glsl" />
     <None Include="Shaders\wireframe_fragment.glsl" />

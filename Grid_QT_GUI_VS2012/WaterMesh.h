@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "StandardMaterial.h"
 #include "WireframeMaterial.h"
+#include "NormalMaterial.h"
 #include "GLFactory.h"
 
 //-----------------------------------------------------------------------------
@@ -23,6 +24,7 @@ protected:
     Geometry _geometry;
     StandardMaterial _material;
     WireframeMaterial _wireframe_material;
+    NormalMaterial _normal_material;
     StreamArrayBufferPtr _pos_buffer;
     StreamArrayBufferPtr _normal_buffer;
     QVector<SineWave> _waves;

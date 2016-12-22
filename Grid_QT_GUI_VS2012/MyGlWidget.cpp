@@ -24,6 +24,7 @@ MyGlWidget::MyGlWidget(const QGLFormat & format, QWidget *parent) :
 
     _last_frame_time = GetTickCount();
 
+    _paused = false;
     _timer_refresh.setInterval(1000 / 60);
     _timer_refresh.setSingleShot(true);
     QObject::connect(&_timer_refresh, SIGNAL(timeout()), this, SLOT(onRefreshTimout()));
@@ -113,6 +114,24 @@ void MyGlWidget::paintGL()
     //MeshList::instance()->draw(_camera, _lights);
     //_debug_render_target->unbind();
 
+    drawHud();
+
+    // view light direction
+    drawLights();
+
+    // schedule next render
+    if(!_paused)
+        _timer_refresh.start();
+}
+
+void MyGlWidget::onRefreshTimout()
+{
+    animateMeshes();
+    updateGL();
+}
+
+void MyGlWidget::drawHud()
+{
     // compute fps
     DWORD now = GetTickCount();
     double fps = 1000.0 / double(now - _last_frame_time);
@@ -127,17 +146,8 @@ void MyGlWidget::paintGL()
                       QString::number(camera_pos.z, 'f', 1);
     renderText(10, 40, cam_pos);
 
-    // view light direction
-    drawLights();
-
-    // schedule next render
-    _timer_refresh.start();
-}
-
-void MyGlWidget::onRefreshTimout()
-{
-    animateMeshes();
-    updateGL();
+    if(_paused)
+        renderText(10, 60, "Paused");
 }
 
 //-----------------------------------------------------------------------------
@@ -182,6 +192,12 @@ void MyGlWidget::keyPressEvent(QKeyEvent * event)
     if(event->key() == Qt::Key_Z)
     {
         centerOnScene();
+    }
+    if(event->key() == Qt::Key_P)
+    {
+        _paused = !_paused;
+        if(!_paused)
+            _timer_refresh.start();
     }
     else
     {

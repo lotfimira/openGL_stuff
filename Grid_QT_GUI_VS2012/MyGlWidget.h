@@ -22,6 +22,7 @@ private:
     QTimer _timer_refresh;
     bool _valid;
     DWORD _last_frame_time;
+    bool _paused;
     //RenderTargetPtr _debug_render_target;
 
 public:
@@ -45,6 +46,7 @@ protected:
     // THIS SHOULD NOT BE HERE
     void animateMeshes();
     void drawLights();
+    void drawHud();
 
 protected slots:
     void onCameraChanged();

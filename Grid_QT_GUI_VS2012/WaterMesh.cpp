@@ -101,13 +101,13 @@ void WaterMesh::initializeGeometry()
     wave.amplitude = 2;
     wave.direction = glm::vec2(1, 0);
     wave.phase = 0.2;
-    wave.omega = 4;
+    wave.omega = 2;
 
-    _waves.push_back(wave);
+    //_waves.push_back(wave);
 
-    wave.amplitude = 1;
+    wave.amplitude = 2;
     wave.direction = glm::vec2(1, 1);
-    wave.phase = 0.3;
+    wave.phase = 0.2;
     wave.omega = 2;
 
     _waves.push_back(wave);
@@ -155,6 +155,7 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
 
     drawTriangles(_geometry, _material, camera, lights);
     drawTriangles(_geometry, _wireframe_material, camera, lights);
+    drawTriangles(_geometry, _normal_material, camera, lights);
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
