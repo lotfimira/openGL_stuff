@@ -13,6 +13,7 @@ typedef std::shared_ptr<StreamArrayBuffer> StreamArrayBufferPtr;
 typedef std::shared_ptr<ArrayBuffer> ArrayBufferPtr;
 typedef std::shared_ptr<DepthBuffer> DepthBufferPtr;
 typedef std::shared_ptr<Texture2D> Texture2DPtr;
+typedef std::shared_ptr<StreamTexture2D> StreamTexture2DPtr;
 
 StreamArrayBufferPtr createStreamArrayBuffer(const QVector<glm::vec3> &);
 
@@ -25,3 +26,5 @@ DepthBufferPtr createDepthBuffer(int width, int height);
 Texture2DPtr createTexture(int width, int height, 
                            Texture2D::Type t = Texture2D::UByte);
 Texture2DPtr createTexture(const QString & filename);
+StreamTexture2DPtr createStreamTexture(int width, int height, 
+                                    const QVector<glm::vec3> &);

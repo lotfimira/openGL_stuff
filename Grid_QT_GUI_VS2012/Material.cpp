@@ -1,5 +1,6 @@
 #include "Material.h"
 #include "GlUtils.h"
+#include "MyException.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -54,7 +55,7 @@ void Material::setUniform(const QString & name, QColor & color)
     _program.setUniform(name.toStdString().c_str(), glm::value_ptr(c), 4);
 }
 
-void Material::addTexture(const QString & name, const Texture2D & texture)
+void Material::addTexture(const QString & name, const Texture2DPtr texture)
 {
     _textures[name] = texture;
 }
@@ -72,12 +73,12 @@ void Material::enableTextures()
     for(auto it = _textures.begin(); it != _textures.end(); it++)
     {
         const QString & name = it.key();
-        const Texture2D & texture = it.value();
+        const Texture2DPtr texture = it.value();
 
         _program.setTextureUnit(name.toStdString(), texture_unit - GL_TEXTURE0);
 
         glActiveTexture(texture_unit);
-        glBindTexture(GL_TEXTURE_2D, texture.id());
+        glBindTexture(GL_TEXTURE_2D, texture->id());
         ++texture_unit;
     }
 
@@ -93,7 +94,7 @@ void Material::disableTextures()
     glDisable(GL_TEXTURE_2D);
 
     int texture_unit = GL_TEXTURE0;
-    for(const Texture2D & texture : _textures)
+    for(const Texture2DPtr & texture : _textures)
     {
         glActiveTexture(texture_unit);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -113,4 +114,12 @@ void Material::clean()
 GLuint Material::getAttributeLocation(const QString & name) const
 {
     return _program.getAttribLocation(name.toStdString().c_str());
+}
+
+Texture2DPtr Material::texture(const QString & name)
+{
+    if(_textures.contains(name))
+        return _textures[name];
+
+    throw new MyException("Material::texture() Texture not found");
 }

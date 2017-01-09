@@ -39,3 +39,9 @@ Texture2DPtr createTexture(const QString & filename)
 {
     return std::make_shared<Texture2D>(filename);
 }
+
+StreamTexture2DPtr createStreamTexture(int width, int height, 
+                                    const QVector<glm::vec3> & data)
+{
+    return std::make_shared<StreamTexture2D>(width, height, data);
+}

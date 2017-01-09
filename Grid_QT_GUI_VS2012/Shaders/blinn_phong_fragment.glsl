@@ -5,11 +5,14 @@ const float DIFFUSE = 0.8;
 
 in vec3 normal_eye;   // normal in eye space
 in vec3 camera_vec_eye;
+in vec2 tex_coord_i;
 
 // lighting constants
 uniform vec3  light_dir_eye; // light direction in eye space
 uniform float shininess;
 uniform float shine_intensity;
+uniform sampler2D normal_texture;
+uniform mat3 normal_mat;
 
 //-----------------------------------------------------------------------------
 vec4 BlinnPhongLighting(vec4 input_color)
@@ -18,7 +21,9 @@ vec4 BlinnPhongLighting(vec4 input_color)
     vec4 frag_color = input_color * AMBIANT;
 
     //add Diffuse Terms
-    vec3 normal = normalize(normal_eye);
+    // normal in eye space
+    vec3 normal = normalize(normal_mat * texture(normal_texture, tex_coord_i).xyz);
+
     frag_color += input_color * DIFFUSE * max(dot(normal, light_dir_eye), 0.0);
 
     // add specular term

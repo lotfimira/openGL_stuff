@@ -18,6 +18,7 @@ float SineWave::calc(float x, float y, float t) const
 
 void WaterMesh::computeShape(QVector<glm::vec3> & pos, 
                              QVector<glm::vec3> & normals, 
+                             QVector<glm::vec2> & tex_coords,
                              QVector<glm::uvec3> & triangles)
 {
     t += 0.1f;
@@ -42,6 +43,24 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
         }
     }
 
+    // TODO do not recomtpute this at each frame
+    // texture coordinates
+    tex_coords.clear();
+    tex_coords.reserve(SIZE * SIZE); 
+    for(int i = 0; i < SIZE; ++i)
+    {
+        float x = (float) i / (float)(SIZE - 1);
+
+        for(int j = 0; j < SIZE; ++j)
+        {
+            float y = (float) j / (float)(SIZE - 1);
+
+            glm::vec2 tex_coord(x, y);
+            tex_coords.push_back(tex_coord);
+        }
+    }
+
+    // TODO do not recomtpute this at each frame
     // create triangles indices
     normals.clear();
     normals.resize(SIZE * SIZE);
@@ -114,21 +133,23 @@ void WaterMesh::initializeGeometry()
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
+    QVector<glm::vec2> tex_coords;
     QVector<glm::uvec3> triangles;
 
-    computeShape(pos, normals, triangles);
+    computeShape(pos, normals, tex_coords, triangles);
 
+    // TODO: the previous syntax was better
     _pos_buffer = createStreamArrayBuffer(pos);
-    _normal_buffer = createStreamArrayBuffer(normals);
 
     _geometry.setAttribute("pos", _pos_buffer);
-    _geometry.setAttribute("normal", _normal_buffer);
+    _geometry.setAttribute("tex_coord", createStaticArrayBuffer(tex_coords));
     _geometry.setElements(ElementArrayBuffer(triangles));
 }
 
 //-----------------------------------------------------------------------------
 void WaterMesh::initializeMaterial()
 {
+    _material.setDimensions(SIZE, SIZE);
     _material.setShininess(256);
     _material.setShineIntensity(0.7);
     _material.setColor(Qt::blue);
@@ -154,8 +175,9 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glPolygonOffset(1,1);
 
     drawTriangles(_geometry, _material, camera, lights);
-    drawTriangles(_geometry, _wireframe_material, camera, lights);
-    drawTriangles(_geometry, _normal_material, camera, lights);
+    //drawTriangles(_geometry, _wireframe_material, camera, lights);
+    //drawTriangles(_geometry, _normal_material, camera, lights);
+    drawTriangles(_geometry, _normal_texture_material, camera, lights);
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
@@ -172,10 +194,12 @@ void WaterMesh::animate()
 {
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
+    QVector<glm::vec2> tex_coords;
     QVector<glm::uvec3> triangles;
 
-    computeShape(pos, normals, triangles);
+    computeShape(pos, normals, tex_coords, triangles);
 
     _pos_buffer->update(pos);
-    _normal_buffer->update(normals);
+    _material.setNormals(normals, SIZE, SIZE);
+    _normal_texture_material.setNormals(normals, SIZE, SIZE);
 }

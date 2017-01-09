@@ -213,9 +213,9 @@ void GridAnisotropic::initializeGeometry()
 void GridAnisotropic::initializeMaterial()
 {
     // textures
-    Texture2D grid_texture = Texture2D("E:\\4x4grid.png");
-    grid_texture.setMipmaps(true);
-    grid_texture.setAnisotropic(true);
+    Texture2DPtr grid_texture = createTexture("E:\\4x4grid.png");
+    grid_texture->setMipmaps(true);
+    grid_texture->setAnisotropic(true);
 
     _material.addTexture("grid_texture", grid_texture);
 }

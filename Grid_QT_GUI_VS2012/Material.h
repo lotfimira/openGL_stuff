@@ -14,7 +14,7 @@
 class Material
 {
 protected:
-    QMap<QString, Texture2D> _textures;
+    QMap<QString, Texture2DPtr> _textures;
     GLSLProgramObject _program;
     QVector<GLuint> _attributes;
 
@@ -35,7 +35,8 @@ protected:
 public:
     virtual void enable();
     virtual void disable();
-    void addTexture(const QString & name, const Texture2D & texture);
+    void addTexture(const QString & name, const Texture2DPtr texture);
+    Texture2DPtr texture(const QString & name);
     void clean();
 
     // material must be enabled (bind program) prior to call these

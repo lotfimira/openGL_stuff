@@ -14,7 +14,9 @@ Texture2D::Texture2D() :
     _min_filter(GL_LINEAR), 
     _wrap(GL_REPEAT), 
     _mipmaps(false), 
-    _anisotropic(false)
+    _anisotropic(false),
+    _type(GL_UNSIGNED_BYTE),
+    _format(GL_RGBA)
 {
 }
 
@@ -29,7 +31,9 @@ Texture2D::Texture2D(const QString & filename) :
     _min_filter(GL_LINEAR), 
     _wrap(GL_REPEAT), 
     _mipmaps(false), 
-    _anisotropic(false)
+    _anisotropic(false),
+    _type(GL_UNSIGNED_BYTE),
+    _format(GL_RGBA)
 {
     QFileInfo file_info(filename);
     if(!file_info.exists())
@@ -65,12 +69,14 @@ Texture2D::Texture2D(const QString & filename) :
     _height = image.height();
 }
 
-Texture2D::Texture2D(int width, int height, Type type) : 
+Texture2D::Texture2D(int width, int height, Type type, Format format) : 
     _mag_filter(GL_LINEAR),
     _min_filter(GL_LINEAR), 
     _wrap(GL_REPEAT), 
     _mipmaps(false), 
-    _anisotropic(false)
+    _anisotropic(false),
+    _type(type),
+    _format(format)
 {
     CLEAR_GL_ERRORS
 
@@ -84,7 +90,43 @@ Texture2D::Texture2D(int width, int height, Type type) :
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, type, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type, nullptr);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    CHECK_GL_ERRORS
+
+    _id = id;
+    _filename = "";
+    _width = width;
+    _height = height;
+}
+
+Texture2D::Texture2D(int width, int height, const QVector<glm::vec3> & data) : 
+    _mag_filter(GL_LINEAR),
+    _min_filter(GL_LINEAR), 
+    _wrap(GL_REPEAT), 
+    _mipmaps(false), 
+    _anisotropic(false),
+    _type(Float),
+    _format(RGB)
+{
+    if(width * height != data.size())
+        throw new MyException("Texture2D::Texture2D() texture size and data do not match.");
+
+    CLEAR_GL_ERRORS
+
+    GLuint id;
+    glGenTextures(1, &id); // ??  why can't i use _id member directly here
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, _format, width, height, 0, _format, _type, data.data());
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -249,6 +291,53 @@ void Texture2D::clean()
         glDeleteTextures(1, &texture_id);
         _id = 0;
     }
+
+    CHECK_GL_ERRORS
+}
+
+//-----------------------------------------------------------------------------
+StreamTexture2D::StreamTexture2D() : Texture2D()
+{
+
+}
+
+StreamTexture2D::StreamTexture2D(int width, int height, 
+                                 Type type, Format format) :
+    Texture2D(width, height, type, format)
+{
+
+}
+
+StreamTexture2D::StreamTexture2D(int width, int height, 
+                                 const QVector<glm::vec3> & data) :
+    Texture2D(width, height, data)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+void StreamTexture2D::update(const QVector<glm::vec3> & vals, 
+                             int width, int height)
+{
+    if(_type != Float)
+        throw new MyException("StreamTexture2D::update incompatible type");
+
+    if(_format != RGB)
+        throw new MyException("StreamTexture2D::update incompatible format");
+
+    if(width * height != vals.size())
+        throw new MyException("StreamTexture2D::update [width, height] does not\
+                              match array size");
+
+    _width = width;
+    _height = height;
+
+    CLEAR_GL_ERRORS
+
+    // TODO: use a Pixel Buffer Object to speed up update
+    glBindTexture(GL_TEXTURE_2D, _id);
+    glTexImage2D(GL_TEXTURE_2D, 0, _format, _width, _height, 0, _format, _type, vals.data());
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     CHECK_GL_ERRORS
 }

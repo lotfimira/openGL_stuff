@@ -1,6 +1,7 @@
 #include "StandardMaterial.h"
 #include "ShaderManager.h"
 #include "GlUtils.h"
+#include "MyException.h"
 #include <GL/glew.h>
 
 
@@ -24,6 +25,9 @@ StandardMaterial::StandardMaterial() :
     }
 
     _program =  ShaderManager::getShader("standard");
+
+    // TODO how are we gona specify width and height to the material?
+    _normal_texture = StreamTexture2D(10, 10, Texture2D::Float);
 }
 
 void StandardMaterial::initGL()
@@ -62,6 +66,11 @@ void StandardMaterial::setShineIntensity(float shine_intensity)
     _shine_intensity = shine_intensity;
 }
 
+void StandardMaterial::setDimensions(int width, int height)
+{
+    _normal_texture = StreamTexture2D(width, height, Texture2D::Float, Texture2D::RGB);
+}
+
 void StandardMaterial::setPhongLightingUniforms(const Camera & camera, 
                                                 const QVector<Light> & lights)
 {
@@ -87,4 +96,19 @@ void StandardMaterial::setUniforms(const Camera & camera,
     setUniform("normal_mat", camera.normalMat());
 
     setPhongLightingUniforms(camera, lights);
+}
+
+void StandardMaterial::setNormals(const QVector<glm::vec3> & normals, 
+                                  int width, int height)
+{
+    if(!_textures.contains("normal_texture"))
+    {
+        addTexture("normal_texture", createStreamTexture(width, height, normals));
+    }
+    else
+    {
+        Texture2DPtr t = texture("normal_texture");
+        StreamTexture2DPtr normal_texture = std::static_pointer_cast<StreamTexture2D>(t);
+        normal_texture->update(normals, width, height);
+    }
 }

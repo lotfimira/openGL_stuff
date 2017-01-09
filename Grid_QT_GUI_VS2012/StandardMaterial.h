@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Material.h"
+#include "Texture.h"
 #include <QColor>
 
 class StandardMaterial : public Material
@@ -10,6 +11,7 @@ protected:
     GLfloat _shininess;
     GLfloat _shine_intensity;
     QColor _color;
+    StreamTexture2D _normal_texture;
 
     virtual void initGL();
     virtual void cleanupGL();
@@ -25,4 +27,6 @@ public:
     void setColor(const QColor &);
     void setShininess(float);
     void setShineIntensity(float);
+    void setDimensions(int width, int height);
+    void setNormals(const QVector<glm::vec3> &, int width, int height);
 };

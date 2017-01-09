@@ -4,6 +4,7 @@
 #include "StandardMaterial.h"
 #include "WireframeMaterial.h"
 #include "NormalMaterial.h"
+#include "NormalTextureMaterial.h"
 #include "GLFactory.h"
 
 //-----------------------------------------------------------------------------
@@ -25,14 +26,15 @@ protected:
     StandardMaterial _material;
     WireframeMaterial _wireframe_material;
     NormalMaterial _normal_material;
+    NormalTextureMaterial _normal_texture_material;
     StreamArrayBufferPtr _pos_buffer;
-    StreamArrayBufferPtr _normal_buffer;
     QVector<SineWave> _waves;
 
     void initializeGeometry();
     void initializeMaterial();
     void computeShape(QVector<glm::vec3> & pos, 
                       QVector<glm::vec3> & normals, 
+                      QVector<glm::vec2> & tex_coords,
                       QVector<glm::uvec3> & triangles);
 
 public:
