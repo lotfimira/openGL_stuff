@@ -7,12 +7,12 @@
 
 void Material::enable()
 {
+    _program.bind();
+
     if(!_textures.isEmpty())
         enableTextures();
 
     initGL();
-
-    _program.bind();
 }
 
 void Material::disable()
