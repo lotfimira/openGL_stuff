@@ -30,8 +30,6 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
     {
         for(int j = 0; j < SIZE; ++j)
         {
-            //float z = (2.0f * sin((20.0f * (float) i + t) / (float)SIZE));
-
             float z = 0;
             for(const SineWave & wave : _waves)
             {
@@ -122,14 +120,14 @@ void WaterMesh::initializeGeometry()
     wave.phase = 0.2;
     wave.omega = 2;
 
-    //_waves.push_back(wave);
+    _waves.push_back(wave);
 
     wave.amplitude = 2;
     wave.direction = glm::vec2(1, 1);
     wave.phase = 0.2;
     wave.omega = 2;
 
-    _waves.push_back(wave);
+    //_waves.push_back(wave);
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -155,6 +153,20 @@ void WaterMesh::initializeMaterial()
     _material.setColor(Qt::blue);
 
     _wireframe_material.setColor(Qt::white);
+
+    Texture2DPtr t = createTexture("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Resources\\lena_color.png");
+    /*QVector<glm::u8vec4> dummy;
+    dummy.reserve(SIZE * SIZE);
+    for(int i = 0; i < SIZE; ++i)
+    {
+        for(int j = 0; j < SIZE; ++j)
+        {
+            glm::u8vec4 color(i, j, 0, 255);
+            dummy.push_back(color);
+        }
+    }
+    Texture2DPtr t = createTexture(100,100, dummy);*/
+    _texture_material.setTexture(t);
 }
 
 WaterMesh::WaterMesh()
@@ -174,10 +186,12 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1,1);
 
-    drawTriangles(_geometry, _material, camera, lights);
+    //drawTriangles(_geometry, _material, camera, lights);
     //drawTriangles(_geometry, _wireframe_material, camera, lights);
     //drawTriangles(_geometry, _normal_material, camera, lights);
-    drawTriangles(_geometry, _normal_texture_material, camera, lights);
+    //drawTriangles(_geometry, _stream_texture_material, camera, lights);
+    //drawTriangles(_geometry, _normal_texture_material, camera, lights);
+    drawTriangles(_geometry, _texture_material, camera, lights);
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
@@ -202,4 +216,5 @@ void WaterMesh::animate()
     _pos_buffer->update(pos);
     _material.setNormals(normals, SIZE, SIZE);
     _normal_texture_material.setNormals(normals, SIZE, SIZE);
+    _stream_texture_material.setTexturePixels(normals, SIZE, SIZE);
 }

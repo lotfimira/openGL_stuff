@@ -47,6 +47,7 @@ protected:
     void animateMeshes();
     void drawLights();
     void drawHud();
+    void drawAxis();
 
 protected slots:
     void onCameraChanged();

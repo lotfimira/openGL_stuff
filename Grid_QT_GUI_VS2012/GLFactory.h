@@ -26,5 +26,8 @@ DepthBufferPtr createDepthBuffer(int width, int height);
 Texture2DPtr createTexture(int width, int height, 
                            Texture2D::Type t = Texture2D::UByte);
 Texture2DPtr createTexture(const QString & filename);
+Texture2DPtr createTexture(int width, int height, 
+                           const QVector<glm::u8vec4> &);
+
 StreamTexture2DPtr createStreamTexture(int width, int height, 
-                                    const QVector<glm::vec3> &);
+                                       const QVector<glm::vec3> &);

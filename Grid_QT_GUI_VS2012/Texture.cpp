@@ -32,8 +32,8 @@ Texture2D::Texture2D(const QString & filename) :
     _wrap(GL_REPEAT), 
     _mipmaps(false), 
     _anisotropic(false),
-    _type(GL_UNSIGNED_BYTE),
-    _format(GL_RGBA)
+    _type(UByte),
+    _format(RGBA)
 {
     QFileInfo file_info(filename);
     if(!file_info.exists())
@@ -43,30 +43,19 @@ Texture2D::Texture2D(const QString & filename) :
     }
 
     QImage image(filename);
+    if(!image.bits())
+    {
+        printf("Invalid image file %s\n", filename.toStdString().c_str());
+        return;
+    }
+
     image = image.convertToFormat(QImage::Format_RGBA8888);
 
-    CLEAR_GL_ERRORS
-
-    GLuint id;
-    glGenTextures(1, &id); // ??  why can't i use _id member directly here
-    glBindTexture(GL_TEXTURE_2D, id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    CHECK_GL_ERRORS
-
-    _id = id;
     _filename = filename;
     _width = image.width();
     _height = image.height();
+
+    initialize(image.bits());
 }
 
 Texture2D::Texture2D(int width, int height, Type type, Format format) : 
@@ -78,28 +67,7 @@ Texture2D::Texture2D(int width, int height, Type type, Format format) :
     _type(type),
     _format(format)
 {
-    CLEAR_GL_ERRORS
-
-    GLuint id;
-    glGenTextures(1, &id); // ??  why can't i use _id member directly here
-    glBindTexture(GL_TEXTURE_2D, id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type, nullptr);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    CHECK_GL_ERRORS
-
-    _id = id;
-    _filename = "";
-    _width = width;
-    _height = height;
+    initialize(nullptr);
 }
 
 Texture2D::Texture2D(int width, int height, const QVector<glm::vec3> & data) : 
@@ -109,11 +77,37 @@ Texture2D::Texture2D(int width, int height, const QVector<glm::vec3> & data) :
     _mipmaps(false), 
     _anisotropic(false),
     _type(Float),
-    _format(RGB)
+    _format(RGB),
+    _width(width),
+    _height(height),
+    _filename("")
 {
     if(width * height != data.size())
         throw new MyException("Texture2D::Texture2D() texture size and data do not match.");
 
+    initialize((void *)data.data());
+}
+
+Texture2D::Texture2D(int width, int height, const QVector<glm::u8vec4> & data) : 
+    _mag_filter(GL_LINEAR),
+    _min_filter(GL_LINEAR), 
+    _wrap(GL_REPEAT), 
+    _mipmaps(false), 
+    _anisotropic(false),
+    _type(UByte),
+    _format(RGBA),
+    _width(width),
+    _height(height),
+    _filename("")
+{
+    if(width * height != data.size())
+        throw new MyException("Texture2D::Texture2D() texture size and data do not match.");
+
+    initialize((void *)data.data());
+}
+
+void Texture2D::initialize(void * data)
+{
     CLEAR_GL_ERRORS
 
     GLuint id;
@@ -126,16 +120,13 @@ Texture2D::Texture2D(int width, int height, const QVector<glm::vec3> & data) :
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, _format, width, height, 0, _format, _type, data.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, _format, _width, _height, 0, _format, _type, data);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
     CHECK_GL_ERRORS
 
     _id = id;
-    _filename = "";
-    _width = width;
-    _height = height;
 }
 
 void Texture2D::setAnisotropic(bool val)

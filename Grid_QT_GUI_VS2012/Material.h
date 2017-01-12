@@ -36,7 +36,7 @@ public:
     virtual void enable();
     virtual void disable();
     void addTexture(const QString & name, const Texture2DPtr texture);
-    Texture2DPtr texture(const QString & name);
+    Texture2DPtr getTexture(const QString & name);
     void clean();
 
     // material must be enabled (bind program) prior to call these

@@ -201,7 +201,9 @@
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="StandardMaterial.cpp" />
+    <ClCompile Include="StreamTextureMaterial.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureMaterial.cpp" />
     <ClCompile Include="WaterMesh.cpp" />
     <ClCompile Include="WireframeMaterial.cpp" />
   </ItemGroup>
@@ -247,6 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Attribute.h" />
+    <ClInclude Include="StreamTextureMaterial.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="DepthBuffer.h" />
     <ClInclude Include="FrameBuffer.h" />
@@ -270,6 +273,7 @@
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="StandardMaterial.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureMaterial.h" />
     <ClInclude Include="WaterMesh.h" />
     <ClInclude Include="WireframeMaterial.h" />
     <CustomBuild Include="Camera.h">
@@ -370,6 +374,10 @@
     <None Include="Shaders\normal_vertex.glsl" />
     <None Include="Shaders\standard_fragment.glsl" />
     <None Include="Shaders\standard_vertex.glsl" />
+    <None Include="Shaders\stream_texture_fragment.glsl" />
+    <None Include="Shaders\stream_texture_vertex.glsl" />
+    <None Include="Shaders\texture_fragment.glsl" />
+    <None Include="Shaders\texture_vertex.glsl" />
     <None Include="Shaders\wireframe_fragment.glsl" />
     <None Include="Shaders\wireframe_vertex.glsl" />
   </ItemGroup>

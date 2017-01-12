@@ -60,7 +60,7 @@ void NormalTextureMaterial::setNormals(const QVector<glm::vec3> & normals,
     }
     else
     {
-        Texture2DPtr t = texture("normal_texture");
+        Texture2DPtr t = getTexture("normal_texture");
         StreamTexture2DPtr normal_texture = std::static_pointer_cast<StreamTexture2D>(t);
         normal_texture->update(normals, width, height);
     }

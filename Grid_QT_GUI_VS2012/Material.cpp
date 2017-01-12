@@ -116,7 +116,7 @@ GLuint Material::getAttributeLocation(const QString & name) const
     return _program.getAttribLocation(name.toStdString().c_str());
 }
 
-Texture2DPtr Material::texture(const QString & name)
+Texture2DPtr Material::getTexture(const QString & name)
 {
     if(_textures.contains(name))
         return _textures[name];

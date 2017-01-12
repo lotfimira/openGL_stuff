@@ -35,6 +35,9 @@ public:
         ClampToEdge = GL_CLAMP_TO_EDGE,
     };
 
+private:
+    void initialize(void * data);
+
 protected:
     GLuint _id;
     QString _filename;
@@ -55,6 +58,7 @@ public:
     Texture2D();
     Texture2D(const QString & filename);
     Texture2D(int width, int height, const QVector<glm::vec3> &);
+    Texture2D(int width, int height, const QVector<glm::u8vec4> &);
     Texture2D(int width, int height, Type type = UByte, Format format = RGBA);
     virtual ~Texture2D();
     GLuint id() const {return _id;}

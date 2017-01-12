@@ -114,6 +114,8 @@ void MyGlWidget::paintGL()
     //MeshList::instance()->draw(_camera, _lights);
     //_debug_render_target->unbind();
 
+    drawAxis();
+
     drawHud();
 
     // view light direction
@@ -148,6 +150,30 @@ void MyGlWidget::drawHud()
 
     if(_paused)
         renderText(10, 60, "Paused");
+}
+
+void MyGlWidget::drawAxis()
+{
+    float axis_size = 10;
+    glLineWidth(1.0f);
+
+    glColor4f(1,0,0,1);
+    glBegin(GL_LINES);
+    glVertex3f(0,0,0);
+    glVertex3f(axis_size,0,0);
+    glEnd();
+
+    glColor4f(0,1,0,1);
+    glBegin(GL_LINES);
+    glVertex3f(0,0,0);
+    glVertex3f(0,axis_size,0);
+    glEnd();
+
+    glColor4f(0,0,1,1);
+    glBegin(GL_LINES);
+    glVertex3f(0,0,0);
+    glVertex3f(0,0,axis_size);
+    glEnd();
 }
 
 //-----------------------------------------------------------------------------

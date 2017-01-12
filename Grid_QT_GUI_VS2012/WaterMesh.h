@@ -5,6 +5,8 @@
 #include "WireframeMaterial.h"
 #include "NormalMaterial.h"
 #include "NormalTextureMaterial.h"
+#include "StreamTextureMaterial.h"
+#include "TextureMaterial.h"
 #include "GLFactory.h"
 
 //-----------------------------------------------------------------------------
@@ -27,6 +29,8 @@ protected:
     WireframeMaterial _wireframe_material;
     NormalMaterial _normal_material;
     NormalTextureMaterial _normal_texture_material;
+    StreamTextureMaterial _stream_texture_material;
+    TextureMaterial _texture_material;
     StreamArrayBufferPtr _pos_buffer;
     QVector<SineWave> _waves;
 
