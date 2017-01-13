@@ -26,9 +26,9 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
     // create vertices
     pos.clear();
     pos.reserve(SIZE * SIZE);
-    for(int i = 0; i < SIZE; ++i)
+    for(int j = 0; j < SIZE; ++j)
     {
-        for(int j = 0; j < SIZE; ++j)
+        for(int i = 0; i < SIZE; ++i)
         {
             float z = 0;
             for(const SineWave & wave : _waves)
@@ -45,13 +45,13 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
     // texture coordinates
     tex_coords.clear();
     tex_coords.reserve(SIZE * SIZE); 
-    for(int i = 0; i < SIZE; ++i)
+    for(int j = 0; j < SIZE; ++j)
     {
-        float x = (float) i / (float)(SIZE - 1);
+        float y = (float) j / (float)(SIZE - 1);
 
-        for(int j = 0; j < SIZE; ++j)
+        for(int i = 0; i < SIZE; ++i)
         {
-            float y = (float) j / (float)(SIZE - 1);
+            float x = (float) i / (float)(SIZE - 1);
 
             glm::vec2 tex_coord(x, y);
             tex_coords.push_back(tex_coord);
@@ -155,17 +155,21 @@ void WaterMesh::initializeMaterial()
     _wireframe_material.setColor(Qt::white);
 
     Texture2DPtr t = createTexture("E:\\Dev\\Grid\\Grid_QT_GUI_VS2012\\Grid_QT_GUI_VS2012\\Resources\\lena_color.png");
-    /*QVector<glm::u8vec4> dummy;
+    /*
+    QVector<glm::u8vec4> dummy;
     dummy.reserve(SIZE * SIZE);
-    for(int i = 0; i < SIZE; ++i)
+    for(int y = 0; y < SIZE; ++y)
     {
-        for(int j = 0; j < SIZE; ++j)
+        for(int x = 0; x < SIZE; ++x)
         {
-            glm::u8vec4 color(i, j, 0, 255);
+            glm::u8vec4 color(x, y, 0, 255);
             dummy.push_back(color);
         }
     }
-    Texture2DPtr t = createTexture(100,100, dummy);*/
+    Texture2DPtr t = createTexture(100,100, dummy);
+    t->setWrapping(Texture2D::Wrap::ClampToEdge);
+    t->setFiltering(Texture2D::Filter::Nearest);*/
+
     _texture_material.setTexture(t);
 }
 

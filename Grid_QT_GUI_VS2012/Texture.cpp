@@ -49,6 +49,8 @@ Texture2D::Texture2D(const QString & filename) :
         return;
     }
 
+    // why QImage is always flipped vertically ?
+    image = image.mirrored(false, true);
     image = image.convertToFormat(QImage::Format_RGBA8888);
 
     _filename = filename;
