@@ -67,7 +67,10 @@ Texture2D::Texture2D(int width, int height, Type type, Format format) :
     _mipmaps(false), 
     _anisotropic(false),
     _type(type),
-    _format(format)
+    _format(format),
+    _width(width),
+    _height(height),
+    _filename("")
 {
     initialize(nullptr);
 }
