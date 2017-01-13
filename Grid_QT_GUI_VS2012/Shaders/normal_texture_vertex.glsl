@@ -10,5 +10,6 @@ uniform sampler2D normal_texture;
 void main(void)
 {
   gl_Position = vec4(pos, 1.0);
-  v_normal = texture(normal_texture, tex_coord).xyz;
+  vec3 mapped_normal = texture(normal_texture, tex_coord).xyz;
+  v_normal = (mapped_normal * 2.0) - 0.5;
 }

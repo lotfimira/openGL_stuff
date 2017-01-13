@@ -40,6 +40,7 @@ protected:
                       QVector<glm::vec3> & normals, 
                       QVector<glm::vec2> & tex_coords,
                       QVector<glm::uvec3> & triangles);
+    QVector<glm::vec3> mapNormals(const QVector<glm::vec3> & normals);
 
 public:
     WaterMesh();

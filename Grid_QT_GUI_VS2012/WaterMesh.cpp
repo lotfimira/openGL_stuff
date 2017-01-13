@@ -194,8 +194,8 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     //drawTriangles(_geometry, _wireframe_material, camera, lights);
     //drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
-    //drawTriangles(_geometry, _normal_texture_material, camera, lights);
-    drawTriangles(_geometry, _texture_material, camera, lights);
+    drawTriangles(_geometry, _normal_texture_material, camera, lights);
+    //drawTriangles(_geometry, _texture_material, camera, lights);
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
@@ -206,6 +206,19 @@ void WaterMesh::draw(const Camera & camera,
                      Material & material)
 {
     drawTriangles(_geometry, material, camera, lights);
+}
+
+// map normals from [-1, 1] to [0, 1]
+QVector<glm::vec3> WaterMesh::mapNormals(const QVector<glm::vec3> & normals)
+{
+    QVector<glm::vec3> mapped(normals.size());
+
+    for(int i = 0; i < normals.size(); ++i)
+    {
+        mapped[i] = (normals[i] / 2.0f) + 0.5f;
+    }
+
+    return mapped;
 }
 
 void WaterMesh::animate()
@@ -219,6 +232,9 @@ void WaterMesh::animate()
 
     _pos_buffer->update(pos);
     _material.setNormals(normals, SIZE, SIZE);
-    _normal_texture_material.setNormals(normals, SIZE, SIZE);
-    _stream_texture_material.setTexturePixels(normals, SIZE, SIZE);
+
+    QVector<glm::vec3> mapped_normals = mapNormals(normals);
+
+    _normal_texture_material.setNormals(mapped_normals, SIZE, SIZE);
+    _stream_texture_material.setTexturePixels(mapped_normals, SIZE, SIZE);
 }
