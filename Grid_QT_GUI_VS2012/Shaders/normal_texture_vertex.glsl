@@ -11,5 +11,5 @@ void main(void)
 {
   gl_Position = vec4(pos, 1.0);
   vec3 mapped_normal = texture(normal_texture, tex_coord).xyz;
-  v_normal = (mapped_normal * 2.0) - 0.5;
+  v_normal = (mapped_normal - 0.5) * 2.0;
 }

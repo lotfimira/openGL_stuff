@@ -72,8 +72,8 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
         {
             // 1st triangle of quad
             int idx0 = base_index;
-            int idx1 = base_index + 1;
-            int idx2 = base_index + 1 + SIZE;
+            int idx1 = base_index + 1 + SIZE;
+            int idx2 = base_index + 1;
 
             glm::uvec3 triangle_1(idx0, idx1, idx2);
             triangles.push_back(triangle_1);
@@ -86,8 +86,8 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
             normals[idx2] += tri_1_normal;
 
             // 2nd triangle of quad
-            idx0 = base_index + SIZE;
-            idx1 = base_index;
+            idx0 = base_index;
+            idx1 = base_index + SIZE;
             idx2 = base_index + 1 + SIZE;
 
             glm::uvec3 triangle_2(idx0, idx1, idx2);
@@ -190,8 +190,8 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1,1);
 
-    //drawTriangles(_geometry, _material, camera, lights);
-    //drawTriangles(_geometry, _wireframe_material, camera, lights);
+    drawTriangles(_geometry, _material, camera, lights);
+    drawTriangles(_geometry, _wireframe_material, camera, lights);
     //drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
     drawTriangles(_geometry, _normal_texture_material, camera, lights);
@@ -231,10 +231,10 @@ void WaterMesh::animate()
     computeShape(pos, normals, tex_coords, triangles);
 
     _pos_buffer->update(pos);
-    _material.setNormals(normals, SIZE, SIZE);
 
     QVector<glm::vec3> mapped_normals = mapNormals(normals);
 
+    _material.setNormals(mapped_normals, SIZE, SIZE);
     _normal_texture_material.setNormals(mapped_normals, SIZE, SIZE);
     _stream_texture_material.setTexturePixels(mapped_normals, SIZE, SIZE);
 }
