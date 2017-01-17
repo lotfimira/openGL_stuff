@@ -23,14 +23,14 @@ vec4 BlinnPhongLighting(vec4 input_color)
     //add Diffuse Terms
     // normal in eye space
     vec3 mapped_normal = texture(normal_texture, tex_coord_i).xyz;
-    vec3 normal = (mapped_normal - 0.5) * 2.0;
+    vec3 normal_eye = normalize(normal_mat * ((mapped_normal - 0.5) * 2.0));
 
-    frag_color += input_color * DIFFUSE * max(dot(normal, light_dir_eye), 0.0);
+    frag_color += input_color * DIFFUSE * max(dot(normal_eye, light_dir_eye), 0.0);
 
     // add specular term
     vec3 camera_vec = normalize(camera_vec_eye);
     vec3 half_vec_eye = normalize(camera_vec + light_dir_eye); // half vector in eye space
-    frag_color += shine_intensity * pow( max(dot(normal, half_vec_eye), 0.0), shininess );
-
+    frag_color += shine_intensity * pow( max(dot(normal_eye, half_vec_eye), 0.0), shininess );
+    
     return frag_color;
 }

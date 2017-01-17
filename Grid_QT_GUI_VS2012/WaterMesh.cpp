@@ -191,10 +191,10 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glPolygonOffset(1,1);
 
     drawTriangles(_geometry, _material, camera, lights);
-    drawTriangles(_geometry, _wireframe_material, camera, lights);
+    //drawTriangles(_geometry, _wireframe_material, camera, lights);
     //drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
-    drawTriangles(_geometry, _normal_texture_material, camera, lights);
+    //drawTriangles(_geometry, _normal_texture_material, camera, lights);
     //drawTriangles(_geometry, _texture_material, camera, lights);
 
     glDisable(GL_POLYGON_OFFSET_FILL);
