@@ -13,7 +13,9 @@ float SineWave::calc(float x, float y, float t) const
 
     //return amplitude * sin( glm::dot(direction, point_dir) * 
                             //omega + t * phase);
-    return amplitude * sin( glm::dot(direction, point_dir) / omega + t * phase);
+    //return amplitude * sin( glm::dot(direction, point_dir) / omega + t * phase);
+    float omega = freq * 2 * M_PI;
+    return amplitude * sin( omega * t );
 }
 
 void WaterMesh::computeShape(QVector<glm::vec3> & pos, 
@@ -22,6 +24,8 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
                              QVector<glm::uvec3> & triangles)
 {
     t += 0.1f;
+    DWORD time = GetTickCount();
+    float tf = (float)time / 1000.0f;
 
     // create vertices
     pos.clear();
@@ -33,7 +37,7 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
             float z = 0;
             for(const SineWave & wave : _waves)
             {
-                z += wave.calc(i, j, t);
+                z += wave.calc(i, j, tf);
             }
 
             glm::vec3 p(i - SIZE / 2, z, j - SIZE / 2);
@@ -118,16 +122,16 @@ void WaterMesh::initializeGeometry()
     wave.amplitude = 2;
     wave.direction = glm::vec2(1, 0);
     wave.phase = 0.2;
-    wave.omega = 2;
+    wave.freq = 1;
 
-    _waves.push_back(wave);
+    //_waves.push_back(wave);
 
     wave.amplitude = 2;
     wave.direction = glm::vec2(1, 1);
     wave.phase = 0.2;
-    wave.omega = 2;
+    wave.freq = 1;
 
-    //_waves.push_back(wave);
+    _waves.push_back(wave);
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;

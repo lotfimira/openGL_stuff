@@ -134,22 +134,36 @@ void MyGlWidget::onRefreshTimout()
 
 void MyGlWidget::drawHud()
 {
+    const int LINE_SPACE = 20;
+    int x = 10;
+    int y = LINE_SPACE;
+
     // compute fps
     DWORD now = GetTickCount();
     double fps = 1000.0 / double(now - _last_frame_time);
     _last_frame_time = now;
     glColor4f(1,1,1,1);
-    renderText(10, 20, QString::number(fps, 'f', 0) + " FPS");
+    renderText(x, y, QString::number(fps, 'f', 0) + " FPS");
+    y += LINE_SPACE;
 
     // show camera pos
     glm::vec3 camera_pos = glm::normalize(_camera.pos());
     QString cam_pos = QString::number(camera_pos.x, 'f', 1) + " " +
                       QString::number(camera_pos.y, 'f', 1) + " " +
                       QString::number(camera_pos.z, 'f', 1);
-    renderText(10, 40, cam_pos);
+    renderText(x, y, cam_pos);
+    y += LINE_SPACE;
 
     if(_paused)
-        renderText(10, 60, "Paused");
+    {
+        renderText(x, y, "Paused");
+        y += LINE_SPACE;
+    }
+
+    DWORD ticks = GetTickCount();
+    float time = (float)ticks / 1000.0f;
+    renderText(x, y, QString("t = ") + QString::number(time));
+    y += LINE_SPACE;
 }
 
 void MyGlWidget::drawAxis()

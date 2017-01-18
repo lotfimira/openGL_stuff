@@ -11,7 +11,7 @@ Grid_QT_GUI_VS2012::Grid_QT_GUI_VS2012(QWidget *parent)
     QGLFormat gl_format;
     gl_format.setVersion(4,2);
     gl_format.setProfile(QGLFormat::CompatibilityProfile);
-
+    gl_format.setSampleBuffers(true);
     gl_format.setSamples(8);
 
     _gl_widget = new MyGlWidget(gl_format, this);

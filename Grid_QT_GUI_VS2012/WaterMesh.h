@@ -1,5 +1,8 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include "Mesh.h"
 #include "StandardMaterial.h"
 #include "WireframeMaterial.h"
@@ -14,10 +17,10 @@ struct SineWave
 {
     float amplitude;
     glm::vec2 direction;
-    float omega; // angular speed (rad / terrain unit)
+    float freq;
     float phase;
 
-    SineWave() : amplitude(1), direction(1,0), omega(1), phase(0) {}
+    SineWave() : amplitude(1), direction(1,0), freq(1), phase(0) {}
     float calc(float x, float y, float t) const;
 };
 
