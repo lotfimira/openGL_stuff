@@ -7,14 +7,13 @@
 
 float t = 0;
 
-float SineWave::calc(float x, float y, float t) const
+float SineWave::calc(const glm::vec2 & pos) const
 {
-    glm::vec2 point_dir = glm::vec2(x, y);
-
     //return amplitude * sin( glm::dot(direction, point_dir) * 
                             //omega + t * phase);
     //return amplitude * sin( glm::dot(direction, point_dir) / omega + t * phase);
-    float omega = freq * 2 * M_PI;
+    float omega = (1.0f / wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
+    float t = glm::dot(pos, direction);
     return amplitude * sin( omega * t );
 }
 
@@ -37,7 +36,8 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
             float z = 0;
             for(const SineWave & wave : _waves)
             {
-                z += wave.calc(i, j, tf);
+                glm::vec2 p(i, j);
+                z += wave.calc(p);
             }
 
             glm::vec3 p(i - SIZE / 2, z, j - SIZE / 2);
@@ -120,18 +120,18 @@ void WaterMesh::initializeGeometry()
 {
     SineWave wave;
     wave.amplitude = 2;
-    wave.direction = glm::vec2(1, 0);
+    wave.direction = glm::normalize(glm::vec2(1, 0));
     wave.phase = 0.2;
-    wave.freq = 1;
-
-    //_waves.push_back(wave);
-
-    wave.amplitude = 2;
-    wave.direction = glm::vec2(1, 1);
-    wave.phase = 0.2;
-    wave.freq = 1;
+    wave.wavelength = 16;
 
     _waves.push_back(wave);
+
+    wave.amplitude = 2;
+    wave.direction = glm::normalize(glm::vec2(1, 1)); // TODO: make this a class to make sure direction is normalized
+    wave.phase = 0.2;
+    wave.wavelength = 16;
+
+    //_waves.push_back(wave);
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -195,7 +195,7 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glPolygonOffset(1,1);
 
     drawTriangles(_geometry, _material, camera, lights);
-    //drawTriangles(_geometry, _wireframe_material, camera, lights);
+    drawTriangles(_geometry, _wireframe_material, camera, lights);
     //drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
     //drawTriangles(_geometry, _normal_texture_material, camera, lights);

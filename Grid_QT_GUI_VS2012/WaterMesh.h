@@ -17,11 +17,11 @@ struct SineWave
 {
     float amplitude;
     glm::vec2 direction;
-    float freq;
+    float wavelength;
     float phase;
 
-    SineWave() : amplitude(1), direction(1,0), freq(1), phase(0) {}
-    float calc(float x, float y, float t) const;
+    SineWave() : amplitude(1), direction(1,0), wavelength(1), phase(0) {}
+    float calc(const glm::vec2 & pos) const;
 };
 
 class WaterMesh : public Mesh
