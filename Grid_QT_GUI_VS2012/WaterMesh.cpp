@@ -14,7 +14,13 @@ float SineWave::calc(const glm::vec2 & pos) const
     //return amplitude * sin( glm::dot(direction, point_dir) / omega + t * phase);
     float omega = (1.0f / wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
     float t = glm::dot(pos, direction);
-    return amplitude * sin( omega * t );
+
+    DWORD ticks = GetTickCount();
+    int modulus = wavelength * 1000;
+    int ms = (ticks % modulus);
+    float phi = phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
+
+    return amplitude * sin( omega * t + phi);
 }
 
 void WaterMesh::computeShape(QVector<glm::vec3> & pos, 
@@ -121,17 +127,17 @@ void WaterMesh::initializeGeometry()
     SineWave wave;
     wave.amplitude = 2;
     wave.direction = glm::normalize(glm::vec2(1, 0));
-    wave.phase = 0.2;
+    wave.phase = 4; // unit per seconds
     wave.wavelength = 16;
 
     _waves.push_back(wave);
 
     wave.amplitude = 2;
     wave.direction = glm::normalize(glm::vec2(1, 1)); // TODO: make this a class to make sure direction is normalized
-    wave.phase = 0.2;
-    wave.wavelength = 16;
+    wave.phase = 1; // unit per seconds
+    wave.wavelength = 19;
 
-    //_waves.push_back(wave);
+    _waves.push_back(wave);
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
