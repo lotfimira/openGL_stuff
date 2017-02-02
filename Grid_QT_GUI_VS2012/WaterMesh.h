@@ -16,13 +16,32 @@
 struct SineWave
 {
     float amplitude;
-    glm::vec2 direction;
     float wavelength;
     float phase;
 
-    SineWave() : amplitude(1), direction(1,0), wavelength(1), phase(0) {}
-    float calc(const glm::vec2 & pos) const;
+    SineWave() : amplitude(1), wavelength(1), phase(0) {}
+    virtual float calc(const glm::vec2 & pos) const = 0;
 };
+
+struct DirectionalWave : public SineWave
+{
+    glm::vec2 direction;
+    DirectionalWave() : direction(1,0) {}
+    float calc(const glm::vec2 & pos) const;
+    static std::shared_ptr<DirectionalWave> create() { return std::make_shared<DirectionalWave>(); }
+};
+
+struct CircularWave : public SineWave
+{
+    glm::vec2 origin;
+    CircularWave() : origin(0,0) {}
+    float calc(const glm::vec2 & pos) const;
+    static std::shared_ptr<CircularWave> create() { return std::make_shared<CircularWave>(); }
+};
+
+typedef std::shared_ptr<SineWave> SineWavePtr;
+typedef std::shared_ptr<DirectionalWave> DirectionalWavePtr;
+typedef std::shared_ptr<CircularWave> CircularWavePtr;
 
 class WaterMesh : public Mesh
 {
@@ -35,7 +54,7 @@ protected:
     StreamTextureMaterial _stream_texture_material;
     TextureMaterial _texture_material;
     StreamArrayBufferPtr _pos_buffer;
-    QVector<SineWave> _waves;
+    QVector<SineWavePtr> _waves;
 
     void initializeGeometry();
     void initializeMaterial();
