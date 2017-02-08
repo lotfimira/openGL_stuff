@@ -13,35 +13,71 @@
 #include "GLFactory.h"
 
 //-----------------------------------------------------------------------------
-struct SineWave
+class SineWave
 {
-    float amplitude;
-    float wavelength;
-    float phase;
+protected:
+    float _amplitude;
+    float _wavelength;
+    float _phase;
 
-    SineWave() : amplitude(1), wavelength(1), phase(0) {}
-    virtual float calc(const glm::vec2 & pos) const = 0;
+public:
+    SineWave() : _amplitude(1), _wavelength(1), _phase(0) {}
+    virtual ~SineWave(){}
+    virtual glm::vec3 calc(const glm::vec2 & pos) const = 0;
+    void setAmplitude(float amplitude) {_amplitude = amplitude;}
+    void setWavelength(float wavelength) {_wavelength = wavelength;}
+    void setPhase(float phase) {_phase = phase;}
 };
 
-struct DirectionalWave : public SineWave
+class DirectionalWave : public SineWave
 {
-    glm::vec2 direction;
-    DirectionalWave() : direction(1,0) {}
-    float calc(const glm::vec2 & pos) const;
+protected:
+    glm::vec2 _direction;
+
+public:
+    DirectionalWave() : _direction(1,0) {}
+    virtual ~DirectionalWave(){}
+    virtual glm::vec3 calc(const glm::vec2 & pos) const;
+    void setDirection(const glm::vec2 & direction)
+    {
+        _direction = glm::normalize(direction);
+    }
     static std::shared_ptr<DirectionalWave> create() { return std::make_shared<DirectionalWave>(); }
 };
 
-struct CircularWave : public SineWave
+class CircularWave : public SineWave
 {
-    glm::vec2 origin;
-    CircularWave() : origin(0,0) {}
-    float calc(const glm::vec2 & pos) const;
+protected:
+    glm::vec2 _origin;
+
+public:
+    CircularWave() : _origin(0,0) {}
+    virtual ~CircularWave(){}
+    glm::vec3 calc(const glm::vec2 & pos) const;
+    void setOrigin(const glm::vec2 & origin)
+    {
+        _origin = origin;
+    }
     static std::shared_ptr<CircularWave> create() { return std::make_shared<CircularWave>(); }
+};
+
+class GerstnerWave : public DirectionalWave
+{
+protected:
+    float _steepness;
+
+public:
+    GerstnerWave() : _steepness(1.0) {}
+    virtual ~GerstnerWave(){}
+    glm::vec3 calc(const glm::vec2 & pos) const;
+    void setSteepness(float steepness){ _steepness = steepness; }
+    static std::shared_ptr<GerstnerWave> create() { return std::make_shared<GerstnerWave>(); }
 };
 
 typedef std::shared_ptr<SineWave> SineWavePtr;
 typedef std::shared_ptr<DirectionalWave> DirectionalWavePtr;
 typedef std::shared_ptr<CircularWave> CircularWavePtr;
+typedef std::shared_ptr<GerstnerWave> GerstnerWavePtr;
 
 class WaterMesh : public Mesh
 {

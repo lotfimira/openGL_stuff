@@ -7,31 +7,56 @@
 
 float t = 0;
 
-float DirectionalWave::calc(const glm::vec2 & pos) const
+glm::vec3 DirectionalWave::calc(const glm::vec2 & pos) const
 {
-    float omega = (1.0f / wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
-    float t = glm::dot(pos, direction);
+    float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
+    float t = glm::dot(pos, _direction);
 
     DWORD ticks = GetTickCount();
-    int modulus = wavelength * 1000;
+    int modulus = _wavelength * 1000;
     int ms = (ticks % modulus);
-    float phi = phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
+    float phi = _phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
 
-    return amplitude * sin( omega * t + phi);
+    float x = pos.x;
+    float y = pos.y;
+    float z = _amplitude * sin( omega * t + phi);
+
+    return glm::vec3(x, y, z);
 }
 
-float CircularWave::calc(const glm::vec2 & pos) const
+glm::vec3 CircularWave::calc(const glm::vec2 & pos) const
 {
-    float omega = (1.0f / wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
-    float t = glm::length(origin - pos);
+    float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
+    float t = glm::length(_origin - pos);
 
     DWORD ticks = GetTickCount();
-    int modulus = wavelength * 1000;
+    int modulus = _wavelength * 1000;
     int ms = (ticks % modulus);
-    float phi = -phase * (2.0f * M_PI) * ((float)ms / (float)(modulus)); // TODO why negative phase?
+    float phi = -_phase * (2.0f * M_PI) * ((float)ms / (float)(modulus)); // TODO why negative phase?
 
-    return amplitude * sin( omega * t + phi);
+    float x = pos.x;
+    float y = pos.y;
+    float z = _amplitude * sin( omega * t + phi);
+
+    return glm::vec3(x, y, z);
 }
+
+glm::vec3 GerstnerWave::calc(const glm::vec2 & pos) const
+{
+    const float OMEGA = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
+
+    DWORD ticks = GetTickCount();
+    int modulus = _wavelength * 1000;
+    int ms = (ticks % modulus);
+    float phi = _phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
+
+    float x = pos.x + cos(OMEGA * pos.x + phi);
+    float y = pos.y;
+    float z = _amplitude * sin(OMEGA * pos.x + phi);
+
+    return glm::vec3(x, y, z);
+}
+
 
 void WaterMesh::computeShape(QVector<glm::vec3> & pos, 
                              QVector<glm::vec3> & normals, 
@@ -49,14 +74,18 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
     {
         for(int i = 0; i < SIZE; ++i)
         {
-            float z = 0;
+            // sum waves at given point
+            glm::vec3 p_wave;
             for(const SineWavePtr wave : _waves)
             {
-                glm::vec2 p(i, j);
-                z += wave->calc(p);
+                p_wave += wave->calc(glm::vec2(i, j));
             }
 
-            glm::vec3 p(i - SIZE / 2, z, j - SIZE / 2);
+            // shift to center the grid on (0,0,0)
+            glm::vec3 p(p_wave.x - SIZE / 2, 
+                        p_wave.z, 
+                        p_wave.y - SIZE / 2);
+
             pos.push_back(p);
         }
     }
@@ -134,29 +163,38 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
 //-----------------------------------------------------------------------------
 void WaterMesh::initializeGeometry()
 {
+    /*
     CircularWavePtr cwave = CircularWave::create();
-    cwave->amplitude = 1;
-    cwave->origin = glm::vec2(SIZE / 2, SIZE / 2);
-    cwave->phase = 8;
-    cwave->wavelength = 16;
+    cwave->setAmplitude(1);
+    cwave->setOrigin(glm::vec2(SIZE / 2, SIZE / 2));
+    cwave->setPhase(8);
+    cwave->setWavelength(16);
 
-    _waves.push_back(cwave);
-    
+    //_waves.push_back(cwave);
+
     DirectionalWavePtr dwave1 = DirectionalWave::create();
-    dwave1->amplitude = 2;
-    dwave1->direction = glm::normalize(glm::vec2(1, 0));
-    dwave1->phase = 4; // unit per seconds
-    dwave1->wavelength = 16;
+    dwave1->setAmplitude(2);
+    dwave1->setDirection(glm::vec2(1, 0));
+    dwave1->setPhase(4); // unit per seconds
+    dwave1->setWavelength(16);
 
     //_waves.push_back(dwave1);
 
     DirectionalWavePtr dwave2 = DirectionalWave::create();
-    dwave2->amplitude = 2;
-    dwave2->direction = glm::normalize(glm::vec2(1, 1)); // TODO: make this a class to make sure direction is normalized
-    dwave2->phase = 1; // unit per seconds
-    dwave2->wavelength = 19;
+    dwave1->setAmplitude(2);
+    dwave1->setDirection(glm::vec2(1, 1));
+    dwave1->setPhase(1); // unit per seconds
+    dwave1->setWavelength(19);
 
-    //_waves.push_back(dwave2);
+    //_waves.push_back(dwave2);*/
+
+    GerstnerWavePtr gwave = GerstnerWave::create();
+    gwave->setDirection(glm::vec2(1, 0));
+    gwave->setAmplitude(4.0f);
+    gwave->setWavelength(16.0f);
+    gwave->setPhase(2); // unit per seconds
+
+    _waves.push_back(gwave);
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -218,14 +256,16 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     // TODO use this only when drawing the wireframe
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1,1);
+    glDisable(GL_CULL_FACE);
 
     drawTriangles(_geometry, _material, camera, lights);
-    //drawTriangles(_geometry, _wireframe_material, camera, lights);
+    drawTriangles(_geometry, _wireframe_material, camera, lights);
     //drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
     //drawTriangles(_geometry, _normal_texture_material, camera, lights);
     //drawTriangles(_geometry, _texture_material, camera, lights);
 
+    glEnable(GL_CULL_FACE);
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
