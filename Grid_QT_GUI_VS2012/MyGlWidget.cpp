@@ -73,10 +73,13 @@ void MyGlWidget::resizeGL(int w, int h)
 {
     _camera.ViewPort(0, 0, w, h);
 
+    /*
     _camera.Perspective(M_PI / 4.0f,  // fov 45 degrees
                         (float)w / (float)h, // aspect ratio
                         0.1f,   // near
-                        1000.0f); // far
+                        1000.0f); // far*/
+
+    _camera.Ortho(-100, 100, -100, 100, 0.1f, 1000.0f);
 
     initRenderTargets(w, h);
 }

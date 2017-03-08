@@ -6,6 +6,25 @@
 
 #include <QObject>
 
+struct FrustumStruct
+{
+    float left;
+    float right;
+    float bottom;
+    float top;
+    float near;
+    float far;
+    FrustumStruct() : left(0), right(0), bottom(0), top(0), near(0), far(0) {}
+    FrustumStruct(float fovy, float ar, float n, float f);
+    FrustumStruct(float l, float r, float b, float t, float n, float f);
+};
+
+enum ProjectionType
+{
+    Perspective = 0,
+    Ortho
+};
+
 class Camera : public QObject
 {
 Q_OBJECT
@@ -20,16 +39,21 @@ protected:
     glm::mat4 _proj_mat;
     glm::mat3 _normal_mat;
 
+    FrustumStruct _frustum;
+    ProjectionType _projection_type;
+
 public:
     Camera() : _pos(glm::vec3(0,0,1)),
                _look_at(glm::vec3(0,0,0)), 
                _up(glm::vec3(0,1,0)),
-               _view_port(glm::ivec4(0, 0, 100, 100)) {}
+               _view_port(glm::ivec4(0, 0, 100, 100)),
+               _projection_type(ProjectionType::Ortho) {}
     ~Camera() {};
 
     void LookAt(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up);
     void Perspective(float fovy_rad, float aspect_ratio, float near, float far);
     void Frustum(float left, float right, float bottom, float top, float near, float far);
+    void Ortho(float left, float right, float bottom, float top, float near, float far);
     void GlLoadMatrices();
     void ViewPort(int left, int bottom, int width, int height);
 

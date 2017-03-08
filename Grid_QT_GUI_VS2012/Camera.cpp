@@ -19,14 +19,43 @@ void Camera::LookAt(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up)
     _up = up;
 }
 
+FrustumStruct::FrustumStruct(float fovy, float ar, float n, float f)
+    : near(n), far(f)
+{
+    top = tan(fovy / 2.0f) * near;
+    bottom = -top;
+    right = top * ar;
+    left = -right;
+}
+
+FrustumStruct::FrustumStruct(float l, float r, float b, float t, float n, float f)
+    : left(l), right(r), bottom(b), top(t), near(n), far(f)
+{
+
+}
+
 void Camera::Perspective(float fovy_rad, float aspect_ratio, float near, float far)
 {
+    _frustum = FrustumStruct(fovy_rad, aspect_ratio, near, far);
+    _projection_type == ProjectionType::Perspective;
+
     _proj_mat = glm::perspective(fovy_rad, aspect_ratio, near, far);
 }
 
 void Camera::Frustum(float left, float right, float bottom, float top, float near, float far)
 {
+    _frustum = FrustumStruct(left, right, bottom, top, near, far);
+    _projection_type == ProjectionType::Perspective;
+
     _proj_mat = glm::frustum(left, right, bottom, top, near, far);
+}
+
+void Camera::Ortho(float left, float right, float bottom, float top, float near, float far)
+{
+    _frustum = FrustumStruct(left, right, bottom, top, near, far);
+    _projection_type == ProjectionType::Ortho;
+
+    _proj_mat = glm::ortho(left, right, bottom, top, near, far);
 }
 
 void Camera::GlLoadMatrices()
@@ -170,4 +199,19 @@ void OrbitCamera::zoom(int delta)
 
     float radius = _radius + (_radius * 10.0f / 100.0f) * step;
     setRadius(radius);
+
+    // adjust dimensions of ortho projection when zoomin
+    if(_projection_type == ProjectionType::Ortho)
+    {
+        float ratio = 1.0f + (0.1f * step);
+
+        float left   = _frustum.left * ratio;
+        float right  = _frustum.right * ratio;
+        float bottom = _frustum.bottom * ratio;
+        float top    = _frustum.top * ratio;
+        float near   = _frustum.near;
+        float far    = _frustum.far;
+
+        this->Ortho(left, right, bottom, top, near, far);
+    }
 }
