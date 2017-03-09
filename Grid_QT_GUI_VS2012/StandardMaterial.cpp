@@ -112,3 +112,8 @@ void StandardMaterial::setNormals(const QVector<glm::vec3> & normals,
         normal_texture->update(normals, width, height);
     }
 }
+
+void StandardMaterial::setTwoSidedLighting(bool val)
+{
+    _two_sided_lighting = val;
+}

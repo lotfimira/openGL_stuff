@@ -50,7 +50,7 @@ glm::vec3 GerstnerWave::calc(const glm::vec2 & pos) const
     int ms = (ticks % modulus);
     float phi = _phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
 
-    float x = pos.x + cos(OMEGA * pos.x + phi);
+    float x = pos.x + (1 / OMEGA) * cos(OMEGA * pos.x + phi);
     float y = pos.y;
     float z = _amplitude * sin(OMEGA * pos.x + phi);
 
@@ -87,6 +87,8 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
                         p_wave.y - SIZE / 2);
 
             pos.push_back(p);
+
+            //pos.push_back(glm::vec3(i - SIZE / 2, 0, j - SIZE / 2));
         }
     }
 
@@ -218,6 +220,7 @@ void WaterMesh::initializeMaterial()
     _material.setShininess(256);
     _material.setShineIntensity(0.7);
     _material.setColor(Qt::blue);
+    _material.setTwoSidedLighting(true);
 
     _wireframe_material.setColor(Qt::white);
 

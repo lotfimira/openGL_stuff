@@ -72,14 +72,17 @@ void MyGlWidget::initializeGL()
 void MyGlWidget::resizeGL(int w, int h)
 {
     _camera.ViewPort(0, 0, w, h);
-
-    /*
-    _camera.Perspective(M_PI / 4.0f,  // fov 45 degrees
+    
+    _camera.Perspective(M_PI / 4.0f,         // fov 45 degrees
                         (float)w / (float)h, // aspect ratio
-                        0.1f,   // near
-                        1000.0f); // far*/
-
-    _camera.Ortho(-100, 100, -100, 100, 0.1f, 1000.0f);
+                        0.1f,     // near
+                        1000.0f); // far
+    /*
+    float right  = w / 2;
+    float left   = -right;
+    float top    = h / 2;
+    float bottom = -top;
+    _camera.Ortho(left, right, bottom, top, -110.0f, 110.0f);*/
 
     initRenderTargets(w, h);
 }

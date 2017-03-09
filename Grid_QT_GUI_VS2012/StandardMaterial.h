@@ -29,4 +29,5 @@ public:
     void setShineIntensity(float);
     void setDimensions(int width, int height);
     void setNormals(const QVector<glm::vec3> &, int width, int height);
+    void setTwoSidedLighting(bool);
 };

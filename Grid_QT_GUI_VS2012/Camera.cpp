@@ -37,7 +37,7 @@ FrustumStruct::FrustumStruct(float l, float r, float b, float t, float n, float 
 void Camera::Perspective(float fovy_rad, float aspect_ratio, float near, float far)
 {
     _frustum = FrustumStruct(fovy_rad, aspect_ratio, near, far);
-    _projection_type == ProjectionType::Perspective;
+    _projection_type = ProjectionType::Perspective;
 
     _proj_mat = glm::perspective(fovy_rad, aspect_ratio, near, far);
 }
@@ -45,7 +45,7 @@ void Camera::Perspective(float fovy_rad, float aspect_ratio, float near, float f
 void Camera::Frustum(float left, float right, float bottom, float top, float near, float far)
 {
     _frustum = FrustumStruct(left, right, bottom, top, near, far);
-    _projection_type == ProjectionType::Perspective;
+    _projection_type = ProjectionType::Perspective;
 
     _proj_mat = glm::frustum(left, right, bottom, top, near, far);
 }
@@ -53,7 +53,7 @@ void Camera::Frustum(float left, float right, float bottom, float top, float nea
 void Camera::Ortho(float left, float right, float bottom, float top, float near, float far)
 {
     _frustum = FrustumStruct(left, right, bottom, top, near, far);
-    _projection_type == ProjectionType::Ortho;
+    _projection_type = ProjectionType::Ortho;
 
     _proj_mat = glm::ortho(left, right, bottom, top, near, far);
 }
