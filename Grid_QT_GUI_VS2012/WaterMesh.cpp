@@ -49,10 +49,13 @@ glm::vec3 GerstnerWave::calc(const glm::vec2 & pos) const
     int modulus = _wavelength * 1000;
     int ms = (ticks % modulus);
     float phi = _phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
+    float t = glm::dot(pos, _direction);
+    float tx = glm::dot( glm::vec2(1,0), _direction);
+    float ty = glm::dot( glm::vec2(0,1), _direction);
 
-    float x = pos.x + (1 / OMEGA) * cos(OMEGA * pos.x + phi);
-    float y = pos.y;
-    float z = _amplitude * sin(OMEGA * pos.x + phi);
+    float x = pos.x + tx * (1 / OMEGA) * cos(OMEGA * t + phi);
+    float y = pos.y + ty * (1 / OMEGA) * cos(OMEGA * t + phi);
+    float z = _amplitude * sin(OMEGA * t + phi);
 
     return glm::vec3(x, y, z);
 }
@@ -191,7 +194,7 @@ void WaterMesh::initializeGeometry()
     //_waves.push_back(dwave2);*/
 
     GerstnerWavePtr gwave = GerstnerWave::create();
-    gwave->setDirection(glm::vec2(1, 0));
+    gwave->setDirection(glm::vec2(1, 1));
     gwave->setAmplitude(4.0f);
     gwave->setWavelength(16.0f);
     gwave->setPhase(2); // unit per seconds
