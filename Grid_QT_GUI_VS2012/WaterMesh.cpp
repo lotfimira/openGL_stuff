@@ -195,13 +195,22 @@ void WaterMesh::initializeGeometry()
     //_waves.push_back(dwave2);*/
 
     GerstnerWavePtr gwave = GerstnerWave::create();
-    gwave->setDirection(glm::vec2(1, 1));
+    gwave->setDirection(glm::vec2(1, 0.5));
     gwave->setAmplitude(4.0f);
     gwave->setWavelength(16.0f);
     gwave->setPhase(2); // unit per seconds
-    gwave->setSteepness(0.5f);
+    gwave->setSteepness(1.0f);
 
     _waves.push_back(gwave);
+
+    GerstnerWavePtr gwave2 = GerstnerWave::create();
+    gwave2->setDirection(glm::vec2(1, 0.75));
+    gwave2->setAmplitude(4.0f);
+    gwave2->setWavelength(16.0f);
+    gwave2->setPhase(2); // unit per seconds
+    gwave2->setSteepness(1.0f);
+
+    _waves.push_back(gwave2);
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
