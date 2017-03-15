@@ -70,7 +70,11 @@ public:
     GerstnerWave() : _steepness(1.0) {}
     virtual ~GerstnerWave(){}
     glm::vec3 calc(const glm::vec2 & pos) const;
-    void setSteepness(float steepness){ _steepness = steepness; }
+    void setSteepness(float steepness)
+    {
+        if(steepness >= 0.0f && steepness <= 1.0f)
+            _steepness = steepness;
+    }
     static std::shared_ptr<GerstnerWave> create() { return std::make_shared<GerstnerWave>(); }
 };
 
