@@ -7,7 +7,8 @@
 
 float t = 0;
 
-glm::vec3 DirectionalWave::calc(const glm::vec2 & pos) const
+glm::vec3 DirectionalWave::calc(const glm::vec2 & pos,
+                                const int count_waves) const
 {
     float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
     float t = glm::dot(pos, _direction);
@@ -17,14 +18,13 @@ glm::vec3 DirectionalWave::calc(const glm::vec2 & pos) const
     int ms = (ticks % modulus);
     float phi = _phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
 
-    float x = pos.x;
-    float y = pos.y;
     float z = _amplitude * sin( omega * t + phi);
 
-    return glm::vec3(x, y, z);
+    return glm::vec3(0, 0, z);
 }
 
-glm::vec3 CircularWave::calc(const glm::vec2 & pos) const
+glm::vec3 CircularWave::calc(const glm::vec2 & pos,
+                             const int count_waves) const
 {
     float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
     float t = glm::length(_origin - pos);
@@ -38,10 +38,11 @@ glm::vec3 CircularWave::calc(const glm::vec2 & pos) const
     float y = pos.y;
     float z = _amplitude * sin( omega * t + phi);
 
-    return glm::vec3(x, y, z);
+    return glm::vec3(0, 0, z);
 }
 
-glm::vec3 GerstnerWave::calc(const glm::vec2 & pos) const
+glm::vec3 GerstnerWave::calc(const glm::vec2 & pos, 
+                             const int count_waves) const
 {
     const float OMEGA = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
 
@@ -49,13 +50,13 @@ glm::vec3 GerstnerWave::calc(const glm::vec2 & pos) const
     int modulus = _wavelength * 1000;
     int ms = (ticks % modulus);
     float phi = _phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
-    float t = glm::dot(pos, _direction);
+    float t =  glm::dot( pos, _direction);
     float tx = glm::dot( glm::vec2(1,0), _direction);
     float ty = glm::dot( glm::vec2(0,1), _direction);
-    float Q = _steepness * (1 / OMEGA);
+    float Q = _steepness / (OMEGA * count_waves);
 
-    float x = pos.x + tx * Q * cos(OMEGA * t + phi);
-    float y = pos.y + ty * Q * cos(OMEGA * t + phi);
+    float x = tx * Q * cos(OMEGA * t + phi);
+    float y = ty * Q * cos(OMEGA * t + phi);
     float z = _amplitude * sin(OMEGA * t + phi);
 
     return glm::vec3(x, y, z);
@@ -79,10 +80,11 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
         for(int i = 0; i < SIZE; ++i)
         {
             // sum waves at given point
-            glm::vec3 p_wave;
+            glm::vec3 p_wave(i, j, 0);
             for(const SineWavePtr wave : _waves)
             {
-                p_wave += wave->calc(glm::vec2(i, j));
+                p_wave += wave->calc(glm::vec2(i, j), 
+                                     _waves.size());
             }
 
             // shift to center the grid on (0,0,0)
@@ -195,16 +197,16 @@ void WaterMesh::initializeGeometry()
     //_waves.push_back(dwave2);*/
 
     GerstnerWavePtr gwave = GerstnerWave::create();
-    gwave->setDirection(glm::vec2(1, 0.5));
+    gwave->setDirection(glm::vec2(1, 0));
     gwave->setAmplitude(4.0f);
     gwave->setWavelength(16.0f);
     gwave->setPhase(2); // unit per seconds
     gwave->setSteepness(1.0f);
 
     _waves.push_back(gwave);
-
+    
     GerstnerWavePtr gwave2 = GerstnerWave::create();
-    gwave2->setDirection(glm::vec2(1, 0.75));
+    gwave2->setDirection(glm::vec2(1, 0));
     gwave2->setAmplitude(4.0f);
     gwave2->setWavelength(16.0f);
     gwave2->setPhase(2); // unit per seconds

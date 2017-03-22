@@ -23,7 +23,8 @@ protected:
 public:
     SineWave() : _amplitude(1), _wavelength(1), _phase(0) {}
     virtual ~SineWave(){}
-    virtual glm::vec3 calc(const glm::vec2 & pos) const = 0;
+    virtual glm::vec3 calc(const glm::vec2 & pos,
+                           const int count_waves = 1) const = 0;
     void setAmplitude(float amplitude) {_amplitude = amplitude;}
     void setWavelength(float wavelength) {_wavelength = wavelength;}
     void setPhase(float phase) {_phase = phase;}
@@ -37,7 +38,8 @@ protected:
 public:
     DirectionalWave() : _direction(1,0) {}
     virtual ~DirectionalWave(){}
-    virtual glm::vec3 calc(const glm::vec2 & pos) const;
+    virtual glm::vec3 calc(const glm::vec2 & pos,
+                           const int count_waves = 1) const;
     void setDirection(const glm::vec2 & direction)
     {
         _direction = glm::normalize(direction);
@@ -53,7 +55,8 @@ protected:
 public:
     CircularWave() : _origin(0,0) {}
     virtual ~CircularWave(){}
-    glm::vec3 calc(const glm::vec2 & pos) const;
+    glm::vec3 calc(const glm::vec2 & pos,
+                   const int count_waves = 1) const;
     void setOrigin(const glm::vec2 & origin)
     {
         _origin = origin;
@@ -69,7 +72,8 @@ protected:
 public:
     GerstnerWave() : _steepness(1.0) {}
     virtual ~GerstnerWave(){}
-    glm::vec3 calc(const glm::vec2 & pos) const;
+    glm::vec3 calc(const glm::vec2 & pos,
+                   const int count_waves = 1) const;
     void setSteepness(float steepness)
     {
         if(steepness >= 0.0f && steepness <= 1.0f)
