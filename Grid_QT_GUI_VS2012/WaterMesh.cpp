@@ -100,15 +100,16 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
 
     // TODO do not recomtpute this at each frame
     // texture coordinates
+    const int TILE_SIZE = 20;
     tex_coords.clear();
     tex_coords.reserve(SIZE * SIZE); 
     for(int j = 0; j < SIZE; ++j)
     {
-        float y = (float) j / (float)(SIZE - 1);
+        float y = (float) j / (float)(TILE_SIZE);
 
         for(int i = 0; i < SIZE; ++i)
         {
-            float x = (float) i / (float)(SIZE - 1);
+            float x = (float) i / (float)(TILE_SIZE);
 
             glm::vec2 tex_coord(x, y);
             tex_coords.push_back(tex_coord);
@@ -196,7 +197,7 @@ void WaterMesh::initializeGeometry()
 
     //_waves.push_back(dwave2);*/
 
-    float steepness = 0.75f;
+    float steepness = 0.8f;
     float amplitude = 0.5f;
 
     GerstnerWavePtr gwave = GerstnerWave::create();
@@ -211,7 +212,7 @@ void WaterMesh::initializeGeometry()
     GerstnerWavePtr gwave2 = GerstnerWave::create();
     gwave2->setDirection(glm::vec2(1, 0.8));
     gwave2->setAmplitude(amplitude);
-    gwave2->setWavelength(16.0f);
+    gwave2->setWavelength(14.0f);
     gwave2->setPhase(2); // unit per seconds
     gwave2->setSteepness(steepness);
 
@@ -220,7 +221,7 @@ void WaterMesh::initializeGeometry()
     GerstnerWavePtr gwave3 = GerstnerWave::create();
     gwave3->setDirection(glm::vec2(1, 0));
     gwave3->setAmplitude(amplitude);
-    gwave3->setWavelength(16.0f);
+    gwave3->setWavelength(18.0f);
     gwave3->setPhase(2); // unit per seconds
     gwave3->setSteepness(steepness);
 
@@ -289,12 +290,12 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glPolygonOffset(1,1);
     glDisable(GL_CULL_FACE);
 
-    drawTriangles(_geometry, _material, camera, lights);
+    //drawTriangles(_geometry, _material, camera, lights);
     drawTriangles(_geometry, _wireframe_material, camera, lights);
     //drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
     //drawTriangles(_geometry, _normal_texture_material, camera, lights);
-    //drawTriangles(_geometry, _texture_material, camera, lights);
+    drawTriangles(_geometry, _texture_material, camera, lights);
 
     glEnable(GL_CULL_FACE);
     glDisable(GL_POLYGON_OFFSET_FILL);
