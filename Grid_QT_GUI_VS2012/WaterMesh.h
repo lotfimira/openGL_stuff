@@ -25,6 +25,11 @@ public:
     virtual ~SineWave(){}
     virtual glm::vec3 calc(const glm::vec2 & pos,
                            const int count_waves = 1) const = 0;
+    virtual float dx(const glm::vec2 & pos,
+                     const int count_waves = 1) const = 0;
+    virtual float dy(const glm::vec2 & pos,
+                     const int count_waves = 1) const = 0;
+
     void setAmplitude(float amplitude) {_amplitude = amplitude;}
     void setWavelength(float wavelength) {_wavelength = wavelength;}
     void setPhase(float phase) {_phase = phase;}
@@ -38,12 +43,24 @@ protected:
 public:
     DirectionalWave() : _direction(1,0) {}
     virtual ~DirectionalWave(){}
+
     virtual glm::vec3 calc(const glm::vec2 & pos,
                            const int count_waves = 1) const;
+    virtual float dx(const glm::vec2 & pos,
+                     const int count_waves = 1) const;
+    virtual float dy(const glm::vec2 & pos,
+                     const int count_waves = 1) const;
+
     void setDirection(const glm::vec2 & direction)
     {
         _direction = glm::normalize(direction);
     }
+
+    void setDirection(const float x, const float y)
+    {
+        setDirection(glm::vec2(x, y));
+    }
+
     static std::shared_ptr<DirectionalWave> create() { return std::make_shared<DirectionalWave>(); }
 };
 
@@ -57,6 +74,11 @@ public:
     virtual ~CircularWave(){}
     glm::vec3 calc(const glm::vec2 & pos,
                    const int count_waves = 1) const;
+    float dx(const glm::vec2 & pos,
+             const int count_waves = 1) const { return 0; }
+    float dy(const glm::vec2 & pos,
+             const int count_waves = 1) const { return 0; }
+
     void setOrigin(const glm::vec2 & origin)
     {
         _origin = origin;
@@ -74,6 +96,11 @@ public:
     virtual ~GerstnerWave(){}
     glm::vec3 calc(const glm::vec2 & pos,
                    const int count_waves = 1) const;
+    float dx(const glm::vec2 & pos,
+             const int count_waves = 1) const { return 0; }
+    float dy(const glm::vec2 & pos,
+             const int count_waves = 1) const { return 0; }
+
     void setSteepness(float steepness)
     {
         if(steepness >= 0.0f && steepness <= 1.0f)
@@ -99,6 +126,7 @@ protected:
     TextureMaterial _texture_material;
     StreamArrayBufferPtr _pos_buffer;
     QVector<SineWavePtr> _waves;
+    QVector<SineWavePtr> _tile_waves;
 
     void initializeGeometry();
     void initializeMaterial();
@@ -107,6 +135,7 @@ protected:
                       QVector<glm::vec2> & tex_coords,
                       QVector<glm::uvec3> & triangles);
     QVector<glm::vec3> mapNormals(const QVector<glm::vec3> & normals);
+    QVector<glm::vec3> generateTileNormals(const int resolution);
 
 public:
     WaterMesh();

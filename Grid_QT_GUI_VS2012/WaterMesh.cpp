@@ -4,11 +4,13 @@
 #include <Windows.h>
 
 #define SIZE 100
+#define TILE_SIZE 20
+#define TILE_RESOLUTION 60
 
 float t = 0;
 
 glm::vec3 DirectionalWave::calc(const glm::vec2 & pos,
-                                const int count_waves) const
+                                const int) const
 {
     float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
     float t = glm::dot(pos, _direction);
@@ -21,6 +23,38 @@ glm::vec3 DirectionalWave::calc(const glm::vec2 & pos,
     float z = _amplitude * sin( omega * t + phi);
 
     return glm::vec3(0, 0, z);
+}
+
+// derivative along x
+float DirectionalWave::dx(const glm::vec2 & pos, const int) const
+{
+    float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
+
+    DWORD ticks = GetTickCount();
+    int modulus = _wavelength * 1000;
+    int ms = (ticks % modulus);
+    float phi = _phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
+
+    float res = _amplitude * omega * glm::dot(glm::vec2(1,0), _direction) *
+                cos( omega * glm::dot(pos, _direction) + phi);
+
+    return res;
+}
+
+// derivative along y
+float DirectionalWave::dy(const glm::vec2 & pos, const int) const
+{
+    float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
+
+    DWORD ticks = GetTickCount();
+    int modulus = _wavelength * 1000;
+    int ms = (ticks % modulus);
+    float phi = _phase * (2.0f * M_PI) * ((float)ms / (float)(modulus));
+
+    float res = _amplitude * omega * glm::dot(glm::vec2(0,1), _direction) *
+                cos( omega * glm::dot(pos, _direction) + phi);
+
+    return res;
 }
 
 glm::vec3 CircularWave::calc(const glm::vec2 & pos,
@@ -68,10 +102,6 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
                              QVector<glm::vec2> & tex_coords,
                              QVector<glm::uvec3> & triangles)
 {
-    t += 0.1f;
-    DWORD time = GetTickCount();
-    float tf = (float)time / 1000.0f;
-
     // create vertices
     pos.clear();
     pos.reserve(SIZE * SIZE);
@@ -100,7 +130,6 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
 
     // TODO do not recomtpute this at each frame
     // texture coordinates
-    const int TILE_SIZE = 20;
     tex_coords.clear();
     tex_coords.reserve(SIZE * SIZE); 
     for(int j = 0; j < SIZE; ++j)
@@ -240,6 +269,16 @@ void WaterMesh::initializeGeometry()
     _geometry.setAttribute("pos", _pos_buffer);
     _geometry.setAttribute("tex_coord", createStaticArrayBuffer(tex_coords));
     _geometry.setElements(ElementArrayBuffer(triangles));
+
+
+    // tile waves
+    DirectionalWavePtr tile_wave_1 = DirectionalWave::create();
+    tile_wave_1->setDirection(1, 0);
+    tile_wave_1->setAmplitude(1);
+    tile_wave_1->setWavelength(10);
+    tile_wave_1->setPhase(0); // unit per seconds
+
+    _tile_waves.push_back(tile_wave_1);
 }
 
 //-----------------------------------------------------------------------------
@@ -293,9 +332,9 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     //drawTriangles(_geometry, _material, camera, lights);
     drawTriangles(_geometry, _wireframe_material, camera, lights);
     //drawTriangles(_geometry, _normal_material, camera, lights);
-    //drawTriangles(_geometry, _stream_texture_material, camera, lights);
+    drawTriangles(_geometry, _stream_texture_material, camera, lights);
     //drawTriangles(_geometry, _normal_texture_material, camera, lights);
-    drawTriangles(_geometry, _texture_material, camera, lights);
+    //drawTriangles(_geometry, _texture_material, camera, lights);
 
     glEnable(GL_CULL_FACE);
     glDisable(GL_POLYGON_OFFSET_FILL);
@@ -337,5 +376,40 @@ void WaterMesh::animate()
 
     _material.setNormals(mapped_normals, SIZE, SIZE);
     _normal_texture_material.setNormals(mapped_normals, SIZE, SIZE);
-    _stream_texture_material.setTexturePixels(mapped_normals, SIZE, SIZE);
+
+    QVector<glm::vec3> water_tile = generateTileNormals(TILE_RESOLUTION);
+    _stream_texture_material.setTexturePixels(water_tile, TILE_RESOLUTION, TILE_RESOLUTION);
+}
+
+QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
+{
+    QVector<glm::vec3> pixels(resolution * resolution);
+    int count_waves = _tile_waves.size();
+    int index = 0;
+
+    for(int j = 0; j < resolution; j++)
+    {
+        for(int i = 0; i <resolution; i++)
+        {
+            glm::vec2 pos(i, j);
+            glm::vec3 normal;
+
+            for(SineWavePtr wave : _tile_waves)
+            {
+                normal.x += wave->dx(pos, count_waves);
+                normal.y += wave->dy(pos, count_waves);
+            }
+
+            normal.x = -normal.x;
+            normal.y = -normal.y;
+            normal.z = 1.0f;
+            normal = glm::normalize(normal);
+
+            pixels[index] = normal;
+
+            index++;
+        }
+    }
+
+    return pixels;
 }
