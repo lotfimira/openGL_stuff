@@ -75,6 +75,38 @@ glm::vec3 CircularWave::calc(const glm::vec2 & pos,
     return glm::vec3(0, 0, z);
 }
 
+// derivative along x
+float CircularWave::dx(const glm::vec2 & pos, const int) const
+{
+    float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
+    float t = glm::length(_origin - pos);
+
+    DWORD ticks = GetTickCount();
+    int modulus = _wavelength * 1000;
+    int ms = (ticks % modulus);
+    float phi = -_phase * (2.0f * M_PI) * ((float)ms / (float)(modulus)); // TODO why negative phase?
+
+    float res = omega * _amplitude * sin( omega * t + phi);
+
+    return res;
+}
+
+// derivative along y
+float CircularWave::dy(const glm::vec2 & pos, const int) const
+{
+    float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
+    float t = glm::length(_origin - pos);
+
+    DWORD ticks = GetTickCount();
+    int modulus = _wavelength * 1000;
+    int ms = (ticks % modulus);
+    float phi = -_phase * (2.0f * M_PI) * ((float)ms / (float)(modulus)); // TODO why negative phase?
+
+    float res = omega * _amplitude * sin( omega * t + phi);
+
+    return res;
+}
+
 glm::vec3 GerstnerWave::calc(const glm::vec2 & pos, 
                              const int count_waves) const
 {
@@ -272,11 +304,17 @@ void WaterMesh::initializeGeometry()
 
 
     // tile waves
-    DirectionalWavePtr tile_wave_1 = DirectionalWave::create();
+    /*DirectionalWavePtr tile_wave_1 = DirectionalWave::create();
     tile_wave_1->setDirection(1, 0);
     tile_wave_1->setAmplitude(1);
     tile_wave_1->setWavelength(10);
-    tile_wave_1->setPhase(0); // unit per seconds
+    tile_wave_1->setPhase(0); // unit per seconds*/
+
+    CircularWavePtr tile_wave_1 = CircularWave::create();
+    tile_wave_1->setAmplitude(1);
+    tile_wave_1->setOrigin(glm::vec2(TILE_RESOLUTION / 2, TILE_RESOLUTION / 2));
+    tile_wave_1->setPhase(4);
+    tile_wave_1->setWavelength(10);
 
     _tile_waves.push_back(tile_wave_1);
 }

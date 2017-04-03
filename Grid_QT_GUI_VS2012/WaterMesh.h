@@ -75,9 +75,9 @@ public:
     glm::vec3 calc(const glm::vec2 & pos,
                    const int count_waves = 1) const;
     float dx(const glm::vec2 & pos,
-             const int count_waves = 1) const { return 0; }
+             const int count_waves = 1) const;
     float dy(const glm::vec2 & pos,
-             const int count_waves = 1) const { return 0; }
+             const int count_waves = 1) const;
 
     void setOrigin(const glm::vec2 & origin)
     {
