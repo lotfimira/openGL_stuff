@@ -297,8 +297,10 @@ void WaterMesh::initializeGeometry()
 
     // TODO: the previous syntax was better
     _pos_buffer = createStreamArrayBuffer(pos);
+    _vert_normal_buffer = createStreamArrayBuffer(normals);
 
     _geometry.setAttribute("pos", _pos_buffer);
+    _geometry.setAttribute("normal", _vert_normal_buffer);
     _geometry.setAttribute("tex_coord", createStaticArrayBuffer(tex_coords));
     _geometry.setElements(ElementArrayBuffer(triangles));
 
@@ -367,10 +369,10 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glPolygonOffset(1,1);
     glDisable(GL_CULL_FACE);
 
-    //drawTriangles(_geometry, _material, camera, lights);
+    drawTriangles(_geometry, _material, camera, lights);
     drawTriangles(_geometry, _wireframe_material, camera, lights);
-    //drawTriangles(_geometry, _normal_material, camera, lights);
-    drawTriangles(_geometry, _stream_texture_material, camera, lights);
+    drawTriangles(_geometry, _normal_material, camera, lights);
+    //drawTriangles(_geometry, _stream_texture_material, camera, lights);
     //drawTriangles(_geometry, _normal_texture_material, camera, lights);
     //drawTriangles(_geometry, _texture_material, camera, lights);
 
@@ -409,14 +411,18 @@ void WaterMesh::animate()
     computeShape(pos, normals, tex_coords, triangles);
 
     _pos_buffer->update(pos);
+    _vert_normal_buffer->update(normals);
 
     QVector<glm::vec3> mapped_normals = mapNormals(normals);
 
-    _material.setNormals(mapped_normals, SIZE, SIZE);
+    //_material.setNormals(mapped_normals, SIZE, SIZE);
     _normal_texture_material.setNormals(mapped_normals, SIZE, SIZE);
 
     QVector<glm::vec3> water_tile = generateTileNormals(TILE_RESOLUTION);
     _stream_texture_material.setTexturePixels(water_tile, TILE_RESOLUTION, TILE_RESOLUTION);
+
+    mapped_normals = mapNormals(water_tile);
+    _material.setNormals(mapped_normals, TILE_RESOLUTION, TILE_RESOLUTION);
 }
 
 QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
@@ -438,8 +444,8 @@ QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
                 normal.y += wave->dy(pos, count_waves);
             }
 
-            normal.x = -normal.x;
-            normal.y = -normal.y;
+            normal.x = normal.x;
+            normal.y = normal.y;
             normal.z = 1.0f;
             normal = glm::normalize(normal);
 

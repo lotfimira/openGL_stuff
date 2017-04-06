@@ -125,6 +125,7 @@ protected:
     StreamTextureMaterial _stream_texture_material;
     TextureMaterial _texture_material;
     StreamArrayBufferPtr _pos_buffer;
+    StreamArrayBufferPtr _vert_normal_buffer;
     QVector<SineWavePtr> _waves;
     QVector<SineWavePtr> _tile_waves;
 
