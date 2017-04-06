@@ -260,7 +260,7 @@ void WaterMesh::initializeGeometry()
 
     float steepness = 0.8f;
     float amplitude = 0.5f;
-
+    /*
     GerstnerWavePtr gwave = GerstnerWave::create();
     gwave->setDirection(glm::vec2(1, 0.5));
     gwave->setAmplitude(amplitude);
@@ -286,7 +286,7 @@ void WaterMesh::initializeGeometry()
     gwave3->setPhase(2); // unit per seconds
     gwave3->setSteepness(steepness);
 
-    _waves.push_back(gwave3);
+    _waves.push_back(gwave3);*/
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -370,8 +370,8 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glDisable(GL_CULL_FACE);
 
     drawTriangles(_geometry, _material, camera, lights);
-    drawTriangles(_geometry, _wireframe_material, camera, lights);
-    drawTriangles(_geometry, _normal_material, camera, lights);
+    //drawTriangles(_geometry, _wireframe_material, camera, lights);
+    //drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
     //drawTriangles(_geometry, _normal_texture_material, camera, lights);
     //drawTriangles(_geometry, _texture_material, camera, lights);
@@ -389,6 +389,7 @@ void WaterMesh::draw(const Camera & camera,
 }
 
 // map normals from [-1, 1] to [0, 1]
+// so we can store it using RGB colors
 QVector<glm::vec3> WaterMesh::mapNormals(const QVector<glm::vec3> & normals)
 {
     QVector<glm::vec3> mapped(normals.size());
@@ -419,9 +420,8 @@ void WaterMesh::animate()
     _normal_texture_material.setNormals(mapped_normals, SIZE, SIZE);
 
     QVector<glm::vec3> water_tile = generateTileNormals(TILE_RESOLUTION);
-    _stream_texture_material.setTexturePixels(water_tile, TILE_RESOLUTION, TILE_RESOLUTION);
-
     mapped_normals = mapNormals(water_tile);
+    _stream_texture_material.setTexturePixels(mapped_normals, TILE_RESOLUTION, TILE_RESOLUTION);
     _material.setNormals(mapped_normals, TILE_RESOLUTION, TILE_RESOLUTION);
 }
 
@@ -444,9 +444,10 @@ QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
                 normal.y += wave->dy(pos, count_waves);
             }
 
+            // y and z are swapped here
             normal.x = normal.x;
-            normal.y = normal.y;
-            normal.z = 1.0f;
+            normal.z = normal.y;
+            normal.y = 1.0f;
             normal = glm::normalize(normal);
 
             pixels[index] = normal;

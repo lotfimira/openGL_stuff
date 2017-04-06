@@ -23,7 +23,8 @@ vec4 BlinnPhongLighting(vec4 input_color)
     //add Diffuse Terms
     // normal in eye space
     vec3 mapped_normal = texture(normal_texture, tex_coord_i).xyz;
-    vec3 normal_eye = normalize(normal_mat * ((mapped_normal - 0.5) * 2.0));
+    mapped_normal = (mapped_normal - 0.5) * 2.0;
+    vec3 normal_eye = normalize(normal_mat * mapped_normal);
 
     frag_color += input_color * DIFFUSE * max(dot(normal_eye, light_dir_eye), 0.0);
 
