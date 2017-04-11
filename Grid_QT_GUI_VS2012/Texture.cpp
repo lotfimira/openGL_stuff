@@ -22,8 +22,16 @@ Texture2D::Texture2D() :
 
 Texture2D::~Texture2D()
 {
-    // checks reference counter, if last then call clean()
-    autoClean();
+    CLEAR_GL_ERRORS
+
+    GLuint texture_id = _id;
+    if(glIsTexture(texture_id))
+    {
+        glDeleteTextures(1, &texture_id);
+        _id = 0;
+    }
+
+    CHECK_GL_ERRORS
 }
 
 Texture2D::Texture2D(const QString & filename) : 
@@ -277,19 +285,6 @@ void Texture2D::setWrapping(Wrap wrap)
     CHECK_GL_ERRORS
 }
 
-void Texture2D::clean()
-{
-    CLEAR_GL_ERRORS
-
-    GLuint texture_id = _id;
-    if(glIsTexture(texture_id))
-    {
-        glDeleteTextures(1, &texture_id);
-        _id = 0;
-    }
-
-    CHECK_GL_ERRORS
-}
 
 //-----------------------------------------------------------------------------
 StreamTexture2D::StreamTexture2D() : Texture2D()

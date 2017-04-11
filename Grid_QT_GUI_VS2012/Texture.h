@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 
 //-----------------------------------------------------------------------------
-class Texture2D : public SelfCleaned
+class Texture2D
 {
 public:
 
@@ -51,7 +51,6 @@ protected:
     GLenum _type;
     GLint _format;
 
-    virtual void clean();
     GLint getMipmapFilter(Filter f);
 
 public:
