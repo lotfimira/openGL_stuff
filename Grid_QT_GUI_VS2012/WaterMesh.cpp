@@ -79,14 +79,14 @@ glm::vec3 CircularWave::calc(const glm::vec2 & pos,
 float CircularWave::dx(const glm::vec2 & pos, const int) const
 {
     float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
-    float t = glm::length(_origin - pos);
+    float t = glm::length(glm::vec2(_origin.x, 0) - glm::vec2(pos.x, 0));
 
     DWORD ticks = GetTickCount();
     int modulus = _wavelength * 1000;
     int ms = (ticks % modulus);
     float phi = -_phase * (2.0f * M_PI) * ((float)ms / (float)(modulus)); // TODO why negative phase?
 
-    float res = omega * _amplitude * sin( omega * t + phi);
+    float res = omega * _amplitude * cos( omega * t + phi);
 
     return res;
 }
@@ -95,14 +95,14 @@ float CircularWave::dx(const glm::vec2 & pos, const int) const
 float CircularWave::dy(const glm::vec2 & pos, const int) const
 {
     float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
-    float t = glm::length(_origin - pos);
+    float t = glm::length(glm::vec2(0, _origin.y) - glm::vec2(0, pos.y));
 
     DWORD ticks = GetTickCount();
     int modulus = _wavelength * 1000;
     int ms = (ticks % modulus);
     float phi = -_phase * (2.0f * M_PI) * ((float)ms / (float)(modulus)); // TODO why negative phase?
 
-    float res = omega * _amplitude * sin( omega * t + phi);
+    float res = omega * _amplitude * cos( omega * t + phi);
 
     return res;
 }
@@ -223,6 +223,8 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
         }
     }
 
+    normals = generateTileNormals(SIZE);
+
     // normals
     for(int i = 0; i < normals.size(); ++i)
     {
@@ -233,15 +235,14 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
 //-----------------------------------------------------------------------------
 void WaterMesh::initializeGeometry()
 {
-    /*
     CircularWavePtr cwave = CircularWave::create();
     cwave->setAmplitude(1);
     cwave->setOrigin(glm::vec2(SIZE / 2, SIZE / 2));
     cwave->setPhase(8);
     cwave->setWavelength(16);
 
-    //_waves.push_back(cwave);
-
+    _waves.push_back(cwave);
+    /*
     DirectionalWavePtr dwave1 = DirectionalWave::create();
     dwave1->setAmplitude(2);
     dwave1->setDirection(glm::vec2(1, 0));
@@ -312,13 +313,14 @@ void WaterMesh::initializeGeometry()
     tile_wave_1->setWavelength(10);
     tile_wave_1->setPhase(0); // unit per seconds*/
 
+    /*
     CircularWavePtr tile_wave_1 = CircularWave::create();
     tile_wave_1->setAmplitude(1);
     tile_wave_1->setOrigin(glm::vec2(TILE_RESOLUTION / 2, TILE_RESOLUTION / 2));
     tile_wave_1->setPhase(4);
     tile_wave_1->setWavelength(10);
 
-    _tile_waves.push_back(tile_wave_1);
+    _tile_waves.push_back(tile_wave_1);*/
 }
 
 //-----------------------------------------------------------------------------
@@ -369,9 +371,9 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glPolygonOffset(1,1);
     glDisable(GL_CULL_FACE);
 
-    drawTriangles(_geometry, _material, camera, lights);
-    //drawTriangles(_geometry, _wireframe_material, camera, lights);
-    //drawTriangles(_geometry, _normal_material, camera, lights);
+    //drawTriangles(_geometry, _material, camera, lights);
+    drawTriangles(_geometry, _wireframe_material, camera, lights);
+    drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
     //drawTriangles(_geometry, _normal_texture_material, camera, lights);
     //drawTriangles(_geometry, _texture_material, camera, lights);
@@ -428,7 +430,7 @@ void WaterMesh::animate()
 QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
 {
     QVector<glm::vec3> pixels(resolution * resolution);
-    int count_waves = _tile_waves.size();
+    int count_waves = _waves.size();
     int index = 0;
 
     for(int j = 0; j < resolution; j++)
@@ -438,7 +440,7 @@ QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
             glm::vec2 pos(i, j);
             glm::vec3 normal;
 
-            for(SineWavePtr wave : _tile_waves)
+            for(SineWavePtr wave : _waves)
             {
                 normal.x += wave->dx(pos, count_waves);
                 normal.y += wave->dy(pos, count_waves);
