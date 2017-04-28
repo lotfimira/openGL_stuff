@@ -86,7 +86,7 @@ float CircularWave::dx(const glm::vec2 & pos, const int) const
     int ms = (ticks % modulus);
     float phi = -_phase * (2.0f * M_PI) * ((float)ms / (float)(modulus)); // TODO why negative phase?
 
-    float res = omega * _amplitude * cos( omega * t + phi);
+    float res = _amplitude * omega * ((pos.x - _origin.x) / t) * cos( omega * t + phi);
 
     return res;
 }
@@ -102,7 +102,7 @@ float CircularWave::dy(const glm::vec2 & pos, const int) const
     int ms = (ticks % modulus);
     float phi = -_phase * (2.0f * M_PI) * ((float)ms / (float)(modulus)); // TODO why negative phase?
 
-    float res = omega * _amplitude * cos( omega * t + phi);
+    float res = _amplitude * omega * ((pos.y - _origin.y) / t) * cos( omega * t + phi);
 
     return res;
 }
