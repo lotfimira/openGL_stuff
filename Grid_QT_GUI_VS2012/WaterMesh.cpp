@@ -446,8 +446,8 @@ QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
 
             for(SineWavePtr wave : _waves)
             {
-                normal.x += wave->dx(pos, count_waves);
-                normal.y += wave->dy(pos, count_waves);
+                normal.x += -wave->dx(pos, count_waves);
+                normal.y += -wave->dy(pos, count_waves);
             }
 
             // y and z are swapped here
