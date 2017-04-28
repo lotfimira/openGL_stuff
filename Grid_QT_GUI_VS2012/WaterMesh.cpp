@@ -79,7 +79,7 @@ glm::vec3 CircularWave::calc(const glm::vec2 & pos,
 float CircularWave::dx(const glm::vec2 & pos, const int) const
 {
     float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
-    float t = glm::length(glm::vec2(_origin.x, 0) - glm::vec2(pos.x, 0));
+    float t = glm::length(_origin - pos);
 
     DWORD ticks = GetTickCount();
     int modulus = _wavelength * 1000;
@@ -95,7 +95,7 @@ float CircularWave::dx(const glm::vec2 & pos, const int) const
 float CircularWave::dy(const glm::vec2 & pos, const int) const
 {
     float omega = (1.0f / _wavelength) * 2 * M_PI; // TODO make this a class so we don't have to calculate this every time
-    float t = glm::length(glm::vec2(0, _origin.y) - glm::vec2(0, pos.y));
+    float t = glm::length(_origin - pos);
 
     DWORD ticks = GetTickCount();
     int modulus = _wavelength * 1000;
