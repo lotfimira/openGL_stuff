@@ -227,8 +227,6 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
         }
     }
 
-    normals = generateTileNormals(SIZE);
-
     // normals
     for(int i = 0; i < normals.size(); ++i)
     {
@@ -239,13 +237,14 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
 //-----------------------------------------------------------------------------
 void WaterMesh::initializeGeometry()
 {
+    /*
     CircularWavePtr cwave = CircularWave::create();
     cwave->setAmplitude(1);
     cwave->setOrigin(glm::vec2(SIZE / 2, SIZE / 2));
     cwave->setPhase(8);
     cwave->setWavelength(16);
 
-    _waves.push_back(cwave);
+    _waves.push_back(cwave);*/
     /*
     DirectionalWavePtr dwave1 = DirectionalWave::create();
     dwave1->setAmplitude(2);
@@ -317,14 +316,14 @@ void WaterMesh::initializeGeometry()
     tile_wave_1->setWavelength(10);
     tile_wave_1->setPhase(0); // unit per seconds*/
 
-    /*
+
     CircularWavePtr tile_wave_1 = CircularWave::create();
     tile_wave_1->setAmplitude(1);
     tile_wave_1->setOrigin(glm::vec2(TILE_RESOLUTION / 2, TILE_RESOLUTION / 2));
     tile_wave_1->setPhase(4);
     tile_wave_1->setWavelength(10);
 
-    _tile_waves.push_back(tile_wave_1);*/
+    _tile_waves.push_back(tile_wave_1);
 }
 
 //-----------------------------------------------------------------------------
@@ -375,9 +374,9 @@ void WaterMesh::draw(const Camera & camera, const QVector<Light> & lights)
     glPolygonOffset(1,1);
     glDisable(GL_CULL_FACE);
 
-    //drawTriangles(_geometry, _material, camera, lights);
-    drawTriangles(_geometry, _wireframe_material, camera, lights);
-    drawTriangles(_geometry, _normal_material, camera, lights);
+    drawTriangles(_geometry, _material, camera, lights);
+    //drawTriangles(_geometry, _wireframe_material, camera, lights);
+    //drawTriangles(_geometry, _normal_material, camera, lights);
     //drawTriangles(_geometry, _stream_texture_material, camera, lights);
     //drawTriangles(_geometry, _normal_texture_material, camera, lights);
     //drawTriangles(_geometry, _texture_material, camera, lights);
@@ -434,7 +433,7 @@ void WaterMesh::animate()
 QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
 {
     QVector<glm::vec3> pixels(resolution * resolution);
-    int count_waves = _waves.size();
+    int count_waves = _tile_waves.size();
     int index = 0;
 
     for(int j = 0; j < resolution; j++)
@@ -444,7 +443,7 @@ QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
             glm::vec2 pos(i, j);
             glm::vec3 normal;
 
-            for(SineWavePtr wave : _waves)
+            for(SineWavePtr wave : _tile_waves)
             {
                 normal.x += -wave->dx(pos, count_waves);
                 normal.y += -wave->dy(pos, count_waves);
