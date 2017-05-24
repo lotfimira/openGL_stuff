@@ -125,7 +125,9 @@ protected:
     StreamTextureMaterial _stream_texture_material;
     TextureMaterial _texture_material;
     StreamArrayBufferPtr _pos_buffer;
-    StreamArrayBufferPtr _vert_normal_buffer;
+    StreamArrayBufferPtr _normal_buffer;
+    StreamArrayBufferPtr _tangent_buffer;
+    StreamArrayBufferPtr _bitangent_buffer;
     QVector<SineWavePtr> _waves;
     QVector<SineWavePtr> _tile_waves;
 
@@ -133,6 +135,8 @@ protected:
     void initializeMaterial();
     void computeShape(QVector<glm::vec3> & pos, 
                       QVector<glm::vec3> & normals, 
+                      QVector<glm::vec3> & tangents, 
+                      QVector<glm::vec3> & bitangents, 
                       QVector<glm::vec2> & tex_coords,
                       QVector<glm::uvec3> & triangles);
     QVector<glm::vec3> mapNormals(const QVector<glm::vec3> & normals);

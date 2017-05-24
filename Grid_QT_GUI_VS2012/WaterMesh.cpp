@@ -135,6 +135,8 @@ glm::vec3 GerstnerWave::calc(const glm::vec2 & pos,
 
 void WaterMesh::computeShape(QVector<glm::vec3> & pos, 
                              QVector<glm::vec3> & normals, 
+                             QVector<glm::vec3> & tangents, 
+                             QVector<glm::vec3> & bitangents, 
                              QVector<glm::vec2> & tex_coords,
                              QVector<glm::uvec3> & triangles)
 {
@@ -232,6 +234,23 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
     {
         normals[i] = glm::normalize(normals[i]);
     }
+
+    // tangent space (tangent + bi tangent)
+    tangents.clear();
+    tangents.resize(SIZE * SIZE);
+
+    bitangents.clear();
+    bitangents.resize(SIZE * SIZE);
+
+    glm::vec3 up(0,1,0); // up pointing toward Y
+    for(int i = 0; i < normals.size(); ++i)
+    {
+        glm::quat q = quatFrom2Vect(up, normals[i]);
+        glm::mat3 rotation_matrix = glm::mat3_cast(q);
+
+        tangents[i]   = glm::vec3(1,0,0) * rotation_matrix;
+        bitangents[i] = glm::vec3(0,0,1) * rotation_matrix;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -294,17 +313,23 @@ void WaterMesh::initializeGeometry()
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
+    QVector<glm::vec3> tangents;
+    QVector<glm::vec3> bitangents;
     QVector<glm::vec2> tex_coords;
     QVector<glm::uvec3> triangles;
 
-    computeShape(pos, normals, tex_coords, triangles);
+    computeShape(pos, normals, tangents, bitangents, tex_coords, triangles);
 
     // TODO: the previous syntax was better
     _pos_buffer = createStreamArrayBuffer(pos);
-    _vert_normal_buffer = createStreamArrayBuffer(normals);
+    _normal_buffer = createStreamArrayBuffer(normals);
+    _tangent_buffer = createStreamArrayBuffer(tangents);
+    _bitangent_buffer = createStreamArrayBuffer(bitangents);
 
     _geometry.setAttribute("pos", _pos_buffer);
-    _geometry.setAttribute("normal", _vert_normal_buffer);
+    _geometry.setAttribute("normal", _normal_buffer);
+    _geometry.setAttribute("tangent", _tangent_buffer);
+    _geometry.setAttribute("bitangent", _bitangent_buffer);
     _geometry.setAttribute("tex_coord", createStaticArrayBuffer(tex_coords));
     _geometry.setElements(ElementArrayBuffer(triangles));
 
@@ -411,13 +436,17 @@ void WaterMesh::animate()
 {
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
+    QVector<glm::vec3> tangents;
+    QVector<glm::vec3> bitangents;
     QVector<glm::vec2> tex_coords;
     QVector<glm::uvec3> triangles;
 
-    computeShape(pos, normals, tex_coords, triangles);
+    computeShape(pos, normals, tangents, bitangents, tex_coords, triangles);
 
     _pos_buffer->update(pos);
-    _vert_normal_buffer->update(normals);
+    _normal_buffer->update(normals);
+    _tangent_buffer->update(tangents);
+    _bitangent_buffer->update(bitangents);
 
     QVector<glm::vec3> mapped_normals = mapNormals(normals);
 
