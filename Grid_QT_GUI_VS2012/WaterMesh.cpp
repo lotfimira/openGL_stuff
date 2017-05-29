@@ -282,12 +282,12 @@ void WaterMesh::initializeGeometry()
     //_waves.push_back(dwave2);*/
 
     float steepness = 0.8f;
-    float amplitude = 0.5f;
-    /*
+    float amplitude = 1.0f;
+    
     GerstnerWavePtr gwave = GerstnerWave::create();
     gwave->setDirection(glm::vec2(1, 0.5));
     gwave->setAmplitude(amplitude);
-    gwave->setWavelength(16.0f);
+    gwave->setWavelength(32.0f);
     gwave->setPhase(2); // unit per seconds
     gwave->setSteepness(steepness);
 
@@ -296,7 +296,7 @@ void WaterMesh::initializeGeometry()
     GerstnerWavePtr gwave2 = GerstnerWave::create();
     gwave2->setDirection(glm::vec2(1, 0.8));
     gwave2->setAmplitude(amplitude);
-    gwave2->setWavelength(14.0f);
+    gwave2->setWavelength(28.0f);
     gwave2->setPhase(2); // unit per seconds
     gwave2->setSteepness(steepness);
 
@@ -305,11 +305,11 @@ void WaterMesh::initializeGeometry()
     GerstnerWavePtr gwave3 = GerstnerWave::create();
     gwave3->setDirection(glm::vec2(1, 0));
     gwave3->setAmplitude(amplitude);
-    gwave3->setWavelength(18.0f);
+    gwave3->setWavelength(36.0f);
     gwave3->setPhase(2); // unit per seconds
     gwave3->setSteepness(steepness);
 
-    _waves.push_back(gwave3);*/
+    _waves.push_back(gwave3);
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -335,18 +335,18 @@ void WaterMesh::initializeGeometry()
 
 
     // tile waves
-    /*DirectionalWavePtr tile_wave_1 = DirectionalWave::create();
-    tile_wave_1->setDirection(1, 0);
-    tile_wave_1->setAmplitude(1);
-    tile_wave_1->setWavelength(10);
-    tile_wave_1->setPhase(0); // unit per seconds*/
+    DirectionalWavePtr tile_wave_1 = DirectionalWave::create();
+    tile_wave_1->setDirection(1, 1);
+    tile_wave_1->setAmplitude(0.5);
+    tile_wave_1->setWavelength(14.142);
+    tile_wave_1->setPhase(4); // unit per seconds
 
-
+    /*
     CircularWavePtr tile_wave_1 = CircularWave::create();
-    tile_wave_1->setAmplitude(1);
+    tile_wave_1->setAmplitude(0.5);
     tile_wave_1->setOrigin(glm::vec2(TILE_RESOLUTION / 2, TILE_RESOLUTION / 2));
     tile_wave_1->setPhase(4);
-    tile_wave_1->setWavelength(10);
+    tile_wave_1->setWavelength(10);*/
 
     _tile_waves.push_back(tile_wave_1);
 }
