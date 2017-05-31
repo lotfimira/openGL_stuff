@@ -256,16 +256,17 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
 //-----------------------------------------------------------------------------
 void WaterMesh::initializeGeometry()
 {
-    /*
     CircularWavePtr cwave = CircularWave::create();
+    cwave->setMaxAmplitude(1);
     cwave->setAmplitude(1);
     cwave->setOrigin(glm::vec2(SIZE / 2, SIZE / 2));
     cwave->setPhase(8);
     cwave->setWavelength(16);
 
-    _waves.push_back(cwave);*/
+    _waves.push_back(cwave);
     /*
     DirectionalWavePtr dwave1 = DirectionalWave::create();
+    dwave1->setMaxAmplitude(2);
     dwave1->setAmplitude(2);
     dwave1->setDirection(glm::vec2(1, 0));
     dwave1->setPhase(4); // unit per seconds
@@ -274,19 +275,22 @@ void WaterMesh::initializeGeometry()
     //_waves.push_back(dwave1);
 
     DirectionalWavePtr dwave2 = DirectionalWave::create();
-    dwave1->setAmplitude(2);
-    dwave1->setDirection(glm::vec2(1, 1));
-    dwave1->setPhase(1); // unit per seconds
-    dwave1->setWavelength(19);
+    dwave2->setMaxAmplitude(2);
+    dwave2->setAmplitude(2);
+    dwave2->setDirection(glm::vec2(1, 1));
+    dwave2->setPhase(1); // unit per seconds
+    dwave2->setWavelength(19);
 
     //_waves.push_back(dwave2);*/
 
+    /*
     float steepness = 0.8f;
     float amplitude = 1.0f;
     
     GerstnerWavePtr gwave = GerstnerWave::create();
     gwave->setDirection(glm::vec2(1, 0.5));
     gwave->setAmplitude(amplitude);
+    gwave->setMaxAmplitude(amplitude);
     gwave->setWavelength(32.0f);
     gwave->setPhase(2); // unit per seconds
     gwave->setSteepness(steepness);
@@ -296,6 +300,7 @@ void WaterMesh::initializeGeometry()
     GerstnerWavePtr gwave2 = GerstnerWave::create();
     gwave2->setDirection(glm::vec2(1, 0.8));
     gwave2->setAmplitude(amplitude);
+    gwave2->setMaxAmplitude(amplitude);
     gwave2->setWavelength(28.0f);
     gwave2->setPhase(2); // unit per seconds
     gwave2->setSteepness(steepness);
@@ -305,11 +310,13 @@ void WaterMesh::initializeGeometry()
     GerstnerWavePtr gwave3 = GerstnerWave::create();
     gwave3->setDirection(glm::vec2(1, 0));
     gwave3->setAmplitude(amplitude);
+    gwave3->seMaxtAmplitude(amplitude);
     gwave3->setWavelength(36.0f);
     gwave3->setPhase(2); // unit per seconds
     gwave3->setSteepness(steepness);
 
     _waves.push_back(gwave3);
+    */
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -333,22 +340,27 @@ void WaterMesh::initializeGeometry()
     _geometry.setAttribute("tex_coord", createStaticArrayBuffer(tex_coords));
     _geometry.setElements(ElementArrayBuffer(triangles));
 
-
+    /*
     // tile waves
     DirectionalWavePtr tile_wave_1 = DirectionalWave::create();
     tile_wave_1->setDirection(1, 1);
     tile_wave_1->setAmplitude(0.5);
+    tile_wave_1->setMaxAmplitude(0.5);
     tile_wave_1->setWavelength(14.142);
     tile_wave_1->setPhase(4); // unit per seconds
-
+    */
     /*
-    CircularWavePtr tile_wave_1 = CircularWave::create();
-    tile_wave_1->setAmplitude(0.5);
-    tile_wave_1->setOrigin(glm::vec2(TILE_RESOLUTION / 2, TILE_RESOLUTION / 2));
-    tile_wave_1->setPhase(4);
-    tile_wave_1->setWavelength(10);*/
+    CircularWavePtr tile_wave_2 = CircularWave::create();
+    tile_wave_2->setAmplitude(0.5);
+    tile_wave_2->setMaxAmplitude(0.5);
+    tile_wave_2->setOrigin(glm::vec2(TILE_RESOLUTION / 2, TILE_RESOLUTION / 2));
+    tile_wave_2->setPhase(4);
+    tile_wave_2->setWavelength(10);
 
-    _tile_waves.push_back(tile_wave_1);
+    _tile_waves.push_back(tile_wave_2);*/
+
+    shuffleWavesAmplitudes(_waves);
+    shuffleWavesAmplitudes(_tile_waves);
 }
 
 //-----------------------------------------------------------------------------
@@ -457,6 +469,13 @@ void WaterMesh::animate()
     mapped_normals = mapNormals(water_tile);
     _stream_texture_material.setTexturePixels(mapped_normals, TILE_RESOLUTION, TILE_RESOLUTION);
     _material.setNormals(mapped_normals, TILE_RESOLUTION, TILE_RESOLUTION);
+
+    // fade in / out waves
+    for(int i = 0; i < _waves.size(); ++i)
+    {
+        SineWavePtr wave = _waves[i];
+        wave->animateAmplitude(0.005);
+    }
 }
 
 QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
@@ -491,4 +510,26 @@ QVector<glm::vec3> WaterMesh::generateTileNormals(const int resolution)
     }
 
     return pixels;
+}
+
+bool randomBool()
+{
+    return rand() % 2 == 1;
+}
+
+// random float number between 0 and 1
+float randomUnitScalar()
+{
+    return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+}
+
+void WaterMesh::shuffleWavesAmplitudes(QVector<SineWavePtr> & waves)
+{
+    for(SineWavePtr wave : waves)
+    {
+        float r = randomUnitScalar();
+
+        wave->setAmplitude(r * wave->maxAmplitude());
+        wave->setGrowing(randomBool());
+    }
 }

@@ -17,11 +17,17 @@ class SineWave
 {
 protected:
     float _amplitude;
+    float _max_amplitude;
     float _wavelength;
     float _phase;
+    bool  _growing;
 
 public:
-    SineWave() : _amplitude(1), _wavelength(1), _phase(0) {}
+    SineWave() : _amplitude(1), 
+                 _max_amplitude(1), 
+                 _wavelength(1), 
+                 _phase(0), 
+                 _growing(true) {}
     virtual ~SineWave(){}
     virtual glm::vec3 calc(const glm::vec2 & pos,
                            const int count_waves = 1) const = 0;
@@ -31,8 +37,30 @@ public:
                      const int count_waves = 1) const = 0;
 
     void setAmplitude(float amplitude) {_amplitude = amplitude;}
+    void setMaxAmplitude(float max_amplitude) {_max_amplitude = max_amplitude;}
     void setWavelength(float wavelength) {_wavelength = wavelength;}
     void setPhase(float phase) {_phase = phase;}
+    void setGrowing(bool growing) { _growing = growing; }
+    void animateAmplitude(float val)
+    {
+        if(_growing)
+        {
+            _amplitude += val; 
+
+            if(_amplitude >= _max_amplitude)
+                _growing = false;
+        }
+        else
+        {
+            _amplitude -= val;
+
+            if(_amplitude <= 0)
+                _growing = true;
+        }
+    }
+    float amplitude() { return _amplitude; }
+    float maxAmplitude() { return _max_amplitude; }
+    bool growing() { return _growing; }
 };
 
 class DirectionalWave : public SineWave
@@ -150,4 +178,5 @@ public:
                                  const QVector<Light> & lights, 
                                  Material & material);
     virtual void animate();
+    void shuffleWavesAmplitudes(QVector<SineWavePtr> & waves);
 };
