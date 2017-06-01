@@ -256,6 +256,7 @@ void WaterMesh::computeShape(QVector<glm::vec3> & pos,
 //-----------------------------------------------------------------------------
 void WaterMesh::initializeGeometry()
 {
+    /*
     CircularWavePtr cwave = CircularWave::create();
     cwave->setMaxAmplitude(1);
     cwave->setAmplitude(1);
@@ -263,7 +264,7 @@ void WaterMesh::initializeGeometry()
     cwave->setPhase(8);
     cwave->setWavelength(16);
 
-    _waves.push_back(cwave);
+    _waves.push_back(cwave);*/
     /*
     DirectionalWavePtr dwave1 = DirectionalWave::create();
     dwave1->setMaxAmplitude(2);
@@ -317,6 +318,13 @@ void WaterMesh::initializeGeometry()
 
     _waves.push_back(gwave3);
     */
+
+    _waves = generateRandomCircularWaves(1,              // count
+                                         0, SIZE,        // min max x
+                                         0, SIZE,        // min max y
+                                         10, 20,         // min max w
+                                         1.0f / 16.0f,   // w to amplitude ratio
+                                         8);             // phase
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -517,17 +525,47 @@ bool randomBool()
     return rand() % 2 == 1;
 }
 
-// random float number between 0 and 1
-float randomUnitScalar()
+// random float between min and max
+float randomFloatBetween(float min, float max)
 {
-    return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max - min)));
+}
+
+QVector<SineWavePtr> WaterMesh::generateRandomCircularWaves(
+    int count, 
+    float x_min, float x_max,
+    float y_min, float y_max,
+    float w_min,
+    float w_max,
+    float w_to_amplitude_ratio,
+    float phase)
+{
+    QVector<SineWavePtr> waves;
+
+    for(int i = 0; i < count; ++i)
+    {
+        float x = randomFloatBetween(x_min, x_max);
+        float y = randomFloatBetween(y_min, y_max);
+        float w = randomFloatBetween(w_min, w_max);
+        float amplitude_max = w * w_to_amplitude_ratio;
+
+        CircularWavePtr wave = CircularWave::create();
+        wave->setMaxAmplitude(amplitude_max);
+        wave->setOrigin(glm::vec2(x, y));
+        wave->setWavelength(w);
+        wave->setPhase(phase);
+
+        waves.push_back(wave);
+    }
+
+    return waves;
 }
 
 void WaterMesh::shuffleWavesAmplitudes(QVector<SineWavePtr> & waves)
 {
     for(SineWavePtr wave : waves)
     {
-        float r = randomUnitScalar();
+        float r = randomFloatBetween(0, 1);
 
         wave->setAmplitude(r * wave->maxAmplitude());
         wave->setGrowing(randomBool());

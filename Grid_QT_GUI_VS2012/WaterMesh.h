@@ -179,4 +179,12 @@ public:
                                  Material & material);
     virtual void animate();
     void shuffleWavesAmplitudes(QVector<SineWavePtr> & waves);
+    QVector<SineWavePtr> WaterMesh::generateRandomCircularWaves(
+        int count, 
+        float x_min, float x_max,
+        float y_min, float y_max,
+        float w_min,
+        float w_max,
+        float w_to_amplitude_ratio,
+        float phase);
 };
