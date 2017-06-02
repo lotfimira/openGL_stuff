@@ -324,14 +324,25 @@ void WaterMesh::initializeGeometry()
                                          0, SIZE,        // min max y
                                          10, 20,         // min max w
                                          1.0f / 32.0f,   // w to amplitude ratio
-                                         8);             // phase*/
+                                         8);             // phase
+    */
 
+    /*
     _waves = generateRandomDirectionalWaves(6,                  // count
                                             glm::vec2(1, 0.3), // max dir
                                             glm::vec2(1, -0.3), // min dir
                                             10, 20,       // min max w
                                             1.0f / 32.0f, // w to amplitude ratio
                                             8);           // phase
+    */
+
+    _waves = generateRandomGerstnerWaves(6,                  // count
+                                         glm::vec2(1, 0.3),  // max dir
+                                         glm::vec2(1, -0.3), // min dir
+                                         0.7, 0.9,     // min max steepness
+                                         10, 20,       // min max w
+                                         1.0f / 32.0f, // w to amplitude ratio
+                                         8);           // phase
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -532,9 +543,12 @@ bool randomBool()
     return rand() % 2 == 1;
 }
 
-float randomFloatBetween(float min, float max)
+float randomFloatBetween(float a, float b)
 {
-    return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max - min)));
+    float low = min(a, b);
+    float high = max(a, b);
+
+    return low + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(high - low)));
 }
 
 
@@ -611,6 +625,40 @@ QVector<SineWavePtr> WaterMesh::generateRandomDirectionalWaves(
         wave->setDirection(dir);
         wave->setWavelength(w);
         wave->setPhase(phase);
+
+        waves.push_back(wave);
+    }
+
+    return waves;
+}
+
+
+QVector<SineWavePtr> WaterMesh::generateRandomGerstnerWaves(
+    int count, 
+    const glm::vec2 & dir_min,
+    const glm::vec2 & dir_max,
+    float steepness_min,
+    float steepness_high,
+    float w_min,
+    float w_max,
+    float w_to_amplitude_ratio,
+    float phase)
+{
+    QVector<SineWavePtr> waves;
+
+    for(int i = 0; i < count; ++i)
+    {
+        glm::vec2 dir = randomVec2Between(dir_min, dir_max);
+        float w = randomFloatBetween(w_min, w_max);
+        float amplitude_max = w * w_to_amplitude_ratio;
+        float steepness = randomFloatBetween(steepness_min, steepness_high);
+
+        GerstnerWavePtr wave = GerstnerWave::create();
+        wave->setMaxAmplitude(amplitude_max);
+        wave->setDirection(dir);
+        wave->setWavelength(w);
+        wave->setPhase(phase);
+        wave->setSteepness(steepness);
 
         waves.push_back(wave);
     }

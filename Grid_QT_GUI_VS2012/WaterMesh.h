@@ -197,4 +197,15 @@ public:
         float w_max,
         float w_to_amplitude_ratio,
         float phase);
+
+    QVector<SineWavePtr> WaterMesh::generateRandomGerstnerWaves(
+        int count, 
+        const glm::vec2 & dir_min,
+        const glm::vec2 & dir_max,
+        float steepness_min,
+        float steepness_high,
+        float w_min,
+        float w_max,
+        float w_to_amplitude_ratio,
+        float phase);
 };
