@@ -319,11 +319,11 @@ void WaterMesh::initializeGeometry()
     _waves.push_back(gwave3);
     */
 
-    _waves = generateRandomCircularWaves(1,              // count
+    _waves = generateRandomCircularWaves(6,              // count
                                          0, SIZE,        // min max x
                                          0, SIZE,        // min max y
                                          10, 20,         // min max w
-                                         1.0f / 16.0f,   // w to amplitude ratio
+                                         1.0f / 32.0f,   // w to amplitude ratio
                                          8);             // phase
 
     QVector<glm::vec3> pos;
