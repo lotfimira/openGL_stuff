@@ -319,12 +319,19 @@ void WaterMesh::initializeGeometry()
     _waves.push_back(gwave3);
     */
 
-    _waves = generateRandomCircularWaves(6,              // count
+    /*_waves = generateRandomCircularWaves(6,              // count
                                          0, SIZE,        // min max x
                                          0, SIZE,        // min max y
                                          10, 20,         // min max w
                                          1.0f / 32.0f,   // w to amplitude ratio
-                                         8);             // phase
+                                         8);             // phase*/
+
+    _waves = generateRandomDirectionalWaves(6,                  // count
+                                            glm::vec2(1, 0.3), // max dir
+                                            glm::vec2(1, -0.3), // min dir
+                                            10, 20,       // min max w
+                                            1.0f / 32.0f, // w to amplitude ratio
+                                            8);           // phase
 
     QVector<glm::vec3> pos;
     QVector<glm::vec3> normals;
@@ -525,10 +532,20 @@ bool randomBool()
     return rand() % 2 == 1;
 }
 
-// random float between min and max
 float randomFloatBetween(float min, float max)
 {
     return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max - min)));
+}
+
+
+glm::vec2 randomVec2Between(const glm::vec2 & min, const glm::vec2 & max)
+{
+    glm::vec2 v;
+
+    v.x = randomFloatBetween(min.x, max.x);
+    v.y = randomFloatBetween(min.y, max.y);
+
+    return v;
 }
 
 QVector<SineWavePtr> WaterMesh::generateRandomCircularWaves(
@@ -570,4 +587,33 @@ void WaterMesh::shuffleWavesAmplitudes(QVector<SineWavePtr> & waves)
         wave->setAmplitude(r * wave->maxAmplitude());
         wave->setGrowing(randomBool());
     }
+}
+
+QVector<SineWavePtr> WaterMesh::generateRandomDirectionalWaves(
+    int count, 
+    const glm::vec2 & dir_min,
+    const glm::vec2 & dir_max,
+    float w_min,
+    float w_max,
+    float w_to_amplitude_ratio,
+    float phase)
+{
+    QVector<SineWavePtr> waves;
+
+    for(int i = 0; i < count; ++i)
+    {
+        glm::vec2 dir = randomVec2Between(dir_min, dir_max);
+        float w = randomFloatBetween(w_min, w_max);
+        float amplitude_max = w * w_to_amplitude_ratio;
+
+        DirectionalWavePtr wave = DirectionalWave::create();
+        wave->setMaxAmplitude(amplitude_max);
+        wave->setDirection(dir);
+        wave->setWavelength(w);
+        wave->setPhase(phase);
+
+        waves.push_back(wave);
+    }
+
+    return waves;
 }
